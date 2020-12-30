@@ -2,6 +2,7 @@
 
 // C++ STL
 #include <string>
+#include <vector>
 #include <codecvt>
 #include <locale>
 #include <fstream>
@@ -17,8 +18,10 @@ namespace GlobTools
     
     // global functions
     
-    // check whether a directory exist
-    bool is_filedir_exist(const std::wstring& dir);
+    // check whether a file or directory exist
+    bool is_filedir_existA(const std::string& dir);
+    // check whether a file or directory exist
+    bool is_filedir_existW(const std::wstring& dir);
     
     // change all char in string to upper
     std::string all2upperA(const std::string& src);
@@ -34,4 +37,9 @@ namespace GlobTools
     std::string getCurrExePathA();
     // get current .exe path, return wstring, end with L'\\'
     std::wstring getCurrExePathW();
+    
+    // get file list of input directory
+    void getFilesUnderDirA(const std::string& dir, std::vector<std::string>& buff);
+    // get file list of input directory
+    void getFilesUnderDirW(const std::wstring& dir, std::vector<std::wstring>& buff);
 };

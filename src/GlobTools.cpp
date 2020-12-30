@@ -3,21 +3,19 @@
 // C++ STL
 #include <Windows.h>
 #include <algorithm>
-
+#include <filesystem>
 
 // Functions
 
-// check whether a directory exist
-bool GlobTools::is_filedir_exist(const std::wstring& dir)
+// check whether a file or directory exist
+bool GlobTools::is_filedir_existA(const std::string& path)
 {
-    std::wifstream temp(cvter.to_bytes(dir));
-    if (temp) { 
-        temp.close();
-        return true;
-    } else { 
-        temp.close();
-        return false;
-    }
+    return std::filesystem::exists(path);
+}
+// check whether a file or directory exist
+bool GlobTools::is_filedir_existW(const std::wstring& path)
+{
+    return std::filesystem::exists(path);
 }
 
 // change all char in string to upper
@@ -82,3 +80,13 @@ std::wstring GlobTools::getCurrExePathW()
     }
     return std::wstring(temp_buff, old_it+1);
 }
+
+// get file list of input directory
+void GlobTools::getFilesUnderDirA(const std::string& dir, std::vector<std::string>& buff)
+{
+    if (GlobTools::is_filedir_existA(dir)) {
+        
+    }
+}
+// get file list of input directory
+void GlobTools::getFilesUnderDirW(const std::wstring& dir, std::vector<std::wstring>& buff);
