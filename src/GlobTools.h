@@ -13,4 +13,9 @@ namespace GlobTools
     
     // check whether a directory exist
     bool is_filedir_exist(const std::wstring& dir);
+    
+    // change all char in string to upper
+    std::string all2upperA(const std::string& src);
+    // change all wchar_t in wstring to upper
+    std::wstring all2upperW(const std::wstring& src);
 };

@@ -15,3 +15,21 @@ bool GlobTools::is_filedir_exist(const std::wstring& dir)
         return false;
     }
 }
+
+// change all char in string to upper
+std::string GlobTools::all2upperA(const std::string& src)
+{
+    std::string output;
+    for (auto it : src)
+        output += std::toupper(it);
+    return output;
+}
+
+// change all wchar_t in wstring to upper
+std::wstring GlobTools::all2upperW(const std::wstring& src)
+{
+    std::wstring output;
+    for (auto it : src)
+        output += std::toupper(it);
+    return output;
+}
