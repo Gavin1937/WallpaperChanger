@@ -18,4 +18,9 @@ namespace GlobTools
     std::string all2upperA(const std::string& src);
     // change all wchar_t in wstring to upper
     std::wstring all2upperW(const std::wstring& src);
+    
+    // change all char in string to lower
+    std::string all2lowerA(const std::string& src);
+    // change all wchar_t in wstring to lower
+    std::wstring all2lowerW(const std::wstring& src);
 };
