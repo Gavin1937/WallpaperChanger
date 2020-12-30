@@ -1,0 +1,9 @@
+# Targets Windows & Unix temporary files
+~$*
+*~
+
+# exclude everything from /.vscode/ & /build/
+
+/build/
+/Wallpapers/
+/*.exe
