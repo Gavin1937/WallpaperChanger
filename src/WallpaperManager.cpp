@@ -1,4 +1,5 @@
 #include "WallpaperManager.h"
+#include "GlobTools.h"
 
 namespace {
     std::vector<std::wstring> SupportedImageFileExtension = {
@@ -6,22 +7,6 @@ namespace {
         L"jpg", L"jpeg",
         L"png"
     };
-    
-    // convert wstring & string
-    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> cvter;
-    
-    // check whether a directory exist
-    bool is_filedir_exist(const std::wstring& dir)
-    {
-        std::wifstream temp(cvter.to_bytes(dir));
-        if (temp) { 
-            temp.close();
-            return true;
-        } else { 
-            temp.close();
-            return false;
-        }
-    }
 };
 
 
@@ -45,14 +30,14 @@ WallpaperManager::WallpaperManager()
         reverse(m_WallpaperList_path.begin(), m_WallpaperList_path.end());
         m_WallpaperList_path += L"Wallpapers\\";
         if (CreateDirectoryW(m_WallpaperList_path.c_str(), NULL) != ERROR_PATH_NOT_FOUND) {
-            if (!is_filedir_exist(std::wstring(m_WallpaperList_path+L"WallpaperList"))) {
+            if (!GlobTools::is_filedir_exist(std::wstring(m_WallpaperList_path+L"WallpaperList"))) {
                 // create ./Wallpapers/ folder
                 // create WallpaperList file app
-                std::wofstream WallpaperList(cvter.to_bytes(m_WallpaperList_path+L"WallpaperList").c_str(), std::ios::app);
+                std::wofstream WallpaperList(GlobTools::cvter.to_bytes(m_WallpaperList_path+L"WallpaperList").c_str(), std::ios::app);
                 WallpaperList.close();
             } else {
                 // load data from WallpaperList to m_CachedWallpaperInfo
-                std::wifstream input(cvter.to_bytes(m_WallpaperList_path+L"WallpaperList").c_str());
+                std::wifstream input(GlobTools::cvter.to_bytes(m_WallpaperList_path+L"WallpaperList").c_str());
                 std::wstring buff;
                 int counter = 0;
                 std::wstring loc_src_path, loc_new_filename, loc_add_time;
@@ -94,7 +79,7 @@ WallpaperManager::WallpaperManager(const std::wstring& WallpaperList_path)
     if (m_WallpaperList_path[m_WallpaperList_path.size()-1] != L'\\')
         m_WallpaperList_path += L'\\';
     // load data from WallpaperList to m_CachedWallpaperInfo
-    std::wifstream input(cvter.to_bytes(m_WallpaperList_path+L"WallpaperList").c_str());
+    std::wifstream input(GlobTools::cvter.to_bytes(m_WallpaperList_path+L"WallpaperList").c_str());
     std::wstring buff;
     int counter = 0;
     std::wstring loc_src_path, loc_new_filename, loc_add_time;
@@ -128,7 +113,7 @@ WallpaperManager::WallpaperManager(const std::wstring& WallpaperList_path)
 WallpaperManager::~WallpaperManager()
 {
     // writing data to WallpaperList file (overwrite)
-    std::wofstream WallpaperList(cvter.to_bytes(m_WallpaperList_path+L"WallpaperList").c_str());
+    std::wofstream WallpaperList(GlobTools::cvter.to_bytes(m_WallpaperList_path+L"WallpaperList").c_str());
     WallpaperList << L"\"src_path\",\"hex_id\",\"add_time\"\n"; // initialize 1st line
     for (auto it : m_CachedWallpaperInfo) {
         WallpaperList 
@@ -145,7 +130,7 @@ WallpaperManager::~WallpaperManager()
 // copy file from src_path to ./Wallpapers/
 bool WallpaperManager::copy_wallpaper_2_cacheFolder(const std::wstring& src_path)
 {
-    if (is_filedir_exist(src_path)) {
+    if (GlobTools::is_filedir_exist(src_path)) {
         append_WallpaperList(src_path);
         if (!CopyFileW(src_path.c_str(), 
                 (m_WallpaperList_path+m_CachedWallpaperInfo[m_CachedWallpaperInfo.size()-1].getNewFilename()).c_str(), 
@@ -255,7 +240,7 @@ WallpaperInfo::WallpaperInfo(const std::wstring& src_path, const std::wstring& n
     : m_SrcPath(src_path), m_OriFileName(L""), m_NewFileName(new_filename), m_AddTime(add_time)
 {
     // checking whether src_path exist
-    if (!is_filedir_exist(src_path)) { 
+    if (!GlobTools::is_filedir_exist(src_path)) { 
         m_SrcPath = L"";
         m_NewFileName = L"";
         return;
@@ -318,7 +303,7 @@ const std::wstring WallpaperInfo::getSrcPath() const
 }
 void WallpaperInfo::setSrcPath(const std::wstring& src_path)
 {
-    if (is_filedir_exist(src_path))
+    if (GlobTools::is_filedir_exist(src_path))
         m_SrcPath = src_path;
 }
 const std::wstring WallpaperInfo::getOriFileName() const
