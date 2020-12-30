@@ -3,7 +3,6 @@
 // C++ STL
 #include <Windows.h>
 #include <algorithm>
-#include <filesystem>
 
 // Functions
 
@@ -55,38 +54,29 @@ std::wstring GlobTools::all2lowerW(const std::wstring& src)
 // get current .exe path, return string, end with '\\'
 std::string GlobTools::getCurrExePathA()
 {
-    char temp_buff[MAX_PATH];
-    HMODULE hModule = GetModuleHandleA(NULL);
-    GetModuleFileNameA(hModule, temp_buff, sizeof(temp_buff));
-    auto it = std::find(std::begin(temp_buff), std::end(temp_buff), '\\');
-    auto old_it = it;
-    while (it != std::end(temp_buff)) {
-        old_it = it;
-        it = std::find(it+1, std::end(temp_buff), '\\');
-    }
-    return std::string(temp_buff, old_it+1);
+    return (std::filesystem::current_path().string()+"\\");
 }
 // get current .exe path, return wstring, end with L'\\'
 std::wstring GlobTools::getCurrExePathW()
 {
-    wchar_t temp_buff[MAX_PATH];
-    HMODULE hModule = GetModuleHandleW(NULL);
-    GetModuleFileNameW(hModule, temp_buff, sizeof(temp_buff));
-    auto it = std::find(std::begin(temp_buff), std::end(temp_buff), L'\\');
-    auto old_it = it;
-    while (it != std::end(temp_buff)) {
-        old_it = it;
-        it = std::find(it+1, std::end(temp_buff), L'\\');
-    }
-    return std::wstring(temp_buff, old_it+1);
+    return (std::filesystem::current_path().wstring()+L"\\");
 }
 
 // get file list of input directory
-void GlobTools::getFilesUnderDirA(const std::string& dir, std::vector<std::string>& buff)
+bool GlobTools::getFilesUnderDirA(const std::string& dir, std::vector<std::string>& buff)
 {
     if (GlobTools::is_filedir_existA(dir)) {
-        
-    }
+        for (auto file : std::filesystem::directory_iterator(dir))
+            buff.push_back(file.path().filename().string());
+    } else return false;
+    return true;
 }
 // get file list of input directory
-void GlobTools::getFilesUnderDirW(const std::wstring& dir, std::vector<std::wstring>& buff);
+bool GlobTools::getFilesUnderDirW(const std::wstring& dir, std::vector<std::wstring>& buff)
+{
+    if (GlobTools::is_filedir_existW(dir)) {
+        for (auto file : std::filesystem::directory_iterator(dir))
+            buff.push_back(file.path().filename().wstring());
+    } else return false;
+    return true;
+}

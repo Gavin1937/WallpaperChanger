@@ -2,10 +2,11 @@
 
 // C++ STL
 #include <string>
+#include <sstream>
 #include <vector>
 #include <codecvt>
 #include <locale>
-#include <fstream>
+#include <filesystem>
 
 namespace GlobTools 
 {
@@ -39,7 +40,9 @@ namespace GlobTools
     std::wstring getCurrExePathW();
     
     // get file list of input directory
-    void getFilesUnderDirA(const std::string& dir, std::vector<std::string>& buff);
+    // return true if success, false if fail
+    bool getFilesUnderDirA(const std::string& dir, std::vector<std::string>& buff);
     // get file list of input directory
-    void getFilesUnderDirW(const std::wstring& dir, std::vector<std::wstring>& buff);
+    // return true if success, false if fail
+    bool getFilesUnderDirW(const std::wstring& dir, std::vector<std::wstring>& buff);
 };

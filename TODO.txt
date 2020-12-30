@@ -1,0 +1,8 @@
+
+
+
+1. replace all <fstream> functionalities with <filesystem> in files:
+    WallpaperManager.h
+    WallpaperManager.cpp
+
+
