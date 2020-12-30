@@ -8,8 +8,14 @@
 
 namespace GlobTools 
 {
+    // global variables 
+    
     // convert wstring & string
     static std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> cvter;
+    
+    
+    
+    // global functions
     
     // check whether a directory exist
     bool is_filedir_exist(const std::wstring& dir);
@@ -23,4 +29,9 @@ namespace GlobTools
     std::string all2lowerA(const std::string& src);
     // change all wchar_t in wstring to lower
     std::wstring all2lowerW(const std::wstring& src);
+    
+    // get current .exe path, return string, end with '\\'
+    std::string getCurrExePathA();
+    // get current .exe path, return wstring, end with L'\\'
+    std::wstring getCurrExePathW();
 };
