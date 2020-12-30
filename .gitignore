@@ -4,6 +4,7 @@
 
 # exclude everything from /.vscode/ & /build/
 
+/.vscode/
 /build/
 /Wallpapers/
 /*.exe
