@@ -7,4 +7,6 @@
 /.vscode/
 /build/
 /Wallpapers/
+/src/Wallpapers/
 /*.exe
+/src/*.exe
