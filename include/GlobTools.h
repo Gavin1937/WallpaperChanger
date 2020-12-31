@@ -1,3 +1,6 @@
+// disable C4996, CXX17_CODECVT_HEADER_DEPRECATION_WARNING
+#pragma warning(disable: 4996)
+
 #pragma once
 
 // C++ STL

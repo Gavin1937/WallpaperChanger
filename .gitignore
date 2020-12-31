@@ -10,3 +10,8 @@
 /src/Wallpapers/
 /*.exe
 /src/*.exe
+/src/main.cpp
+/Debug/
+/Release/
+/.vs/
+/x64/

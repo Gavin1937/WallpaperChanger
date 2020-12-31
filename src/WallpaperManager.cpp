@@ -22,7 +22,7 @@ WallpaperManager::WallpaperManager()
     HMODULE hModule = GetModuleHandleW(NULL);
     if (hModule != NULL) {
         // assign current directory to m_WallpaperList_path
-        GetModuleFileNameW(hModule, temp_buff, (sizeof(temp_buff)));
+        GetModuleFileNameW(hModule, temp_buff, sizeof(temp_buff));
         m_WallpaperList_path.assign(temp_buff);
         reverse(m_WallpaperList_path.begin(), m_WallpaperList_path.end());
         size_t offset = m_WallpaperList_path.find(L'\\');
@@ -188,7 +188,7 @@ const int WallpaperManager::find_wallpaperIndex_via_wallInfo(const WallpaperInfo
 {
     auto it = find(m_CachedWallpaperInfo.begin(), m_CachedWallpaperInfo.end(), wallpaper_info);
     if (it != m_CachedWallpaperInfo.end())
-        return (it - m_CachedWallpaperInfo.begin());
+        return static_cast<int>(it - m_CachedWallpaperInfo.begin());
     else return -1;
 }
 WallpaperInfo& WallpaperManager::find_wallpaperInfo_via_src(const std::wstring& src_path)
@@ -253,7 +253,7 @@ WallpaperInfo::WallpaperInfo(const std::wstring& src_path, const std::wstring& n
         curr_fileExtension.assign(temp_src_path.begin(), temp_src_path.begin()+temp_src_path.find(L'.'));
         reverse(curr_fileExtension.begin(), curr_fileExtension.end());
         for (auto it : SupportedImageFileExtension) {
-            if (it == curr_fileExtension);
+            if (it == curr_fileExtension)
                 whether_support = true;
         }
         
@@ -261,7 +261,7 @@ WallpaperInfo::WallpaperInfo(const std::wstring& src_path, const std::wstring& n
             m_OriFileName.assign(temp_src_path.begin(), temp_src_path.begin()+temp_src_path.find(L'\\'));
             reverse(m_OriFileName.begin(), m_OriFileName.end());
             if (m_AddTime == 0)
-                m_AddTime = time(0);
+                m_AddTime = static_cast<int>(time(0));
         } else { // not support file
             return;
         }
