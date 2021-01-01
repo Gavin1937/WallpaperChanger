@@ -2,7 +2,7 @@
 
 
 
-void Debug()
+void Debug::Debug()
 {
-    MessageBoxW(0, L"In Debug()\n", L"Info", 0);
+    ConfigManager cm;
 }

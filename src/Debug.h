@@ -2,5 +2,10 @@
 
 #include <windows.h>
 
+#include "ConfigManager.h"
 
-void Debug();
+
+namespace Debug
+{
+    void Debug();
+};

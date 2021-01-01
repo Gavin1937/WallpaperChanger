@@ -10,11 +10,10 @@
 /src/Wallpapers/
 /*.exe
 /src/*.exe
-/src/main.cpp
+/src/Debug.h
+/src/Debug.cpp
 /Debug/
 /Release/
 /.vs/
 /x64/
 /WallpaperChanger.vcxproj.user
-/src/Debug.h
-/src/Debug.cpp
