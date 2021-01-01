@@ -9,10 +9,11 @@
 
 // class, struct, & function declaration
 class ConfigManager;
+class ConfigItem;
 
 // enum class to specify different sections in config.ini
 enum class ConfigSections{
-    
+    Bad = -1, Empty = 0
 };
 
 // manage (R & W) config.ini file
@@ -48,7 +49,34 @@ private:
     // return true(1) if function success
     // return fail(0) if function fail
     bool read_config_2_vec();
+    
+    // clear all empty & bad ConfigItem,
+    // this function should called inside of read_config_2_vec();
+    void clear_empty_bad_ConfigItem();
+    
 private:
     std::wstring m_ConfigFile_path; // path to config.ini
-    std::vector<std::wstring> m_CachedConfigFile; // cached config.ini in ram
+    std::vector<ConfigItem> m_CachedConfigFile; // cached config.ini in ram
+};
+
+
+// a single item in config.ini
+class ConfigItem
+{
+public:
+    std::wstring m_Data;
+    ConfigSections m_DataSection;
+public:
+    // constructor
+    ConfigItem();
+    // constructor /w raw wstring
+    ConfigItem(const std::wstring& str);
+    // copy constructor
+    ConfigItem(const ConfigItem& obj);
+    
+    // destructor
+    ~ConfigItem();
+    
+    std::wstring output_wstr();
+    
 };
