@@ -79,7 +79,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src\;$(IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)src\;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -94,7 +94,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeaderFile>include\pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>src\pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -116,9 +116,9 @@
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeaderFile>$(ProjectDir)include\pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>$(ProjectDir)src\pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <ForcedIncludeFiles>$(ProjectDir)include\pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles>$(ProjectDir)src\pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
     </ClCompile>
@@ -144,7 +144,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeaderFile>include\pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>src\pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -170,7 +170,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeaderFile>include\pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>src\pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -189,14 +189,14 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\framework.h" />
-    <ClInclude Include="include\pch.h" />
-    <ClInclude Include="include\Resource.h" />
-    <ClInclude Include="include\targetver.h" />
-    <ClInclude Include="include\WallpaperChanger.h" />
-    <ClInclude Include="include\WallpaperChangerDlg.h" />
-    <ClInclude Include="include\GlobTools.h" />
-    <ClInclude Include="include\WallpaperManager.h" />
+    <ClInclude Include="src\framework.h" />
+    <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\Resource.h" />
+    <ClInclude Include="src\targetver.h" />
+    <ClInclude Include="src\WallpaperChanger.h" />
+    <ClInclude Include="src\WallpaperChangerDlg.h" />
+    <ClInclude Include="src\GlobTools.h" />
+    <ClInclude Include="src\WallpaperManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">

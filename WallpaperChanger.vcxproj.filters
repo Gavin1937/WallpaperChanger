@@ -15,28 +15,28 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\WallpaperChanger.h">
+    <ClInclude Include="src\WallpaperChanger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\WallpaperChangerDlg.h">
+    <ClInclude Include="src\WallpaperChangerDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\framework.h">
+    <ClInclude Include="src\framework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\targetver.h">
+    <ClInclude Include="src\targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Resource.h">
+    <ClInclude Include="src\Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\pch.h">
+    <ClInclude Include="src\pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\GlobTools.h">
+    <ClInclude Include="src\GlobTools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\WallpaperManager.h">
+    <ClInclude Include="src\WallpaperManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
