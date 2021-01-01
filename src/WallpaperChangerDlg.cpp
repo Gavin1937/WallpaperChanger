@@ -8,6 +8,9 @@
 #include "WallpaperChangerDlg.h"
 #include "afxdialogex.h"
 
+// ! Need to remove after debugging
+#include "Debug.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -100,6 +103,11 @@ BOOL CWallpaperChangerDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
+	
+	// ! Need to remove after debugging
+	void Debug();
+	
+	
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
