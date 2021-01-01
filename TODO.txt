@@ -1,8 +1,8 @@
 
 
 
-1. replace all <fstream> functionalities with <filesystem> in files:
-    WallpaperManager.h
-    WallpaperManager.cpp
+1. finish class ConfigItem
 
+2. rewrite write_vec_2_config();
 
+3. finish class ConfigManager
