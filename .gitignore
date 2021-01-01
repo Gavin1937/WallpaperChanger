@@ -16,3 +16,5 @@
 /.vs/
 /x64/
 /WallpaperChanger.vcxproj.user
+/src/Debug.h
+/src/Debug.cpp

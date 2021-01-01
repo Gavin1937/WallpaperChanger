@@ -197,6 +197,9 @@
     <ClInclude Include="src\WallpaperChangerDlg.h" />
     <ClInclude Include="src\GlobTools.h" />
     <ClInclude Include="src\WallpaperManager.h" />
+    <ClInclude Include="src\ConfigManager.h" />
+    
+    <ClInclude Include="src\Debug.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -209,6 +212,9 @@
     <ClCompile Include="src\WallpaperChangerDlg.cpp" />
     <ClCompile Include="src\GlobTools.cpp" />
     <ClCompile Include="src\WallpaperManager.cpp" />
+    <ClCompile Include="src\ConfigManager.cpp" />
+    
+    <ClCompile Include="src\Debug.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="res\WallpaperChanger.rc" />

@@ -39,6 +39,13 @@
     <ClInclude Include="src\WallpaperManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\ConfigManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    
+    <ClInclude Include="src\Debug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\WallpaperChanger.cpp">
@@ -54,6 +61,13 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\WallpaperManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ConfigManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    
+    <ClCompile Include="src\Debug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

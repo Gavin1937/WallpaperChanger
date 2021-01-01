@@ -105,7 +105,7 @@ BOOL CWallpaperChangerDlg::OnInitDialog()
 	// TODO: Add extra initialization here
 	
 	// ! Need to remove after debugging
-	void Debug();
+	Debug::Debug();
 	
 	
 
