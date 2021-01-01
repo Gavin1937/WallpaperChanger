@@ -17,59 +17,46 @@ namespace {
 WallpaperManager::WallpaperManager()
     : m_WallpaperList_path(L""), m_CachedWallpaperInfo(std::vector<WallpaperInfo>())
 {
-    // get current directory
-    wchar_t temp_buff[MAX_PATH];
-    HMODULE hModule = GetModuleHandleW(NULL);
-    if (hModule != NULL) {
-        // assign current directory to m_WallpaperList_path
-        GetModuleFileNameW(hModule, temp_buff, sizeof(temp_buff));
-        m_WallpaperList_path.assign(temp_buff);
-        reverse(m_WallpaperList_path.begin(), m_WallpaperList_path.end());
-        size_t offset = m_WallpaperList_path.find(L'\\');
-        m_WallpaperList_path.assign(m_WallpaperList_path.begin()+offset, m_WallpaperList_path.end());
-        reverse(m_WallpaperList_path.begin(), m_WallpaperList_path.end());
-        m_WallpaperList_path += L"Wallpapers\\";
-        if (CreateDirectoryW(m_WallpaperList_path.c_str(), NULL) != ERROR_PATH_NOT_FOUND) {
-            if (!GlobTools::is_filedir_existW(std::wstring(m_WallpaperList_path+L"WallpaperList"))) {
-                // create ./Wallpapers/ folder
-                // create WallpaperList file app
-                std::wofstream WallpaperList(GlobTools::cvter.to_bytes(m_WallpaperList_path+L"WallpaperList").c_str(), std::ios::app);
-                WallpaperList.close();
-            } else {
-                // load data from WallpaperList to m_CachedWallpaperInfo
-                std::wifstream input(GlobTools::cvter.to_bytes(m_WallpaperList_path+L"WallpaperList").c_str());
-                std::wstring buff;
-                int counter = 0;
-                std::wstring loc_src_path, loc_new_filename, loc_add_time;
-                size_t pos1 = 0;
-                size_t pos2 = 0;
-                while (std::getline(input, buff)) {
-                    pos1 = 0; pos2 = 0;
-                    if (counter > 0) { // skip 1st line in file (title line for cvs file)
-                        // find src_path
-                        pos1 = buff.find(L"\"");
-                        pos2 = buff.find(L"\"", pos1+1);
-                        if (pos1 != std::wstring::npos && pos2 != std::wstring::npos)
-                            loc_src_path.assign(buff.begin()+pos1+1, buff.begin()+pos2);
-                        // find new_filename
-                        pos1 = buff.find(L"\"", pos2+1);
-                        pos2 = buff.find(L"\"", pos1+1);
-                        if (pos1 != std::wstring::npos && pos2 != std::wstring::npos)
-                            loc_new_filename.assign(buff.begin()+pos1+1, buff.begin()+pos2);
-                        // find add_time
-                        pos1 = buff.find(L"\"", pos2+1);
-                        pos2 = buff.find(L"\"", pos1+1);
-                        if (pos1 != std::wstring::npos && pos2 != std::wstring::npos)
-                            loc_add_time.assign(buff.begin()+pos1+1, buff.begin()+pos2);
-                        if (pos1 != std::wstring::npos && pos2 != std::wstring::npos)
-                            m_CachedWallpaperInfo.push_back(WallpaperInfo(loc_src_path, loc_new_filename, std::stoi(loc_add_time)));
-                    } else counter++;
-                }
+    m_WallpaperList_path = GlobTools::getCurrExePathW() + L"Wallpapers\\";
+    // create ./Wallpapers/ folder
+    if (CreateDirectoryW(m_WallpaperList_path.c_str(), NULL) != ERROR_PATH_NOT_FOUND) {
+        std::wstring loc_WallpaperList_filepath = m_WallpaperList_path + L"WallpaperList";
+        if (!GlobTools::is_filedir_existW(loc_WallpaperList_filepath)) { // does not exist
+            // create WallpaperList file app
+            std::wofstream WallpaperList(GlobTools::cvter.to_bytes(loc_WallpaperList_filepath).c_str(), std::ios::app);
+            WallpaperList.close();
+        } else { // exist
+            // load data from WallpaperList to m_CachedWallpaperInfo
+            std::wifstream input(GlobTools::cvter.to_bytes(loc_WallpaperList_filepath).c_str());
+            std::wstring buff;
+            int counter = 0;
+            std::wstring loc_src_path, loc_new_filename, loc_add_time;
+            size_t pos1 = 0;
+            size_t pos2 = 0;
+            while (std::getline(input, buff)) {
+                pos1 = 0; pos2 = 0;
+                if (counter > 0) { // skip 1st line in file (title line for cvs file)
+                    // find src_path
+                    pos1 = buff.find(L"\"");
+                    pos2 = buff.find(L"\"", pos1+1);
+                    if (pos1 != std::wstring::npos && pos2 != std::wstring::npos)
+                        loc_src_path.assign(buff.begin()+pos1+1, buff.begin()+pos2);
+                    // find new_filename
+                    pos1 = buff.find(L"\"", pos2+1);
+                    pos2 = buff.find(L"\"", pos1+1);
+                    if (pos1 != std::wstring::npos && pos2 != std::wstring::npos)
+                        loc_new_filename.assign(buff.begin()+pos1+1, buff.begin()+pos2);
+                    // find add_time
+                    pos1 = buff.find(L"\"", pos2+1);
+                    pos2 = buff.find(L"\"", pos1+1);
+                    if (pos1 != std::wstring::npos && pos2 != std::wstring::npos)
+                        loc_add_time.assign(buff.begin()+pos1+1, buff.begin()+pos2);
+                    if (pos1 != std::wstring::npos && pos2 != std::wstring::npos)
+                        m_CachedWallpaperInfo.push_back(WallpaperInfo(loc_src_path, loc_new_filename, std::stoi(loc_add_time)));
+                } else counter++;
             }
-        } else MessageBoxW(0, L"CreateDirectory Error, Path Not Found.", L"Info", 0);
-    } else {
-        return;
-    }
+        }
+    } else MessageBoxW(0, L"CreateDirectory Error, Path Not Found.", L"Info", 0);
 }
 // parametric constructor
 WallpaperManager::WallpaperManager(const std::wstring& WallpaperList_path)
