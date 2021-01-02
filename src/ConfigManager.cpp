@@ -117,9 +117,7 @@ ConfigManager::~ConfigManager()
 // should call this function in destructor as well
 bool ConfigManager::write_buff2config()
 {
-    std::wofstream output_config;
-    output_config.imbue(std::locale());
-    output_config.open(m_ConfigFile_path);
+    GlobTools::utf8_wofstream output_config(m_ConfigFile_path);
     if (output_config.fail()) {
         output_config.close();
         return false;
@@ -159,9 +157,7 @@ bool ConfigManager::modify_config(
 // cache to m_CachedConfigFile, call it in constructor
 bool ConfigManager::read_config2buff()
 {
-    std::wifstream input_config;
-    input_config.imbue(std::locale());
-    input_config.open(m_ConfigFile_path);
+    GlobTools::utf8_wifstream input_config(m_ConfigFile_path);
     if (input_config.fail()) return false;
     std::wstring buff;
     try {

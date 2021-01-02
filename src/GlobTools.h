@@ -10,6 +10,7 @@
 #include <codecvt>
 #include <locale>
 #include <filesystem>
+#include <fstream>
 
 namespace GlobTools 
 {
@@ -48,4 +49,38 @@ namespace GlobTools
     // get file list of input directory
     // return true if success, false if fail
     bool getFilesUnderDirW(const std::wstring& dir, std::vector<std::wstring>& buff);
+    
+    
+    // ifstream /w utf8 locale set
+    class utf8_ifstream : public std::ifstream
+    {
+    public:
+        utf8_ifstream();
+        utf8_ifstream(const std::string& path, std::ios_base::openmode mode = ios_base::in);
+        utf8_ifstream(const std::wstring& path, std::ios_base::openmode mode = ios_base::in);
+    };
+    // wifstream /w utf8 locale set
+    class utf8_wifstream : public std::wifstream
+    {
+    public:
+        utf8_wifstream();
+        utf8_wifstream(const std::string& path, std::ios_base::openmode mode = ios_base::in);
+        utf8_wifstream(const std::wstring& path, std::ios_base::openmode mode = ios_base::in);
+    };
+    // ofstream /w utf8 locale set
+    class utf8_ofstream : public std::ofstream
+    {
+    public:
+        utf8_ofstream();
+        utf8_ofstream(const std::string& path, std::ios_base::openmode mode = ios_base::out);
+        utf8_ofstream(const std::wstring& path, std::ios_base::openmode mode = ios_base::out);
+    };
+    // wofstream /w utf8 locale set
+    class utf8_wofstream : public std::wofstream
+    {
+    public:
+        utf8_wofstream();
+        utf8_wofstream(const std::string& path, std::ios_base::openmode mode = ios_base::out);
+        utf8_wofstream(const std::wstring& path, std::ios_base::openmode mode = ios_base::out);
+    };
 };
