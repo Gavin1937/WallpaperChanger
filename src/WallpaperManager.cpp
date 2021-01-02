@@ -23,11 +23,15 @@ WallpaperManager::WallpaperManager()
         std::wstring loc_WallpaperList_filepath = m_WallpaperList_path + L"WallpaperList";
         if (!GlobTools::is_filedir_existW(loc_WallpaperList_filepath)) { // does not exist
             // create WallpaperList file app
-            std::wofstream WallpaperList(GlobTools::cvter.to_bytes(loc_WallpaperList_filepath).c_str(), std::ios::app);
+            std::wofstream WallpaperList;
+            WallpaperList.imbue(std::locale());
+            WallpaperList.open(GlobTools::cvter.to_bytes(loc_WallpaperList_filepath).c_str(), std::ios::app);
             WallpaperList.close();
         } else { // exist
             // load data from WallpaperList to m_CachedWallpaperInfo
-            std::wifstream input(GlobTools::cvter.to_bytes(loc_WallpaperList_filepath).c_str());
+            std::wifstream input;
+            input.imbue(std::locale());
+            input.open(GlobTools::cvter.to_bytes(loc_WallpaperList_filepath).c_str());
             std::wstring buff;
             int counter = 0;
             std::wstring loc_src_path, loc_new_filename, loc_add_time;
@@ -66,7 +70,9 @@ WallpaperManager::WallpaperManager(const std::wstring& WallpaperList_path)
     if (m_WallpaperList_path[m_WallpaperList_path.size()-1] != L'\\')
         m_WallpaperList_path += L'\\';
     // load data from WallpaperList to m_CachedWallpaperInfo
-    std::wifstream input(GlobTools::cvter.to_bytes(m_WallpaperList_path+L"WallpaperList").c_str());
+    std::wifstream input;
+    input.imbue(std::locale());
+    input.open(GlobTools::cvter.to_bytes(m_WallpaperList_path+L"WallpaperList").c_str());
     std::wstring buff;
     int counter = 0;
     std::wstring loc_src_path, loc_new_filename, loc_add_time;
@@ -100,7 +106,9 @@ WallpaperManager::WallpaperManager(const std::wstring& WallpaperList_path)
 WallpaperManager::~WallpaperManager()
 {
     // writing data to WallpaperList file (overwrite)
-    std::wofstream WallpaperList(GlobTools::cvter.to_bytes(m_WallpaperList_path+L"WallpaperList").c_str());
+    std::wofstream WallpaperList;
+    WallpaperList.imbue(std::locale());
+    WallpaperList.open(GlobTools::cvter.to_bytes(m_WallpaperList_path+L"WallpaperList").c_str());
     WallpaperList << L"\"src_path\",\"hex_id\",\"add_time\"\n"; // initialize 1st line
     for (auto it : m_CachedWallpaperInfo) {
         WallpaperList 

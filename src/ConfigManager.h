@@ -20,6 +20,7 @@ enum class ConfigSections{
     ConfigDir,         // Dir to config.ini file
     WallpaperCacheDir, // Dir to /Wallpapers/ directory
     WallpaperListDir,  // Dir to WallaperList file
+    WindowsThemeDir,   // Dir to C:\Users\${USERNAME}\AppData\Roaming\Microsoft\Windows\Themes
     SS_WallpaperID_P,  // Single Screen Wallpaper Portrait
     SS_WallpaperID_L,  // Single Screen Wallpaper Landscape
     MS_WallpaperID     // Multi Screen Wallpaper
@@ -43,25 +44,29 @@ public:
     // should call this function in destructor as well
     // return true(1) if function success
     // return fail(0) if function fail
-    bool write_vec_2_config();
+    bool write_buff2config();
     
     // modify a specific section of config.ini
-    // @Param: modify_val => value to be modify
     // @Param: section    => specify a section to
+    // @Param: modify_val => value to be modify
     // return true(1) if function success
-    // return fail(0) if function fail
-    bool modify_config(const std::wstring& modify_val, ConfigSections section);
+    // return fail(0) if function fail or cannot find section
+    bool modify_config(ConfigSections section, const std::wstring& modify_val);
     
 private:
     // read config file from m_ConfigFile_path to ram &
     // cache to m_CachedConfigFile, call it in constructor
     // return true(1) if function success
     // return fail(0) if function fail
-    bool read_config_2_vec();
+    bool read_config2buff();
     
     // clear all empty & bad ConfigItem,
     // this function should called inside of read_config_2_vec();
     void clear_empty_bad_ConfigItem();
+    
+    // search specific ConfigItem in m_CachedConfigFile
+    // /w a ConfigSection param
+    std::vector<ConfigItem>::iterator find_ConfigItem_by_Section(const ConfigSections& cs);
     
 private:
     std::wstring m_ConfigFile_path; // path to config.ini

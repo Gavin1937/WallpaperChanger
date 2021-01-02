@@ -1,6 +1,7 @@
 #include "ConfigManager.h"
 #include "GlobTools.h"
 
+#include <Windows.h>
 
 namespace 
 {
@@ -10,6 +11,7 @@ namespace
         {L"ConfigDir"         , ConfigSections::ConfigDir},
         {L"WallpaperCacheDir" , ConfigSections::WallpaperCacheDir},
         {L"WallpaperListDir"  , ConfigSections::WallpaperListDir},
+        {L"WindowsThemeDir"   , ConfigSections::WindowsThemeDir},
         {L"SS_WallpaperID_P"  , ConfigSections::SS_WallpaperID_P},
         {L"SS_WallpaperID_L"  , ConfigSections::SS_WallpaperID_L},
         {L"MS_WallpaperID"    , ConfigSections::MS_WallpaperID}
@@ -20,6 +22,7 @@ namespace
         ConfigItem(L"ConfigDir="),
         ConfigItem(L"WallpaperCacheDir="),
         ConfigItem(L"WallpaperListDir="),
+        ConfigItem(L"WindowsThemeDir="),
         ConfigItem(L"SS_WallpaperID_P="),
         ConfigItem(L"SS_WallpaperID_L="),
         ConfigItem(L"MS_WallpaperID=")
@@ -53,29 +56,58 @@ ConfigManager::ConfigManager()
     : m_ConfigFile_path(L""), m_CachedConfigFile(std::vector<ConfigItem>())
 {
     // create a config file current dir does not have one
-    m_ConfigFile_path = GlobTools::getCurrExePathW() + L"config.ini";
+    std::wstring temp_exe_path = GlobTools::getCurrExePathW();
+    m_ConfigFile_path = temp_exe_path + L"config.ini";
     if (!m_CachedConfigFile.empty()) m_CachedConfigFile.clear();
-    write_vec_2_config();
-    if (!read_config_2_vec())
+    write_buff2config();
+    if (!read_config2buff())
         ConfigManager::~ConfigManager();
+    // get Windows Theme folder dir
+    DWORD size = 32767;
+    TCHAR username[32767];
+    GetUserNameW(username, &size);
+    std::wstring temp_WindowsTheme_path =
+        L"C:\\User\\" + std::wstring(username, size-1) +
+        L"\\AppData\\Roaming\\Microsoft\\Windows\\Themes\\";
+    // write basic info to config.ini
+    modify_config(ConfigSections::ExeRootDir, GlobTools::getCurrExePathW());
+    modify_config(ConfigSections::ConfigDir, m_ConfigFile_path);
+    modify_config(ConfigSections::WallpaperCacheDir, temp_exe_path+L"Wallpapers\\");
+    modify_config(ConfigSections::WallpaperListDir, temp_exe_path+L"Wallpapers\\WallpaperList");
+    modify_config(ConfigSections::WindowsThemeDir, temp_WindowsTheme_path);
 }
 // parametric constructor
 ConfigManager::ConfigManager(const std::wstring& ConfigFile_path)
     : m_ConfigFile_path(ConfigFile_path), m_CachedConfigFile(std::vector<ConfigItem>())
 {
     // create a config file current dir if Config_path does not exist
+    std::wstring temp_exe_path = GlobTools::getCurrExePathW();
     if (!GlobTools::is_filedir_existW(ConfigFile_path)) {
         m_ConfigFile_path = GlobTools::getCurrExePathW() + L"config.ini";
-        write_vec_2_config();
+        write_buff2config();
     }
     if (!m_CachedConfigFile.empty()) m_CachedConfigFile.clear();
-    if (!read_config_2_vec())
+    if (!read_config2buff())
         ConfigManager::~ConfigManager();
+    // get Windows Theme folder dir
+    DWORD size = 32767;
+    TCHAR username[32767];
+    GetUserNameW(username, &size);
+    std::wstring temp_WindowsTheme_path =
+        L"C:\\User\\" + std::wstring(username, size-1) +
+        L"\\AppData\\Roaming\\Microsoft\\Windows\\Themes\\";
+    // write basic info to config.ini
+    modify_config(ConfigSections::ExeRootDir, GlobTools::getCurrExePathW());
+    modify_config(ConfigSections::ConfigDir, m_ConfigFile_path);
+    modify_config(ConfigSections::WallpaperCacheDir, temp_exe_path+L"Wallpapers\\");
+    modify_config(ConfigSections::WallpaperListDir, temp_exe_path+L"Wallpapers\\WallpaperList");
+    modify_config(ConfigSections::WindowsThemeDir, temp_WindowsTheme_path);
 }
 
 // destructor
 ConfigManager::~ConfigManager()
 {
+    write_buff2config();
     m_ConfigFile_path.~basic_string();
     m_CachedConfigFile.~vector();
 }
@@ -83,9 +115,11 @@ ConfigManager::~ConfigManager()
 
 // write to config file, overwrite file with m_CachedConfigFile
 // should call this function in destructor as well
-bool ConfigManager::write_vec_2_config()
+bool ConfigManager::write_buff2config()
 {
-    std::wofstream output_config(m_ConfigFile_path);
+    std::wofstream output_config;
+    output_config.imbue(std::locale());
+    output_config.open(m_ConfigFile_path);
     if (output_config.fail()) {
         output_config.close();
         return false;
@@ -104,14 +138,30 @@ bool ConfigManager::write_vec_2_config()
 }
 
 
+// modify a specific section of config.ini
+bool ConfigManager::modify_config(
+    ConfigSections section,
+    const std::wstring& modify_val)
+{
+    auto modify_section = find_ConfigItem_by_Section(section);
+    if (modify_section == m_CachedConfigFile.end()) // cannot find section
+        return false;
+    else // find section
+        modify_section->m_Data = modify_val;
+    return true;
+}
+
+
 
 // private functions
 
 // read config file from m_ConfigFile_path to ram &
 // cache to m_CachedConfigFile, call it in constructor
-bool ConfigManager::read_config_2_vec()
+bool ConfigManager::read_config2buff()
 {
-    std::wifstream input_config(m_ConfigFile_path);
+    std::wifstream input_config;
+    input_config.imbue(std::locale());
+    input_config.open(m_ConfigFile_path);
     if (input_config.fail()) return false;
     std::wstring buff;
     try {
@@ -137,6 +187,21 @@ void ConfigManager::clear_empty_bad_ConfigItem()
             m_CachedConfigFile.erase(m_CachedConfigFile.begin()+i);
     }
 }
+
+// search specific ConfigItem in m_CachedConfigFile
+// /w a ConfigSection param
+std::vector<ConfigItem>::iterator ConfigManager::find_ConfigItem_by_Section(
+    const ConfigSections& cs)
+{
+    auto it = m_CachedConfigFile.begin();
+    while (it != m_CachedConfigFile.end()) {
+        if (it->m_DataSection == cs)
+            return it;
+        ++it;
+    }
+    return it;
+}
+
 
 // ====================== ConfigManager end ======================
 

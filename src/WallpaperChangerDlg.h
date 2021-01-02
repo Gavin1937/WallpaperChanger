@@ -4,6 +4,9 @@
 
 #pragma once
 
+// C++ STL
+#include <locale>
+
 
 // CWallpaperChangerDlg dialog
 class CWallpaperChangerDlg : public CDialogEx

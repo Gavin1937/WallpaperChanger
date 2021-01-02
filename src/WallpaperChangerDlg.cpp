@@ -104,6 +104,9 @@ BOOL CWallpaperChangerDlg::OnInitDialog()
 
 	// TODO: Add extra initialization here
 	
+	// set locale
+	std::locale::global(std::locale(""));
+	
 	// ! Need to remove after debugging
 	Debug::Debug();
 	
