@@ -68,6 +68,11 @@ private:
     // /w a ConfigSection param
     std::vector<ConfigItem>::iterator find_ConfigItem_by_Section(const ConfigSections& cs);
     
+    // write basic info /w modify_config() to config.ini
+    // This function should be called at the end of constructor
+    void write_basic_info_2_config();
+    
+    
 private:
     std::wstring m_ConfigFile_path; // path to config.ini
     std::vector<ConfigItem> m_CachedConfigFile; // cached config.ini in ram

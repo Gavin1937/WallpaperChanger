@@ -56,32 +56,18 @@ ConfigManager::ConfigManager()
     : m_ConfigFile_path(L""), m_CachedConfigFile(std::vector<ConfigItem>())
 {
     // create a config file current dir does not have one
-    std::wstring temp_exe_path = GlobTools::getCurrExePathW();
-    m_ConfigFile_path = temp_exe_path + L"config.ini";
+    m_ConfigFile_path = GlobTools::getCurrExePathW() + L"config.ini";
     if (!m_CachedConfigFile.empty()) m_CachedConfigFile.clear();
     write_buff2config();
     if (!read_config2buff())
         ConfigManager::~ConfigManager();
-    // get Windows Theme folder dir
-    DWORD size = 32767;
-    TCHAR username[32767];
-    GetUserNameW(username, &size);
-    std::wstring temp_WindowsTheme_path =
-        L"C:\\User\\" + std::wstring(username, size-1) +
-        L"\\AppData\\Roaming\\Microsoft\\Windows\\Themes\\";
-    // write basic info to config.ini
-    modify_config(ConfigSections::ExeRootDir, GlobTools::getCurrExePathW());
-    modify_config(ConfigSections::ConfigDir, m_ConfigFile_path);
-    modify_config(ConfigSections::WallpaperCacheDir, temp_exe_path+L"Wallpapers\\");
-    modify_config(ConfigSections::WallpaperListDir, temp_exe_path+L"Wallpapers\\WallpaperList");
-    modify_config(ConfigSections::WindowsThemeDir, temp_WindowsTheme_path);
+    write_basic_info_2_config();
 }
 // parametric constructor
 ConfigManager::ConfigManager(const std::wstring& ConfigFile_path)
     : m_ConfigFile_path(ConfigFile_path), m_CachedConfigFile(std::vector<ConfigItem>())
 {
     // create a config file current dir if Config_path does not exist
-    std::wstring temp_exe_path = GlobTools::getCurrExePathW();
     if (!GlobTools::is_filedir_existW(ConfigFile_path)) {
         m_ConfigFile_path = GlobTools::getCurrExePathW() + L"config.ini";
         write_buff2config();
@@ -89,19 +75,7 @@ ConfigManager::ConfigManager(const std::wstring& ConfigFile_path)
     if (!m_CachedConfigFile.empty()) m_CachedConfigFile.clear();
     if (!read_config2buff())
         ConfigManager::~ConfigManager();
-    // get Windows Theme folder dir
-    DWORD size = 32767;
-    TCHAR username[32767];
-    GetUserNameW(username, &size);
-    std::wstring temp_WindowsTheme_path =
-        L"C:\\User\\" + std::wstring(username, size-1) +
-        L"\\AppData\\Roaming\\Microsoft\\Windows\\Themes\\";
-    // write basic info to config.ini
-    modify_config(ConfigSections::ExeRootDir, GlobTools::getCurrExePathW());
-    modify_config(ConfigSections::ConfigDir, m_ConfigFile_path);
-    modify_config(ConfigSections::WallpaperCacheDir, temp_exe_path+L"Wallpapers\\");
-    modify_config(ConfigSections::WallpaperListDir, temp_exe_path+L"Wallpapers\\WallpaperList");
-    modify_config(ConfigSections::WindowsThemeDir, temp_WindowsTheme_path);
+    write_basic_info_2_config();
 }
 
 // destructor
@@ -196,6 +170,26 @@ std::vector<ConfigItem>::iterator ConfigManager::find_ConfigItem_by_Section(
         ++it;
     }
     return it;
+}
+
+// write basic info /w modify_config() to config.ini
+// This function should be called at the end of constructor
+void ConfigManager::write_basic_info_2_config()
+{
+    std::wstring temp_exe_path = GlobTools::getCurrExePathW();
+    // get Windows Theme folder dir
+    DWORD size = 32767;
+    TCHAR username[32767];
+    GetUserNameW(username, &size);
+    std::wstring temp_WindowsTheme_path =
+        L"C:\\User\\" + std::wstring(username, size-1) +
+        L"\\AppData\\Roaming\\Microsoft\\Windows\\Themes\\";
+    // write basic info to config.ini
+    modify_config(ConfigSections::ExeRootDir, GlobTools::getCurrExePathW());
+    modify_config(ConfigSections::ConfigDir, m_ConfigFile_path);
+    modify_config(ConfigSections::WallpaperCacheDir, temp_exe_path+L"Wallpapers\\");
+    modify_config(ConfigSections::WallpaperListDir, temp_exe_path+L"Wallpapers\\WallpaperList");
+    modify_config(ConfigSections::WindowsThemeDir, temp_WindowsTheme_path);
 }
 
 
