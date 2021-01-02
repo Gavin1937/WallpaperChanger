@@ -73,8 +73,8 @@ private:
 class ConfigItem
 {
 public:
-    std::wstring m_Data;
     ConfigSections m_DataSection;
+    std::wstring m_Data;
 public:
     // constructor
     ConfigItem();
