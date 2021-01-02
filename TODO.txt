@@ -1,8 +1,6 @@
 
 
 
-1. finish class ConfigItem
+1. rewrite write_vec_2_config();
 
-2. rewrite write_vec_2_config();
-
-3. finish class ConfigManager
+2. finish class ConfigManager

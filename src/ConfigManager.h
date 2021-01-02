@@ -3,6 +3,8 @@
 // C++ STL
 #include <string>
 #include <vector>
+#include <unordered_map>
+#include <algorithm>
 #include <fstream>
 #include <codecvt>
 #include <locale>
@@ -13,7 +15,14 @@ class ConfigItem;
 
 // enum class to specify different sections in config.ini
 enum class ConfigSections{
-    Bad = -1, Empty = 0
+    Bad = -1, Empty = 0,
+    ExeRootDir,        // Root Dir of .exe file
+    ConfigDir,         // Dir to config.ini file
+    WallpaperCacheDir, // Dir to /Wallpapers/ directory
+    WallpaperListDir,  // Dir to WallaperList file
+    SS_WallpaperID_P,  // Single Screen Wallpaper Portrait
+    SS_WallpaperID_L,  // Single Screen Wallpaper Landscape
+    MS_WallpaperID     // Multi Screen Wallpaper
 };
 
 // manage (R & W) config.ini file

@@ -7,6 +7,17 @@ namespace
     std::vector<ConfigItem> glob_config_file_template = {
         ConfigItem(L"Config.ini")
     };
+    
+    std::unordered_map<std::wstring, ConfigSections> glob_wstr_ConfigSection_list = {
+        {L"Empty", ConfigSections::Empty},
+        {L"ExeRootDir", ConfigSections::ExeRootDir},
+        {L"ConfigDir", ConfigSections::ConfigDir},
+        {L"WallpaperCacheDir", ConfigSections::WallpaperCacheDir},
+        {L"WallpaperListDir", ConfigSections::WallpaperListDir},
+        {L"SS_WallpaperID_P", ConfigSections::SS_WallpaperID_P},
+        {L"SS_WallpaperID_L", ConfigSections::SS_WallpaperID_L},
+        {L"MS_WallpaperID", ConfigSections::MS_WallpaperID}
+    };
 };
 
 
@@ -111,6 +122,37 @@ void ConfigManager::clear_empty_bad_ConfigItem()
 
 // ====================== ConfigItem ======================
 
+// constructor
+ConfigItem::ConfigItem()
+    : m_Data(L""), m_DataSection(ConfigSections::Empty)
+{}
+// constructor /w raw wstring
+ConfigItem::ConfigItem(const std::wstring& str)
+    : m_Data(L""), m_DataSection(ConfigSections::Empty)
+{
+    size_t equal_sign_pos = str.find(L"=");
+    std::wstring config_tag = std::wstring(str.begin(), str.begin()+equal_sign_pos);
+    m_DataSection = glob_wstr_ConfigSection_list[config_tag];
+    m_Data = std::wstring(str.begin()+equal_sign_pos+1, str.end());
+}
+// copy constructor
+ConfigItem::ConfigItem(const ConfigItem& obj)
+    : m_Data(obj.m_Data), m_DataSection(obj.m_DataSection)
+{}
 
+// destructor
+ConfigItem::~ConfigItem()
+{
+    m_Data.~basic_string();
+}
+
+std::wstring ConfigItem::output_wstr()
+{
+    auto cur_ConfigItem_name = std::find_if(
+                            glob_wstr_ConfigSection_list.begin(),
+                            glob_wstr_ConfigSection_list.end(),
+                            [](auto&& p) {return p->second == m_DataSection;});
+    return cur_ConfigItem_name->first + L"=" + m_Data;
+}
 
 // ====================== ConfigItem end ======================
