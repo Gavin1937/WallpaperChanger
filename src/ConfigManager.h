@@ -65,10 +65,10 @@ private:
     void clear_empty_bad_ConfigItem();
     
     // search specific ConfigItem in m_CachedConfigFile
-    // /w a ConfigSection param
+    // w/ a ConfigSection param
     std::vector<ConfigItem>::iterator find_ConfigItem_by_Section(const ConfigSections& cs);
     
-    // write basic info /w modify_config() to config.ini
+    // write basic info w/ modify_config() to config.ini
     // This function should be called at the end of constructor
     void write_basic_info_2_config();
     
@@ -88,7 +88,7 @@ public:
 public:
     // constructor
     ConfigItem();
-    // constructor /w raw wstring
+    // constructor w/ raw wstring
     ConfigItem(const std::wstring& str);
     // copy constructor
     ConfigItem(const ConfigItem& obj);

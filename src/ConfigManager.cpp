@@ -159,7 +159,7 @@ void ConfigManager::clear_empty_bad_ConfigItem()
 }
 
 // search specific ConfigItem in m_CachedConfigFile
-// /w a ConfigSection param
+// w/ a ConfigSection param
 std::vector<ConfigItem>::iterator ConfigManager::find_ConfigItem_by_Section(
     const ConfigSections& cs)
 {
@@ -172,7 +172,7 @@ std::vector<ConfigItem>::iterator ConfigManager::find_ConfigItem_by_Section(
     return it;
 }
 
-// write basic info /w modify_config() to config.ini
+// write basic info w/ modify_config() to config.ini
 // This function should be called at the end of constructor
 void ConfigManager::write_basic_info_2_config()
 {
@@ -204,7 +204,7 @@ void ConfigManager::write_basic_info_2_config()
 ConfigItem::ConfigItem()
     : m_DataSection(ConfigSections::Empty), m_Data(L"")
 {}
-// constructor /w raw wstring
+// constructor w/ raw wstring
 ConfigItem::ConfigItem(const std::wstring& str)
     : m_DataSection(ConfigSections::Empty), m_Data(L"")
 {

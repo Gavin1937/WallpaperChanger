@@ -82,7 +82,7 @@ bool GlobTools::getFilesUnderDirW(const std::wstring& dir, std::vector<std::wstr
 }
 
 
-// ifstream /w utf8 locale set
+// ifstream w/ utf8 locale set
 GlobTools::utf8_ifstream::utf8_ifstream()
 {
     imbue(std::locale());
@@ -100,7 +100,7 @@ GlobTools::utf8_ifstream::utf8_ifstream(
     open(path, mode);
 }
 
-// wifstream /w utf8 locale set
+// wifstream w/ utf8 locale set
 GlobTools::utf8_wifstream::utf8_wifstream()
 {
     imbue(std::locale());
@@ -118,7 +118,7 @@ GlobTools::utf8_wifstream::utf8_wifstream(
     open(path, mode);
 }
 
-// ofstream /w utf8 locale set
+// ofstream w/ utf8 locale set
 GlobTools::utf8_ofstream::utf8_ofstream()
 {
     imbue(std::locale());
@@ -136,7 +136,7 @@ GlobTools::utf8_ofstream::utf8_ofstream(
     open(path, mode);
 }
 
-// wofstream /w utf8 locale set
+// wofstream w/ utf8 locale set
 GlobTools::utf8_wofstream::utf8_wofstream()
 {
     imbue(std::locale());

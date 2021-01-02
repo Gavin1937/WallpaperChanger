@@ -51,7 +51,7 @@ namespace GlobTools
     bool getFilesUnderDirW(const std::wstring& dir, std::vector<std::wstring>& buff);
     
     
-    // ifstream /w utf8 locale set
+    // ifstream w/ utf8 locale set
     class utf8_ifstream : public std::ifstream
     {
     public:
@@ -59,7 +59,7 @@ namespace GlobTools
         utf8_ifstream(const std::string& path, std::ios_base::openmode mode = ios_base::in);
         utf8_ifstream(const std::wstring& path, std::ios_base::openmode mode = ios_base::in);
     };
-    // wifstream /w utf8 locale set
+    // wifstream w/ utf8 locale set
     class utf8_wifstream : public std::wifstream
     {
     public:
@@ -67,7 +67,7 @@ namespace GlobTools
         utf8_wifstream(const std::string& path, std::ios_base::openmode mode = ios_base::in);
         utf8_wifstream(const std::wstring& path, std::ios_base::openmode mode = ios_base::in);
     };
-    // ofstream /w utf8 locale set
+    // ofstream w/ utf8 locale set
     class utf8_ofstream : public std::ofstream
     {
     public:
@@ -75,7 +75,7 @@ namespace GlobTools
         utf8_ofstream(const std::string& path, std::ios_base::openmode mode = ios_base::out);
         utf8_ofstream(const std::wstring& path, std::ios_base::openmode mode = ios_base::out);
     };
-    // wofstream /w utf8 locale set
+    // wofstream w/ utf8 locale set
     class utf8_wofstream : public std::wofstream
     {
     public:
