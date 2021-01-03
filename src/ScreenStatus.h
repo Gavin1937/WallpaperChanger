@@ -1,5 +1,10 @@
 #pragma once
 
+// C++ STL
+#include <windows.h>
+#include <thread>
+#include <mutex>
+
 
 enum class DisplayMode {
     Unknow = 0, 
@@ -33,9 +38,11 @@ public:
 private:
     void getScreenRes();
     void determineCurrDisplayMode();
+    void thread_monitoring_func();
 private:
     unsigned int m_ResHorizontal;
     unsigned int m_ResVertical;
     DisplayMode m_CurrDisplayMode;
-    bool continue_updating;
+    bool m_Continue_Updating;
+    std::mutex m_Mtx;
 };
