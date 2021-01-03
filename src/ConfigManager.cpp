@@ -2,6 +2,7 @@
 #include "GlobTools.h"
 
 #include <Windows.h>
+#include <thread>
 
 namespace 
 {
@@ -57,22 +58,25 @@ namespace
 
 // default constructor
 ConfigManager::ConfigManager()
-    : m_ConfigFile_path(L""), m_CachedConfigFile(std::vector<ConfigItem>()),
-    m_ScreenStatus()
+    : m_ConfigFile_path(L""),
+    m_CachedConfigFile(std::vector<ConfigItem>()),
+    m_ScreenStatus(), 
+    m_MonitorThread(&ScreenStatus::thread_monitoring_func, &m_ScreenStatus)
 {
     // create a config file current dir does not have one
     m_ConfigFile_path = GlobTools::getCurrExePathW() + L"config.ini";
     if (!m_CachedConfigFile.empty()) m_CachedConfigFile.clear();
     write_buff2config();
+    write_basic_info_2_config();
     if (!read_config2buff())
         ConfigManager::~ConfigManager();
-    write_basic_info_2_config();
-    m_ScreenStatus.startMonitor();
 }
 // parametric constructor
 ConfigManager::ConfigManager(const std::wstring& ConfigFile_path)
-    : m_ConfigFile_path(ConfigFile_path), m_CachedConfigFile(std::vector<ConfigItem>()),
-    m_ScreenStatus()
+    : m_ConfigFile_path(ConfigFile_path),
+    m_CachedConfigFile(std::vector<ConfigItem>()),
+	m_ScreenStatus(),
+	m_MonitorThread(&ScreenStatus::thread_monitoring_func, &m_ScreenStatus)
 {
     // create a config file current dir if Config_path does not exist
     if (!GlobTools::is_filedir_existW(ConfigFile_path)) {
@@ -83,17 +87,18 @@ ConfigManager::ConfigManager(const std::wstring& ConfigFile_path)
     if (!m_CachedConfigFile.empty()) m_CachedConfigFile.clear();
     if (!read_config2buff())
         ConfigManager::~ConfigManager();
-    m_ScreenStatus.startMonitor();
 }
 
 // destructor
 ConfigManager::~ConfigManager()
 {
     m_ScreenStatus.stopMonitor();
+    m_MonitorThread.join();
     write_buff2config();
     m_ConfigFile_path.~basic_string();
     m_CachedConfigFile.~vector();
     m_ScreenStatus.~ScreenStatus();
+    m_MonitorThread.~thread();
 }
 
 

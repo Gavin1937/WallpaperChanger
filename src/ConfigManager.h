@@ -88,6 +88,7 @@ private:
     std::wstring m_ConfigFile_path; // path to config.ini
     std::vector<ConfigItem> m_CachedConfigFile; // cached config.ini in ram
     ScreenStatus m_ScreenStatus;
+    std::thread m_MonitorThread;
 };
 
 

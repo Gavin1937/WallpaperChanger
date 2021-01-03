@@ -1,4 +1,5 @@
 #include "ScreenStatus.h"
+#include "GlobTools.h"
 
 
 // ====================== ScreenStatus ======================
@@ -14,7 +15,7 @@ ScreenStatus::ScreenStatus()
 ScreenStatus::~ScreenStatus()
 {
     m_ResVertical = 0;
-    m_ResVertical = 0;
+    m_ResHorizontal = 0;
     m_CurrDisplayMode = DisplayMode::Unknow;
     m_Continue_Updating = false;
 }
@@ -46,18 +47,19 @@ DisplayMode ScreenStatus::getCurrDisplayMode()
 }
 
 // monitoring screen status
-void ScreenStatus::startMonitor()
-{
-    if (m_Continue_Updating != true) 
-        m_Continue_Updating = true;
-    std::thread t(&ScreenStatus::thread_monitoring_func, this);
-    t.join();
-}
 void ScreenStatus::stopMonitor()
 {
     m_Continue_Updating = false;
 }
-
+// function use to monitor Screen Status in a separate thread
+void ScreenStatus::thread_monitoring_func()
+{
+    while (m_Continue_Updating) {
+        std::lock_guard<std::mutex> lck(GlobTools::glob_mtx);
+        getScreenRes();
+        determineCurrDisplayMode();
+    }
+}
 
 // private functions
 
@@ -84,13 +86,6 @@ void ScreenStatus::determineCurrDisplayMode()
         } 
     }
 }
-void ScreenStatus::thread_monitoring_func()
-{
-    while (m_Continue_Updating) {
-        std::lock_guard<std::mutex> lck(m_Mtx);
-        getScreenRes();
-        determineCurrDisplayMode();
-    }
-}
+
 
 // ====================== ScreenStatus end ======================

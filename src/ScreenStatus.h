@@ -5,7 +5,6 @@
 #include <thread>
 #include <mutex>
 
-
 enum class DisplayMode {
     Unknow = 0, 
     Portrait, Landscape
@@ -32,17 +31,16 @@ public:
     DisplayMode getCurrDisplayMode();
     
     // monitoring screen status
-    void startMonitor();
     void stopMonitor();
+    // function use to monitor Screen Status in a separate thread
+    void thread_monitoring_func();
     
 private:
     void getScreenRes();
     void determineCurrDisplayMode();
-    void thread_monitoring_func();
 private:
     unsigned int m_ResHorizontal;
     unsigned int m_ResVertical;
     DisplayMode m_CurrDisplayMode;
     bool m_Continue_Updating;
-    std::mutex m_Mtx;
 };

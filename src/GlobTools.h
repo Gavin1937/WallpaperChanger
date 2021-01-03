@@ -11,6 +11,7 @@
 #include <locale>
 #include <filesystem>
 #include <fstream>
+#include <mutex>
 
 namespace GlobTools 
 {
@@ -19,6 +20,8 @@ namespace GlobTools
     // convert wstring & string
     static std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> cvter;
     
+    // mutex for multithreading
+    static std::mutex glob_mtx;
     
     
     // global functions
