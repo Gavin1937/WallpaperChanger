@@ -61,38 +61,32 @@ ConfigManager::ConfigManager()
     : m_ConfigFile_path(L""),
     m_CachedConfigFile(std::vector<ConfigItem>()),
     m_ScreenStatus(), 
-    m_MonitorThread(&ScreenStatus::thread_monitoring_func, &m_ScreenStatus)
+    m_MonitorThread(&ScreenStatus::thread_monitoring_func, &m_ScreenStatus, 500)
 {
-    // create a config file current dir does not have one
-    m_ConfigFile_path = GlobTools::getCurrExePathW() + L"config.ini";
-    if (!m_CachedConfigFile.empty()) m_CachedConfigFile.clear();
-    write_buff2config();
-    write_basic_info_2_config();
-    if (!read_config2buff())
-        ConfigManager::~ConfigManager();
+    // try to find config.ini
+    if (GlobTools::is_filedir_existW(m_ConfigFile_path))
+        ConfigManager::ConfigManager(m_ConfigFile_path);
+    else
+        create_config_file();
 }
 // parametric constructor
 ConfigManager::ConfigManager(const std::wstring& ConfigFile_path)
     : m_ConfigFile_path(ConfigFile_path),
     m_CachedConfigFile(std::vector<ConfigItem>()),
 	m_ScreenStatus(),
-	m_MonitorThread(&ScreenStatus::thread_monitoring_func, &m_ScreenStatus)
+	m_MonitorThread(&ScreenStatus::thread_monitoring_func, &m_ScreenStatus, 500)
 {
     // create a config file current dir if Config_path does not exist
-    if (!GlobTools::is_filedir_existW(ConfigFile_path)) {
-        m_ConfigFile_path = GlobTools::getCurrExePathW() + L"config.ini";
-        write_buff2config();
-        write_basic_info_2_config();
-    }
-    if (!m_CachedConfigFile.empty()) m_CachedConfigFile.clear();
-    if (!read_config2buff())
-        ConfigManager::~ConfigManager();
+    if (!GlobTools::is_filedir_existW(ConfigFile_path))
+        create_config_file();
+    else if (!read_config2buff())
+		ConfigManager::~ConfigManager();
 }
 
 // destructor
 ConfigManager::~ConfigManager()
 {
-    m_ScreenStatus.stopMonitor();
+    m_ScreenStatus.stopMonitoring();
     m_MonitorThread.join();
     write_buff2config();
     m_ConfigFile_path.~basic_string();
@@ -194,6 +188,15 @@ void ConfigManager::clear_empty_bad_ConfigItem()
         if (i_is_bad_or_empty)
             m_CachedConfigFile.erase(m_CachedConfigFile.begin()+i);
     }
+}
+
+void ConfigManager::create_config_file()
+{
+    m_ConfigFile_path = GlobTools::getCurrExePathW() + L"config.ini";
+    write_buff2config();
+	if (!read_config2buff())
+		ConfigManager::~ConfigManager();
+    write_basic_info_2_config();
 }
 
 // search specific ConfigItem in m_CachedConfigFile

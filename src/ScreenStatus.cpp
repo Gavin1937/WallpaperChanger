@@ -47,17 +47,19 @@ DisplayMode ScreenStatus::getCurrDisplayMode()
 }
 
 // monitoring screen status
-void ScreenStatus::stopMonitor()
+void ScreenStatus::stopMonitoring()
 {
     m_Continue_Updating = false;
 }
 // function use to monitor Screen Status in a separate thread
-void ScreenStatus::thread_monitoring_func()
+void ScreenStatus::thread_monitoring_func(const int& time_in_ms)
 {
     while (m_Continue_Updating) {
         std::lock_guard<std::mutex> lck(GlobTools::glob_mtx);
         getScreenRes();
         determineCurrDisplayMode();
+        if (time_in_ms >= 0)
+            Sleep(time_in_ms);
     }
 }
 

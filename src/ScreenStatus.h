@@ -31,9 +31,9 @@ public:
     DisplayMode getCurrDisplayMode();
     
     // monitoring screen status
-    void stopMonitor();
+    void stopMonitoring();
     // function use to monitor Screen Status in a separate thread
-    void thread_monitoring_func();
+    void thread_monitoring_func(const int& time_in_ms = 500);
     
 private:
     void getScreenRes();

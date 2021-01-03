@@ -75,6 +75,8 @@ private:
     // this function should called inside of read_config_2_vec();
     void clear_empty_bad_ConfigItem();
     
+    void create_config_file();
+    
     // search specific ConfigItem in m_CachedConfigFile
     // w/ a ConfigSection param
     std::vector<ConfigItem>::iterator find_ConfigItem_by_Section(const ConfigSections& cs);
