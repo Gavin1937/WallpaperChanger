@@ -9,6 +9,9 @@
 #include <codecvt>
 #include <locale>
 
+// ScreenStatus
+#include "ScreenStatus.h"
+
 // class, struct, & function declaration
 class ConfigManager;
 class ConfigItem;
@@ -21,6 +24,8 @@ enum class ConfigSections{
     WallpaperCacheDir, // Dir to /Wallpapers/ directory
     WallpaperListDir,  // Dir to WallaperList file
     WindowsThemeDir,   // Dir to C:\Users\${USERNAME}\AppData\Roaming\Microsoft\Windows\Themes
+    ScreenRes_Hor,     // Screen Resolution Horizontal
+    ScreenRes_Ver,     // Screen Resolution Vertical
     SS_WallpaperID_P,  // Single Screen Wallpaper Portrait
     SS_WallpaperID_L,  // Single Screen Wallpaper Landscape
     MS_WallpaperID     // Multi Screen Wallpaper
@@ -53,6 +58,12 @@ public:
     // return fail(0) if function fail or cannot find section
     bool modify_config(ConfigSections section, const std::wstring& modify_val);
     
+    // current display status
+    bool isDisplayLandscape() const;
+    bool isDisplayLandscape();
+    bool isDisplayPortrait() const;
+    bool isDisplayPortrait();
+    
 private:
     // read config file from m_ConfigFile_path to ram &
     // cache to m_CachedConfigFile, call it in constructor
@@ -76,6 +87,7 @@ private:
 private:
     std::wstring m_ConfigFile_path; // path to config.ini
     std::vector<ConfigItem> m_CachedConfigFile; // cached config.ini in ram
+    ScreenStatus m_ScreenStatus;
 };
 
 

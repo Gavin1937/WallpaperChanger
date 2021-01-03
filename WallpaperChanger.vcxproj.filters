@@ -42,6 +42,9 @@
     <ClInclude Include="src\ConfigManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\ScreenStatus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     
     <ClInclude Include="src\Debug.h">
       <Filter>Header Files</Filter>
@@ -64,6 +67,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ConfigManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ScreenStatus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     

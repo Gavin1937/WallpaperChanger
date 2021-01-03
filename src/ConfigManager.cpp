@@ -12,6 +12,8 @@ namespace
         {L"WallpaperCacheDir" , ConfigSections::WallpaperCacheDir},
         {L"WallpaperListDir"  , ConfigSections::WallpaperListDir},
         {L"WindowsThemeDir"   , ConfigSections::WindowsThemeDir},
+        {L"ScreenRes_Hor"     , ConfigSections::ScreenRes_Hor},
+        {L"ScreenRes_Ver"     , ConfigSections::ScreenRes_Ver},
         {L"SS_WallpaperID_P"  , ConfigSections::SS_WallpaperID_P},
         {L"SS_WallpaperID_L"  , ConfigSections::SS_WallpaperID_L},
         {L"MS_WallpaperID"    , ConfigSections::MS_WallpaperID}
@@ -23,6 +25,8 @@ namespace
         ConfigItem(L"WallpaperCacheDir="),
         ConfigItem(L"WallpaperListDir="),
         ConfigItem(L"WindowsThemeDir="),
+        ConfigItem(L"ScreenRes_Hor="),
+        ConfigItem(L"ScreenRes_Ver="),
         ConfigItem(L"SS_WallpaperID_P="),
         ConfigItem(L"SS_WallpaperID_L="),
         ConfigItem(L"MS_WallpaperID=")
@@ -53,7 +57,8 @@ namespace
 
 // default constructor
 ConfigManager::ConfigManager()
-    : m_ConfigFile_path(L""), m_CachedConfigFile(std::vector<ConfigItem>())
+    : m_ConfigFile_path(L""), m_CachedConfigFile(std::vector<ConfigItem>()),
+    m_ScreenStatus()
 {
     // create a config file current dir does not have one
     m_ConfigFile_path = GlobTools::getCurrExePathW() + L"config.ini";
@@ -62,28 +67,33 @@ ConfigManager::ConfigManager()
     if (!read_config2buff())
         ConfigManager::~ConfigManager();
     write_basic_info_2_config();
+    m_ScreenStatus.startMonitor();
 }
 // parametric constructor
 ConfigManager::ConfigManager(const std::wstring& ConfigFile_path)
-    : m_ConfigFile_path(ConfigFile_path), m_CachedConfigFile(std::vector<ConfigItem>())
+    : m_ConfigFile_path(ConfigFile_path), m_CachedConfigFile(std::vector<ConfigItem>()),
+    m_ScreenStatus()
 {
     // create a config file current dir if Config_path does not exist
     if (!GlobTools::is_filedir_existW(ConfigFile_path)) {
         m_ConfigFile_path = GlobTools::getCurrExePathW() + L"config.ini";
         write_buff2config();
+        write_basic_info_2_config();
     }
     if (!m_CachedConfigFile.empty()) m_CachedConfigFile.clear();
     if (!read_config2buff())
         ConfigManager::~ConfigManager();
-    write_basic_info_2_config();
+    m_ScreenStatus.startMonitor();
 }
 
 // destructor
 ConfigManager::~ConfigManager()
 {
+    m_ScreenStatus.stopMonitor();
     write_buff2config();
     m_ConfigFile_path.~basic_string();
     m_CachedConfigFile.~vector();
+    m_ScreenStatus.~ScreenStatus();
 }
 
 
@@ -121,6 +131,29 @@ bool ConfigManager::modify_config(
     else // find section
         modify_section->m_Data = modify_val;
     return true;
+}
+
+
+// current display status
+bool ConfigManager::isDisplayLandscape() const
+{
+    DisplayMode currDisMod = m_ScreenStatus.getCurrDisplayMode();
+    return (currDisMod == DisplayMode::Landscape);
+}
+bool ConfigManager::isDisplayLandscape()
+{
+    DisplayMode currDisMod = m_ScreenStatus.getCurrDisplayMode();
+    return (currDisMod == DisplayMode::Landscape);
+}
+bool ConfigManager::isDisplayPortrait() const
+{
+    DisplayMode currDisMod = m_ScreenStatus.getCurrDisplayMode();
+    return (currDisMod == DisplayMode::Portrait);
+}
+bool ConfigManager::isDisplayPortrait()
+{
+    DisplayMode currDisMod = m_ScreenStatus.getCurrDisplayMode();
+    return (currDisMod == DisplayMode::Portrait);
 }
 
 
@@ -190,6 +223,8 @@ void ConfigManager::write_basic_info_2_config()
     modify_config(ConfigSections::WallpaperCacheDir, temp_exe_path+L"Wallpapers\\");
     modify_config(ConfigSections::WallpaperListDir, temp_exe_path+L"Wallpapers\\WallpaperList");
     modify_config(ConfigSections::WindowsThemeDir, temp_WindowsTheme_path);
+    modify_config(ConfigSections::ScreenRes_Hor, std::to_wstring(m_ScreenStatus.getResHorizontal()));
+    modify_config(ConfigSections::ScreenRes_Ver, std::to_wstring(m_ScreenStatus.getResVertical()));
 }
 
 
