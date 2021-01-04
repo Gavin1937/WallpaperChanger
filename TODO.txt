@@ -1,4 +1,7 @@
 
 
-1. Finish ScreenStatus
+1. work on GUI
+    a. add icon on notification tray
+    b. allow right-click on icon to open setting menu
+    c. add dialogs for different settings
 
