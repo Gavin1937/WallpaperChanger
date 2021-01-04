@@ -1,35 +1,4 @@
 
 
 1. Finish ScreenStatus
-    a. add ability to monitoring whether screen is 
-       in multi-monitor mode
-    
-    reference function
-    
-    void updataScreenResolution(ResourceStorage& rs)
-    {
-        //determine whether the system is multi-monitor system
-        //get width & height of the virtual screen (add up all the screen)
-        int virX = GetSystemMetrics(SM_CXVIRTUALSCREEN);
-        int virY = GetSystemMetrics(SM_CYVIRTUALSCREEN);
-        //get width & height of the main screen
-        int X = GetSystemMetrics(SM_CXSCREEN);
-        int Y = GetSystemMetrics(SM_CYSCREEN);
-        if ((virX != X) || (virY != Y)) //total resolution != mainscreen resolution => multi-monitor
-            rs.multiMonitor = true;
-        else //single monitor
-            rs.multiMonitor = false;
-        rs.ConfigFileModificationBuff.push_back(pair<int, string>(13, to_string(rs.multiMonitor)));
-        //update datas in rs
-        rs.MainMonitorRes_horizontal = X;
-        rs.MainMonitorRes_vertical = Y;
-        rs.VirtMonitorRes_horizontal = virX;
-        rs.VirtMonitorRes_vertical = virY;
-        //update config.ini
-        rs.ConfigFileModificationBuff.push_back(pair<int, string>(7, to_string(X)));
-        rs.ConfigFileModificationBuff.push_back(pair<int, string>(8, to_string(Y)));
-        rs.ConfigFileModificationBuff.push_back(pair<int, string>(9, to_string(virX)));
-        rs.ConfigFileModificationBuff.push_back(pair<int, string>(10, to_string(virY)));
-    }
-
 

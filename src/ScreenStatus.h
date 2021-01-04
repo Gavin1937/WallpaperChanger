@@ -29,6 +29,8 @@ public:
     unsigned int getResVertical();
     DisplayMode getCurrDisplayMode() const;
     DisplayMode getCurrDisplayMode();
+    bool WhetherIsSingleScreen() const;
+    bool WhetherIsSingleScreen();
     
     // monitoring screen status
     void stopMonitoring();
@@ -42,5 +44,6 @@ private:
     unsigned int m_ResHorizontal;
     unsigned int m_ResVertical;
     DisplayMode m_CurrDisplayMode;
+    bool m_IsSingleScreen;
     bool m_Continue_Updating;
 };

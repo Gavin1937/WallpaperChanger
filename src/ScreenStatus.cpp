@@ -8,6 +8,7 @@
 ScreenStatus::ScreenStatus()
     : m_ResHorizontal(0), m_ResVertical(0),
     m_CurrDisplayMode(DisplayMode::Unknow),
+    m_IsSingleScreen(false),
     m_Continue_Updating(true)
 {}
 
@@ -17,6 +18,7 @@ ScreenStatus::~ScreenStatus()
     m_ResVertical = 0;
     m_ResHorizontal = 0;
     m_CurrDisplayMode = DisplayMode::Unknow;
+    m_IsSingleScreen = false;
     m_Continue_Updating = false;
 }
 
@@ -45,6 +47,15 @@ DisplayMode ScreenStatus::getCurrDisplayMode()
 {
     return m_CurrDisplayMode;
 }
+bool ScreenStatus::WhetherIsSingleScreen() const
+{
+    return m_IsSingleScreen;
+}
+bool ScreenStatus::WhetherIsSingleScreen()
+{
+    return m_IsSingleScreen;
+}
+
 
 // monitoring screen status
 void ScreenStatus::stopMonitoring()
@@ -63,15 +74,25 @@ void ScreenStatus::thread_monitoring_func(const int& time_in_ms)
     }
 }
 
+
 // private functions
 
 void ScreenStatus::getScreenRes()
 {
-    RECT desktop;
-    const HWND hDesktop = GetDesktopWindow();
-    GetWindowRect(hDesktop, &desktop);
-    m_ResHorizontal = desktop.right;
-    m_ResVertical = desktop.bottom;
+    //determine whether the system is multi-monitor system
+    //get width & height of the virtual screen (add up all the screen)
+    int virX = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+    int virY = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+    //get width & height of the main screen
+    int X = GetSystemMetrics(SM_CXSCREEN);
+    int Y = GetSystemMetrics(SM_CYSCREEN);
+    if ((virX != X) || (virY != Y)) //total resolution != mainscreen resolution => multi-monitor
+        m_IsSingleScreen = false;
+    else //single monitor
+        m_IsSingleScreen = true;
+    // set X & Y to class members
+    m_ResHorizontal = X;
+    m_ResVertical = Y;
 }
 void ScreenStatus::determineCurrDisplayMode()
 {

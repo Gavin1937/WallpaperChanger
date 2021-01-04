@@ -15,6 +15,7 @@ namespace
         {L"WindowsThemeDir"   , ConfigSections::WindowsThemeDir},
         {L"ScreenRes_Hor"     , ConfigSections::ScreenRes_Hor},
         {L"ScreenRes_Ver"     , ConfigSections::ScreenRes_Ver},
+        {L"IsSingleDisplay"   , ConfigSections::IsSingleDisplay},
         {L"SS_WallpaperID_P"  , ConfigSections::SS_WallpaperID_P},
         {L"SS_WallpaperID_L"  , ConfigSections::SS_WallpaperID_L},
         {L"MS_WallpaperID"    , ConfigSections::MS_WallpaperID}
@@ -28,6 +29,7 @@ namespace
         ConfigItem(L"WindowsThemeDir="),
         ConfigItem(L"ScreenRes_Hor="),
         ConfigItem(L"ScreenRes_Ver="),
+        ConfigItem(L"IsSingleDisplay="),
         ConfigItem(L"SS_WallpaperID_P="),
         ConfigItem(L"SS_WallpaperID_L="),
         ConfigItem(L"MS_WallpaperID=")
@@ -154,6 +156,22 @@ bool ConfigManager::isDisplayPortrait()
     DisplayMode currDisMod = m_ScreenStatus.getCurrDisplayMode();
     return (currDisMod == DisplayMode::Portrait);
 }
+bool ConfigManager::isSingleDisplay() const
+{
+    return m_ScreenStatus.WhetherIsSingleScreen();
+}
+bool ConfigManager::isSingleDisplay()
+{
+    return m_ScreenStatus.WhetherIsSingleScreen();
+}
+bool ConfigManager::isMultiDisplay() const
+{
+    return !m_ScreenStatus.WhetherIsSingleScreen();
+}
+bool ConfigManager::isMultiDisplay()
+{
+    return !m_ScreenStatus.WhetherIsSingleScreen();
+}
 
 
 
@@ -233,6 +251,7 @@ void ConfigManager::write_basic_info_2_config()
     modify_config(ConfigSections::WindowsThemeDir, temp_WindowsTheme_path);
     modify_config(ConfigSections::ScreenRes_Hor, std::to_wstring(m_ScreenStatus.getResHorizontal()));
     modify_config(ConfigSections::ScreenRes_Ver, std::to_wstring(m_ScreenStatus.getResVertical()));
+    modify_config(ConfigSections::IsSingleDisplay, std::to_wstring(m_ScreenStatus.WhetherIsSingleScreen()));
 }
 
 

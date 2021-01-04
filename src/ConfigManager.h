@@ -26,6 +26,7 @@ enum class ConfigSections{
     WindowsThemeDir,   // Dir to C:\Users\${USERNAME}\AppData\Roaming\Microsoft\Windows\Themes
     ScreenRes_Hor,     // Screen Resolution Horizontal
     ScreenRes_Ver,     // Screen Resolution Vertical
+    IsSingleDisplay,   // Whether display is single display (record from last app launch)
     SS_WallpaperID_P,  // Single Screen Wallpaper Portrait
     SS_WallpaperID_L,  // Single Screen Wallpaper Landscape
     MS_WallpaperID     // Multi Screen Wallpaper
@@ -63,6 +64,10 @@ public:
     bool isDisplayLandscape();
     bool isDisplayPortrait() const;
     bool isDisplayPortrait();
+    bool isSingleDisplay() const;
+    bool isSingleDisplay();
+    bool isMultiDisplay() const;
+    bool isMultiDisplay();
     
 private:
     // read config file from m_ConfigFile_path to ram &
