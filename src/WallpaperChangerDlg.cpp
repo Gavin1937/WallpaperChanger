@@ -57,6 +57,9 @@ CWallpaperChangerDlg::CWallpaperChangerDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_WALLPAPERCHANGER_DIALOG, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+
+	// ! Need to remove after debugging
+	Debug::Debug();
 }
 
 void CWallpaperChangerDlg::DoDataExchange(CDataExchange* pDX)
@@ -77,6 +80,7 @@ END_MESSAGE_MAP()
 BOOL CWallpaperChangerDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
+
 
 	// Add "About..." menu item to system menu.
 
