@@ -27,7 +27,7 @@
     <ClInclude Include="src\targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Resource.h">
+    <ClInclude Include="res\Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h">
@@ -45,7 +45,6 @@
     <ClInclude Include="src\ScreenStatus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    
     <ClInclude Include="src\Debug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -72,7 +71,6 @@
     <ClCompile Include="src\ScreenStatus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    
     <ClCompile Include="src\Debug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -89,6 +87,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\WallpaperChanger.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\res\WallpaperChanger.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

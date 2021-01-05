@@ -121,6 +121,7 @@
       <ForcedIncludeFiles>$(ProjectDir)src\pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -133,7 +134,7 @@
     <ResourceCompile>
       <Culture>0x0409</Culture>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)res\;$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -191,7 +192,7 @@
   <ItemGroup>
     <ClInclude Include="src\framework.h" />
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\Resource.h" />
+    <ClInclude Include="res\Resource.h" />
     <ClInclude Include="src\targetver.h" />
     <ClInclude Include="src\WallpaperChanger.h" />
     <ClInclude Include="src\WallpaperChangerDlg.h" />
@@ -199,7 +200,6 @@
     <ClInclude Include="src\WallpaperManager.h" />
     <ClInclude Include="src\ConfigManager.h" />
     <ClInclude Include="src\ScreenStatus.h" />
-    
     <ClInclude Include="src\Debug.h" />
   </ItemGroup>
   <ItemGroup>
@@ -215,7 +215,6 @@
     <ClCompile Include="src\WallpaperManager.cpp" />
     <ClCompile Include="src\ConfigManager.cpp" />
     <ClCompile Include="src\ScreenStatus.cpp" />
-    
     <ClCompile Include="src\Debug.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -225,6 +224,7 @@
     <None Include="res\WallpaperChanger.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\res\WallpaperChanger.ico" />
     <Image Include="res\WallpaperChanger.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
