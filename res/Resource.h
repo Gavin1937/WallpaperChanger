@@ -6,6 +6,7 @@
 #define IDD_ABOUTBOX                    100
 #define IDS_ABOUTBOX                    101
 #define IDD_WALLPAPERCHANGER_DIALOG     102
+#define IDR_TRAYICON                    103
 #define IDR_MAINFRAME                   128
 #define IDC_BUTTON1                     1000
 

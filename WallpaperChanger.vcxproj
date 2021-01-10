@@ -200,6 +200,8 @@
     <ClInclude Include="src\WallpaperManager.h" />
     <ClInclude Include="src\ConfigManager.h" />
     <ClInclude Include="src\ScreenStatus.h" />
+    <ClInclude Include="src\akTrayIcon.h" />
+    
     <ClInclude Include="src\Debug.h" />
   </ItemGroup>
   <ItemGroup>
@@ -215,6 +217,8 @@
     <ClCompile Include="src\WallpaperManager.cpp" />
     <ClCompile Include="src\ConfigManager.cpp" />
     <ClCompile Include="src\ScreenStatus.cpp" />
+    <ClCompile Include="src\akTrayIcon.cpp" />
+    
     <ClCompile Include="src\Debug.cpp" />
   </ItemGroup>
   <ItemGroup>
