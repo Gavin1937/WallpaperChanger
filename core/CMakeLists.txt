@@ -5,10 +5,21 @@ project(WallpaperChanger-core LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+file(GLOB SRC
+    WallpaperChanger-core.cpp
+    ArgumentHandler.cpp
+    GlobTools.cpp
+    WallpaperManager.cpp
+)
+file(GLOB HEADER
+    ArgumentHandler.h
+    GlobTools.h
+    WallpaperManager.h
+)
+
 add_executable(WallpaperChanger-core
-            WallpaperChanger-core.cpp
-            GlobTools.cpp
-            WallpaperManager.cpp
+                ${SRC}
+                ${HEADER}
 )
 
 install(TARGETS WallpaperChanger-core RUNTIME DESTINATION build)
