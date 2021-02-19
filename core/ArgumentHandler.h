@@ -6,9 +6,9 @@
  * Allowed Arguments
  * 
  *    --add {file_path} => adding new wallpaper to ./Wallpapers/ folder
- *    --del {file_name}/{file_id} => deleting wallpaper by its name/id
- *    --find {file_name}/{file_id} => find a wallpaper's info base on its name/id
- *    --help => print help menu
+ *    --del {file_name} => deleting wallpaper by its name (hex # in ./Wallpapers/ folder)
+ *    --find {file_name} => find a wallpaper's info base on its name (hex # in ./Wallpapers/ folder)
+ *    --help, -h => print help menu
  * 
  */
 
@@ -17,8 +17,8 @@ namespace {
         L"Allowed Arguments\n",
         L"\n",
         L"\b--add {file_path} => adding new wallpaper to ./Wallpapers/ folder\n",
-        L"\b--del {file_name}/{file_id} => deleting wallpaper by its name/id\n",
-        L"\b--find {file_name}/{file_id} => find a wallpaper's info base on its name/id\n",
+        L"\b--del {file_name} => deleting wallpaper by its name (hex # in ./Wallpapers/ folder)\n",
+        L"\b--find {file_name} => find a wallpaper's info base on its name (hex # in ./Wallpapers/ folder)\n",
         L"\b--help, -h => print help menu\n"
     };
     std::string helpArrA[] = {
@@ -45,7 +45,6 @@ public:
     // getters
     std::wstring getFileName();
     std::wstring getFilePath();
-    std::wstring getFileId();
     
     bool hasAdd();
     const bool hasAdd() const;
@@ -56,14 +55,10 @@ public:
     bool hasHelp();
     const bool hasHelp() const;
     
-private: // private functions
-    // check whether a wstring is filename
-    bool isFileName(wchar_t* str);
 private:
     // argument buffer
     std::wstring m_FileName;
     std::wstring m_FilePath;
-    std::wstring m_FileId;
     // flags
     bool m_HasAdd;
     bool m_HasDel;
@@ -85,7 +80,6 @@ public:
     // getters
     std::string getFileName();
     std::string getFilePath();
-    std::string getFileId();
     
     bool hasAdd();
     const bool hasAdd() const;
@@ -96,14 +90,10 @@ public:
     bool hasHelp();
     const bool hasHelp() const;
     
-private: // private functions
-    // check whether a string is filename
-    bool isFileName(char* str);
 private:
     // argument buffer
     std::string m_FileName;
     std::string m_FilePath;
-    std::string m_FileId;
     // flags
     bool m_HasAdd;
     bool m_HasDel;

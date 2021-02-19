@@ -99,7 +99,15 @@ WallpaperManager::WallpaperManager(const std::wstring& WallpaperList_path)
 // destructor, also write & save all data in m_CachedWallpaperInfo to WallpaperList
 WallpaperManager::~WallpaperManager()
 {
-    // writing data to WallpaperList file (overwrite)
+    update_WallpaperList();
+    // destruct members
+    m_WallpaperList_path.~basic_string();
+    m_CachedWallpaperInfo.~vector();
+}
+
+// write cached WallpaperInfo to WallpaperList (OVERWRITE)
+void WallpaperManager::update_WallpaperList()
+{
     GlobTools::utf8_wofstream WallpaperList(m_WallpaperList_path+L"WallpaperList");
     WallpaperList << L"\"src_path\",\"hex_id\",\"add_time\"\n"; // initialize 1st line
     for (auto it : m_CachedWallpaperInfo) {
@@ -109,9 +117,6 @@ WallpaperManager::~WallpaperManager()
                 << L"\"" << it.getAddTime() << L"\"\n";
     }
     WallpaperList.close();
-    // destruct members
-    m_WallpaperList_path.~basic_string();
-    m_CachedWallpaperInfo.~vector();
 }
 
 // copy file from src_path to ./Wallpapers/
@@ -119,13 +124,16 @@ bool WallpaperManager::copy_wallpaper_2_cacheFolder(const std::wstring& src_path
 {
     if (GlobTools::is_filedir_existW(src_path)) {
         append_WallpaperList(src_path);
-        if (!CopyFileW(src_path.c_str(), 
-                (m_WallpaperList_path+m_CachedWallpaperInfo[m_CachedWallpaperInfo.size()-1].getNewFilename()).c_str(), 
-                FALSE))
+        std::wstring loc_destpath = 
+            m_WallpaperList_path+m_CachedWallpaperInfo[m_CachedWallpaperInfo.size()-1].getNewFilename();
+        if (!CopyFileW(src_path.c_str(), loc_destpath.c_str(), FALSE)) {
+            remove_WallpaperList(m_CachedWallpaperInfo[m_CachedWallpaperInfo.size()-1]);
             return false;
+        }
     } else {
+        remove_WallpaperList(m_CachedWallpaperInfo[m_CachedWallpaperInfo.size()-1]);
         return false;
-    } 
+    }
     return true;
 }
 
@@ -141,6 +149,20 @@ void WallpaperManager::append_WallpaperList(const std::wstring& src_path)
     std::wstring temp = wss.str();
     while (temp.size() < 6) temp = L"0" + temp;
     m_CachedWallpaperInfo.push_back(WallpaperInfo(src_path, temp));
+    // update WallpaperList
+    update_WallpaperList();
+}
+
+// remove & update to WallpaperList file under ./Wallpapers/
+void WallpaperManager::remove_WallpaperList(const WallpaperInfo& info)
+{
+    int index = find_wallpaperIndex_via_wallInfo(info);
+    if (index != -1) { // found Wallpaper
+        // auto it = remove(m_CachedWallpaperInfo.begin(), m_CachedWallpaperInfo.end(), m_CachedWallpaperInfo.begin()+index);
+        auto it = m_CachedWallpaperInfo.erase(m_CachedWallpaperInfo.begin()+index);
+    }
+    // update WallpaperList
+    update_WallpaperList();
 }
 
 // past file from ./Wallpapers/ to tar_path
@@ -150,7 +172,7 @@ bool WallpaperManager::past_wallpaper_2_targetFolder(
 {
     if (wallpaper_ind >= 0 && wallpaper_ind < m_CachedWallpaperInfo.size()) {
         std::wstring loc_filename =
-        m_WallpaperList_path+m_CachedWallpaperInfo[wallpaper_ind].getNewFilename();
+            m_WallpaperList_path+m_CachedWallpaperInfo[wallpaper_ind].getNewFilename();
         if (!CopyFileW(loc_filename.c_str(), tar_path.c_str(), FALSE))
             return false;
     } else return false;
@@ -163,10 +185,23 @@ bool WallpaperManager::past_wallpaper_2_targetFolder(
 {
     if (!wallpaper_info.isEmpty()) {
         std::wstring loc_filename =
-        m_WallpaperList_path+wallpaper_info.getNewFilename();
+            m_WallpaperList_path+wallpaper_info.getNewFilename();
         if (!CopyFileW(loc_filename.c_str(), tar_path.c_str(), FALSE))
             return false;
     } else return false;
+    return true;
+}
+
+// remove a cached wallpaper
+bool WallpaperManager::remove_wallpaper(const WallpaperInfo& wallpaper_info)
+{
+    if (!wallpaper_info.isEmpty()) {
+        std::wstring loc_filepath =
+            m_WallpaperList_path+wallpaper_info.getNewFilename();
+        if (!DeleteFileW(loc_filepath.c_str()))
+            return false;
+    } else return false;
+    remove_WallpaperList(wallpaper_info);
     return true;
 }
 

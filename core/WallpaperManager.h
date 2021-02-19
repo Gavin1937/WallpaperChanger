@@ -32,6 +32,9 @@ public:
     // destructor, also write & save all data in m_CachedWallpaperInfo to WallpaperList
     ~WallpaperManager();
     
+    // write cached WallpaperInfo to WallpaperList (OVERWRITE)
+    void update_WallpaperList();
+    
     // copy file from src_path to ./Wallpapers/
     // @Param: src_path => path to source directory of a wallpaper
     // return true(1) if function success
@@ -53,6 +56,12 @@ public:
     bool past_wallpaper_2_targetFolder(const WallpaperInfo& wallpaper_info,
                                     const std::wstring& tar_path);
     
+    // remove a cached wallpaper
+    // @Param: wallpaper_info => WallpaperInfo object of target wallpaper
+    // return true(1) if function success
+    // return false(0) if function fail
+    bool remove_wallpaper(const WallpaperInfo& wallpaper_info);
+    
     // find wallpaper base on its basic info, return its index in m_CachedWallpaperInfo
     const int find_wallpaperIndex_via_wallInfo(const WallpaperInfo& wallpaper_info);
     WallpaperInfo& find_wallpaperInfo_via_src(const std::wstring& src_path);
@@ -64,6 +73,10 @@ public:
 private:
     // appent & update to WallpaperList file under ./Wallpapers/
     void append_WallpaperList(const std::wstring& src_path);
+    
+    // remove & update to WallpaperList file under ./Wallpapers/
+    void remove_WallpaperList(const WallpaperInfo& info);
+    
 private:
     std::wstring m_WallpaperList_path;               // path to WallpaperList file
     // WallpaperList cached in RAM
