@@ -7,15 +7,4 @@
 /.vscode/
 /build/
 /Wallpapers/
-/src/Wallpapers/
-/*.exe
-/src/*.exe
-/src/Debug.h
-/src/Debug.cpp
-/Debug/
-/Release/
-/.vs/
-/x64/
-/WallpaperChanger.vcxproj.user
 /config.ini
-/Wallpapers/
