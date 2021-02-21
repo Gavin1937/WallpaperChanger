@@ -5,7 +5,8 @@
 // constructor
 ArgumentHandlerW::ArgumentHandlerW(int argc, wchar_t* argv[])
     : m_HasAdd(false), m_HasDel(false),
-    m_HasFind(false), m_HasHelp(false)
+    m_HasFind(false), m_HasPaste(false),
+    m_HasHelp(false)
 {
     std::wstring buff;
     for (int i = 1; i < argc; ++i) {
@@ -22,6 +23,16 @@ ArgumentHandlerW::ArgumentHandlerW(int argc, wchar_t* argv[])
             m_HasFind = true;
             m_FileName = argv[i+1];
         } 
+        if (buff == L"--paste") {
+            m_HasPaste = true;
+            m_FileName = argv[i+1];
+            if (GlobTools::all2upperW(argv[i+2]) == L"PORTRAIT")
+                m_WallpaperMode = WallpaperMode::PORTRAIT;
+            else if (GlobTools::all2upperW(argv[i+2]) == L"LANDSCAPE")
+                m_WallpaperMode = WallpaperMode::LANDSCAPE;
+            else
+                m_WallpaperMode = WallpaperMode::UNKNOW;
+        }
         if (buff == L"--help" || buff == L"-h") {
             m_HasHelp = true;
         }
@@ -43,6 +54,11 @@ std::wstring ArgumentHandlerW::getFilePath()
 {
     return m_FilePath;
 }
+WallpaperMode ArgumentHandlerW::getWallpaperMode()
+{
+    return m_WallpaperMode;
+}
+
 
 bool ArgumentHandlerW::hasAdd()
 {
@@ -68,6 +84,14 @@ const bool ArgumentHandlerW::hasFind() const
 {
     return m_HasFind;
 }
+bool ArgumentHandlerW::hasPaste()
+{
+    return m_HasPaste;
+}
+const bool ArgumentHandlerW::hasPaste() const
+{
+    return m_HasPaste;
+}
 bool ArgumentHandlerW::hasHelp()
 {
     return m_HasHelp;
@@ -88,21 +112,29 @@ const bool ArgumentHandlerW::hasHelp() const
 // constructor
 ArgumentHandlerA::ArgumentHandlerA(int argc, char* argv[])
     : m_HasAdd(false), m_HasDel(false),
-    m_HasFind(false), m_HasHelp(false)
+    m_HasFind(false), m_HasPaste(false),
+    m_HasHelp(false)
 {
     std::string buff;
     for (int i = 1; i < argc; ++i) {
         buff.assign(argv[i]);
-        if (argv[i] == "--add") {
+        if (buff == "--add") {
             m_HasAdd = true;
             m_FilePath = argv[i+1];
-        } else if (argv[i] == "--del") {
+        } 
+        if (buff == "--del") {
             m_HasDel = true;
             m_FileName = argv[i+1];
-        } else if (argv[i] == "--find") {
+        } 
+        if (buff == "--find") {
             m_HasFind = true;
             m_FileName = argv[i+1];
-        } else if (argv[i] == "--help" || argv[i] == "-h") {
+        } 
+        if (buff == "--paste") {
+            m_HasPaste = true;
+            m_FileName = argv[i+1];
+        }
+        if (buff == "--help" || buff == "-h") {
             m_HasHelp = true;
         }
     }
@@ -122,6 +154,10 @@ std::string ArgumentHandlerA::getFileName()
 std::string ArgumentHandlerA::getFilePath()
 {
     return m_FilePath;
+}
+WallpaperMode ArgumentHandlerA::getWallpaperMode()
+{
+    return m_WallpaperMode;
 }
 
 bool ArgumentHandlerA::hasAdd()
@@ -147,6 +183,14 @@ bool ArgumentHandlerA::hasFind()
 const bool ArgumentHandlerA::hasFind() const
 {
     return m_HasFind;
+}
+bool ArgumentHandlerA::hasPaste()
+{
+    return m_HasPaste;
+}
+const bool ArgumentHandlerA::hasPaste() const
+{
+    return m_HasPaste;
 }
 bool ArgumentHandlerA::hasHelp()
 {
