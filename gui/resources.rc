@@ -1,0 +1,4 @@
+#include <windows.h>
+#include "resources.h"
+
+MY_ICON       ICON         "res\\icon.ico"

@@ -5,4 +5,4 @@ project(WallpaperChanger)
 add_definitions(-DUNICODE -D_UNICODE)
 
 add_subdirectory(core)
-# add_subdirectory(gui)
+add_subdirectory(gui)

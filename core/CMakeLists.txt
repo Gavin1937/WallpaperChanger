@@ -22,8 +22,7 @@ file(GLOB HEADER
 )
 
 add_executable(WallpaperChanger-core
-                ${SRC}
-                ${HEADER}
+    ${SRC} ${HEADER}
 )
 
 install(TARGETS WallpaperChanger-core RUNTIME DESTINATION build)
