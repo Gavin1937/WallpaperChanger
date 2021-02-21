@@ -54,7 +54,6 @@ int wmain(int argc, wchar_t* argv[])
             else throw std::invalid_argument("Please Enter A WallpaperMode As Well: PORTRAIT/LANDSCAPE");
             dest_file_name += L"_POS4.jpg";
             // pasting file to Windows System Theme folder
-            std::wcout << loc_file << std::endl << dest_file_dir << std::endl;
             wm.past_wallpaper_2_targetFolder(loc_file, dest_file_dir + dest_file_name);
         }
     }
