@@ -36,6 +36,7 @@ file(GLOB RES
 )
 
 add_executable(WallpaperChanger-gui
+    WIN32
     ${SRC} ${HEADER} ${RES}
 )
 

@@ -1,22 +1,24 @@
+// C++ STL
 #include <iostream>
 #include <string>
 #include <stdexcept>
+#include <windows.h>
+#include <shellapi.h>
 
+// others
 #include "ArgumentHandler.h"
 #include "WallpaperManager.h"
 #include "ConfigManager.h"
 
-std::wostream& operator<<(std::wostream& output, const WallpaperInfo& obj)
-{
-    output << obj.getSrcPath() << std::endl
-            << L"Original FileName: " << obj.getOriFileName() << std::endl
-            << L"NewFilename (FileID): " << obj.getNewFilename() << std::endl
-            << L"AddTime: " << obj.getAddTime();
-    return output;
-}
 
-int wmain(int argc, wchar_t* argv[])
+int WINAPI wWinMain(
+    HINSTANCE hInstance,
+    HINSTANCE hPrevInstance,
+    PWSTR pCmdLine,
+    int nCmdShow)
 {
+    int argc = 0;
+    wchar_t** argv = (wchar_t**)CommandLineToArgvW(GetCommandLineW(), &argc);
     ArgumentHandlerW arg(argc, argv);
     WallpaperManager wm;
     ConfigManager config(false);
@@ -27,7 +29,7 @@ int wmain(int argc, wchar_t* argv[])
     }
     
     if (arg.hasHelp()) {
-        arg.printHelp();
+        arg.helpMsgBox();
         return 0;
     } else {
         if (arg.hasAdd()) {
@@ -37,7 +39,12 @@ int wmain(int argc, wchar_t* argv[])
             wm.remove_wallpaper(wm.find_wallpaperInfo_via_new(arg.getFileName()));
         }
         if (arg.hasFind() && !arg.getFileName().empty()) {
-            std::wcout << wm.find_wallpaperInfo_via_new(arg.getFileName());
+            std::wstring msg;
+            auto temp_obj = wm.find_wallpaperInfo_via_new(arg.getFileName());
+            msg += L"Original FileName: " + temp_obj.getOriFileName() + L"\n";
+            msg += L"NewFilename (FileID): " + temp_obj.getNewFilename() + L"\n";
+            msg += L"AddTime: " + std::to_wstring(temp_obj.getAddTime());
+            MessageBoxW(0, msg.c_str(), L"Find Information", 0);
         }
         if (arg.hasPaste() && !arg.getFileName().empty()) {
             // get loc_file & dest_file_dir
@@ -51,7 +58,7 @@ int wmain(int argc, wchar_t* argv[])
                 dest_file_name += config.get(L"system", L"hori_res") + L"_" + config.get(L"system", L"verti_res");
             else if (arg.getWallpaperMode() == WallpaperMode::PORTRAIT)
                 dest_file_name += config.get(L"system", L"verti_res") + L"_" + config.get(L"system", L"hori_res");
-            else throw std::invalid_argument("Please Enter A WallpaperMode As Well: PORTRAIT/LANDSCAPE");
+            else return -1;
             dest_file_name += L"_POS4.jpg";
             // pasting file to Windows System Theme folder
             wm.past_wallpaper_2_targetFolder(loc_file, dest_file_dir + dest_file_name);

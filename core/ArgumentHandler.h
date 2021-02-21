@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <iostream>
+#include <windows.h>
 
 #include "GlobTools.h"
 
@@ -19,20 +20,20 @@ namespace {
     std::wstring helpArrW[] = {
         L"Allowed Arguments\n",
         L"\n",
-        L"\b--add {file_path} => adding new wallpaper to ./Wallpapers/ folder\n",
-        L"\b--del {file_name} => deleting wallpaper by its name (hex # in ./Wallpapers/ folder)\n",
-        L"\b--find {file_name} => find a wallpaper's info base on its name (hex # in ./Wallpapers/ folder)\n",
-        L"\b--paste {file_name} + {PORTRAIT/LANDSCAPE} => paste inputted wallpaper to Windows System Theme folder with specific mode\n",
-        L"\b--help, -h => print help menu\n"
+        L"\t--add {file_path} => adding new wallpaper to ./Wallpapers/ folder\n",
+        L"\t--del {file_name} => deleting wallpaper by its name (hex # in ./Wallpapers/ folder)\n",
+        L"\t--find {file_name} => find a wallpaper's info base on its name (hex # in ./Wallpapers/ folder)\n",
+        L"\t--paste {file_name} + {PORTRAIT/LANDSCAPE} => paste inputted wallpaper to Windows System Theme folder with specific mode\n",
+        L"\t--help, -h => print help menu\n"
     };
     std::string helpArrA[] = {
         "Allowed Arguments\n",
         "\n",
-        "\b--add {file_path} => adding new wallpaper to ./Wallpapers/ folder\n",
-        "\b--del {file_name} => deleting wallpaper by its name (hex # in ./Wallpapers/ folder)\n",
-        "\b--find {file_name} => find a wallpaper's info base on its name (hex # in ./Wallpapers/ folder)\n",
-        "\b--paste {file_name} + {PORTRAIT/LANDSCAPE} => paste inputted wallpaper to Windows System Theme folder with specific mode\n",
-        "\b--help, -h => print help menu\n"
+        "\t--add {file_path} => adding new wallpaper to ./Wallpapers/ folder\n",
+        "\t--del {file_name} => deleting wallpaper by its name (hex # in ./Wallpapers/ folder)\n",
+        "\t--find {file_name} => find a wallpaper's info base on its name (hex # in ./Wallpapers/ folder)\n",
+        "\t--paste {file_name} + {PORTRAIT/LANDSCAPE} => paste inputted wallpaper to Windows System Theme folder with specific mode\n",
+        "\t--help, -h => print help menu\n"
     };
 };
 
@@ -49,9 +50,9 @@ class ArgumentHandlerW
 {
 public:
     // constructor
-    ArgumentHandlerW(int argc, wchar_t* argv[]);
+    ArgumentHandlerW(int argc, wchar_t** argv);
     
-    void printHelp();
+    void helpMsgBox();
     
     // getters
     std::wstring getFileName();
@@ -89,9 +90,9 @@ class ArgumentHandlerA
 {
 public:
     // constructor
-    ArgumentHandlerA(int argc, char* argv[]);
+    ArgumentHandlerA(int argc, char** argv);
     
-    void printHelp();
+    void helpMsgBox();
     
     // getters
     std::string getFileName();

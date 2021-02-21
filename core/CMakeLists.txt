@@ -22,6 +22,7 @@ file(GLOB HEADER
 )
 
 add_executable(WallpaperChanger-core
+    WIN32
     ${SRC} ${HEADER}
 )
 

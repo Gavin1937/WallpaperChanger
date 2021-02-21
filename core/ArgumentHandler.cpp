@@ -3,7 +3,7 @@
 // ====================== ArgumentHandlerW ======================
 
 // constructor
-ArgumentHandlerW::ArgumentHandlerW(int argc, wchar_t* argv[])
+ArgumentHandlerW::ArgumentHandlerW(int argc, wchar_t** argv)
     : m_HasAdd(false), m_HasDel(false),
     m_HasFind(false), m_HasPaste(false),
     m_HasHelp(false)
@@ -39,10 +39,12 @@ ArgumentHandlerW::ArgumentHandlerW(int argc, wchar_t* argv[])
     }
 }
 
-void ArgumentHandlerW::printHelp()
+void ArgumentHandlerW::helpMsgBox()
 {
+    std::wstring msg;
     for (auto it : helpArrW)
-        std::wcout << it;
+        msg += it + L"\n";
+    MessageBoxW(0, msg.c_str(), L"Help Information", 0);
 }
 
 // getters
@@ -110,7 +112,7 @@ const bool ArgumentHandlerW::hasHelp() const
 // ====================== ArgumentHandlerA ======================
 
 // constructor
-ArgumentHandlerA::ArgumentHandlerA(int argc, char* argv[])
+ArgumentHandlerA::ArgumentHandlerA(int argc, char** argv)
     : m_HasAdd(false), m_HasDel(false),
     m_HasFind(false), m_HasPaste(false),
     m_HasHelp(false)
@@ -140,10 +142,12 @@ ArgumentHandlerA::ArgumentHandlerA(int argc, char* argv[])
     }
 }
 
-void ArgumentHandlerA::printHelp()
+void ArgumentHandlerA::helpMsgBox()
 {
+    std::string msg;
     for (auto it : helpArrA)
-        std::cout << it;
+        msg += it + "\n";
+    MessageBoxA(0, msg.c_str(), "Help Information", 0);
 }
 
 // getters
