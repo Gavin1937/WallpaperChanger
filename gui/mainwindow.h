@@ -1,33 +1,31 @@
 #pragma once
 
+// Qt Libs
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include <QMenu>
-
 #include <QtPlugin>
-//#include <QTimer>
 
+// others
 #include "timer.h"
 
 
 class MainWindow : public QMainWindow
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  MainWindow(QWidget *parent = 0);
-  
-//  ~MainWindow();
-  
+    MainWindow(QWidget *parent = 0);
+    
 public slots:
-  void iconActivated(QSystemTrayIcon::ActivationReason);
-  //void test();
-
+    void iconActivated(QSystemTrayIcon::ActivationReason);
+    
 private:
-  QSystemTrayIcon* trayIcon;
-  QMenu* trayIconMenu;
-  //QTimer* timer;
-  Timer timer;
-
-  QMenu* createMenu();
+    QMenu* createMenu();
+    
+private:
+    QSystemTrayIcon* trayIcon;
+    QMenu* trayIconMenu;
+    Timer timer;
+    
 };
