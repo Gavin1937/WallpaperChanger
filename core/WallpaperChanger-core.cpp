@@ -56,9 +56,9 @@ int WINAPI wWinMain(
             // process dest_file_name
             std::wstring dest_file_name = L"CachedImage_";
             if (arg.getWallpaperMode() == WallpaperMode::LANDSCAPE)
-                dest_file_name += config.get(L"system", L"hori_res") + L"_" + config.get(L"system", L"verti_res");
+                dest_file_name += config.get(L"system", L"horz_res") + L"_" + config.get(L"system", L"vert_res");
             else if (arg.getWallpaperMode() == WallpaperMode::PORTRAIT)
-                dest_file_name += config.get(L"system", L"verti_res") + L"_" + config.get(L"system", L"hori_res");
+                dest_file_name += config.get(L"system", L"vert_res") + L"_" + config.get(L"system", L"horz_res");
             else return -1;
             dest_file_name += L"_POS4.jpg";
             // pasting file to Windows System Theme folder
