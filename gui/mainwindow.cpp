@@ -13,7 +13,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , trayIcon(new QSystemTrayIcon(this)),
-    timer(), m_Config()
+    timer(nullptr), m_Config()
 {
     // initialize config
     std::wstring config_path = GlobTools::getCurrExePathW();
@@ -23,6 +23,11 @@ MainWindow::MainWindow(QWidget *parent)
     } catch(std::exception& err) { // cannot find config.ini under current dir
         // write a new config.ini
         write_default_config();
+        // prompt user to input basic configs
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // ! NEED TO REPLACE WITH PROPER DIALOG PROMPT
+        MessageBoxW(0, L"Missing Components in config.ini", L"Warning", 0);
+        return;
     }
     
     // check whether to update wallpapers
@@ -30,8 +35,19 @@ MainWindow::MainWindow(QWidget *parent)
         m_Config.get(L"wallpaper", L"landscape_wallpaper").empty() ||
         m_Config.get(L"wallpaper", L"portrait_wallpaper").empty();
     if (!is_land_port_wallpaper_empty) { // no empty wallpaper, have both landscape & portrait
-        update_wallpapers();
+        set_default_wallpaper();
+    } else { // have empty wallpaper, prompt user for input
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // ! NEED TO REPLACE WITH PROPER DIALOG PROMPT
+        MessageBoxW(0, L"Missing Components in config.ini", L"Warning", 0);
+        return;
     }
+    
+    // update wallpapers 1st time
+    update_wallpapers();
+    
+    // init timer
+    timer = new Timer();
     
     // Tray icon menu
     auto menu = this->createMenu();
@@ -47,7 +63,6 @@ MainWindow::MainWindow(QWidget *parent)
     
     // Interaction
     connect(trayIcon, &QSystemTrayIcon::activated, this, &MainWindow::iconActivated);
-    
 }
 
 void MainWindow::write_default_config()
@@ -61,37 +76,42 @@ void MainWindow::write_default_config()
     // program
     m_Config.add(L"program", L"core_program", GlobTools::getCurrExePathW() + L"WallpaperChanger-core.exe");
     m_Config.add(L"program", L"gui_program", GlobTools::getCurrExePathW() + L"WallpaperChanger-gui.exe");
+    m_Config.add(L"program", L"wallpaper_update_time", L"1800"); // val in seconds, default = 30min
     
     // wallpaper
-    m_Config.addOption(L"wallpaper", L"default_wallpaper");
-    m_Config.addOption(L"wallpaper", L"landscape_wallpaper");
-    m_Config.addOption(L"wallpaper", L"portrait_wallpaper");
-    // m_Config.add(L"wallpaper", L"default_wallpaper", L"");
-    // m_Config.add(L"wallpaper", L"landscape_wallpaper", L"");
-    // m_Config.add(L"wallpaper", L"portrait_wallpaper", L"");
+    m_Config.add(L"wallpaper", L"default_wallpaper_path", L"");
+    m_Config.add(L"wallpaper", L"landscape_wallpaper", L"");
+    m_Config.add(L"wallpaper", L"portrait_wallpaper", L"");
     
     // write config file
     m_Config.write(L"./config.ini");
 }
 void MainWindow::update_wallpapers()
 {
-    QObject *parent = new QObject();
-    
-    QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
-    QStringList arguments;
-    arguments 
+    QObject *parent1 = new QObject();
+    QString program1 = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
+    QStringList arguments1;
+    arguments1
             // update landscape wallpaper
             << QString::fromWCharArray(L"--paste")
             << QString::fromWCharArray(m_Config.get(L"wallpaper", L"landscape_wallpaper").c_str())
             << QString::fromWCharArray(L"LANDSCAPE")
+    ;
+    QProcess *myProcess1 = new QProcess(parent1);
+    myProcess1->start(program1, arguments1);
+    
+    QObject* parent2 = new QObject();
+    QString program2 = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
+    QStringList arguments2;
+    arguments2
             // update portrait wallpaper
             << QString::fromWCharArray(L"--paste")
             << QString::fromWCharArray(m_Config.get(L"wallpaper", L"portrait_wallpaper").c_str())
             << QString::fromWCharArray(L"PORTRAIT")
     ;
-    
-    QProcess *myProcess = new QProcess(parent);
-    myProcess->start(program, arguments);}
+    QProcess *myProcess2 = new QProcess(parent2);
+    myProcess2->start(program2, arguments2);
+}
 
 // void test()
 // {
@@ -108,6 +128,9 @@ void test()
 QMenu* MainWindow::createMenu()
 {
     auto main_menu = new QMenu(this);
+    
+    // Update Wallpapers
+    menu_add_action(main_menu, L"Update Wallpapers", &MainWindow::update_wallpapers);
     
     // Sub Menu >
     auto sub_menu = menu_add_menu(main_menu, L"Sub Menu");
@@ -154,6 +177,27 @@ std::pair<int, int> MainWindow::get_physical_screen_res()
     
     return std::pair<int, int>(cxPhysical, cyPhysical);
 }
+void MainWindow::set_default_wallpaper()
+{
+    // init wallpaper path
+    std::wstring default_wallpaper = m_Config.get(L"wallpaper", L"default_wallpaper_path");
+    QString *path = new QString(QString::fromWCharArray(default_wallpaper.c_str()));
+    // set registry wallpaper path value
+	QSettings *settings = new QSettings("HKEY_CURRENT_USER\\Control Panel\\Desktop",
+                            QSettings::NativeFormat);
+	settings->setValue("Wallpaper", QVariant(*path));
+    // set wallpaper
+	SystemParametersInfoW(SPI_SETDESKWALLPAPER, 1, default_wallpaper.data(), SPIF_SENDWININICHANGE);
+    
+    if (SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, default_wallpaper.data(),
+        SPIF_UPDATEINIFILE | SPIF_SENDCHANGE) != 0)
+    { //success
+        // SystemParametersInfoW() will delete /CachedFiles/ under Windows Theme Dir
+        // Create a new /CachedFiles/ folder under that Dir for wallpaper updates later
+        QDir theme_dir(QString::fromWCharArray(m_Config.get(L"system", L"windows_theme_dir").c_str()));
+        theme_dir.mkdir(QString::fromWCharArray(L"CachedFiles"));
+    }
+}
 
 template<class FUNC>
 void MainWindow::menu_add_action(
@@ -162,7 +206,7 @@ void MainWindow::menu_add_action(
     FUNC action_func)
 {
     QAction* act = new QAction(QString::fromWCharArray(action_name.c_str()));
-    connect(act, &QAction::triggered, qApp, action_func);
+    connect(act, &QAction::triggered, this, action_func);
     menu->addAction(act);
 }
 QMenu* MainWindow::menu_add_menu(

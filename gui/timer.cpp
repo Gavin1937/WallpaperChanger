@@ -7,14 +7,38 @@
 Timer::Timer(QWidget *parent)
     : QWidget(parent)
 {
+    // set up QTimer obj
     QTimer *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &Timer::updateProgress);
-    timer->start(1000);
+    connect(timer, &QTimer::timeout, this, &Timer::update_wallpapers);
+    // get sec from config.ini
+    ConfigManager loc_config(GlobTools::getCurrExePathW()+L"config.ini", false);
+    timer->start(loc_config.getInt(L"program", L"wallpaper_update_time")*1000);
 }
 
-void Timer::updateProgress()
+void Timer::update_wallpapers()
 {
-    std::ofstream output("test.txt", std::ios::app);
-    output << "output test string. c=" << counter++ << "\n";
-    output.close();
+    ConfigManager loc_config(GlobTools::getCurrExePathW()+L"config.ini", false);
+	QObject* parent1 = new QObject();
+	QString program1 = QString::fromWCharArray(loc_config.get(L"program", L"core_program").c_str());
+	QStringList arguments1;
+	arguments1
+		// update landscape wallpaper
+		<< QString::fromWCharArray(L"--paste")
+		<< QString::fromWCharArray(loc_config.get(L"wallpaper", L"landscape_wallpaper").c_str())
+		<< QString::fromWCharArray(L"LANDSCAPE")
+		;
+	QProcess* myProcess1 = new QProcess(parent1);
+	myProcess1->start(program1, arguments1);
+
+	QObject* parent2 = new QObject();
+	QString program2 = QString::fromWCharArray(loc_config.get(L"program", L"core_program").c_str());
+	QStringList arguments2;
+	arguments2
+		// update portrait wallpaper
+		<< QString::fromWCharArray(L"--paste")
+		<< QString::fromWCharArray(loc_config.get(L"wallpaper", L"portrait_wallpaper").c_str())
+		<< QString::fromWCharArray(L"PORTRAIT")
+		;
+	QProcess* myProcess2 = new QProcess(parent2);
+	myProcess2->start(program2, arguments2);
 }

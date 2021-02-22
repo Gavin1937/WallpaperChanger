@@ -9,13 +9,13 @@
 // #include <QRect>
 // #include <QList>
 
-#include <QSettings>
+// #include <QSettings>
 // #include <QVariant>
 
-#include <QProcess>
+// #include <QProcess>
 
-#include <fstream>
-#include "GlobTools.h"
+// #include <fstream>
+// #include "GlobTools.h"
 
 // C++ STL
 #include <windows.h>
@@ -41,6 +41,8 @@ int APIENTRY WinMain(
     
     // create MainWindow
     MainWindow w;
+    w.update_wallpapers();
+    
     w.show();
     
     // testing
@@ -61,15 +63,15 @@ int APIENTRY WinMain(
     // myProcess->start(program, arguments);
     
     
-    // init wallpaper path
-    std::wstring std_path(L"C:\\Users\\gyh18\\Desktop\\WallpaperChanger_rebuild\\wallpapers\\75225040_p0.jpg");
-    QString *path = new QString(QString::fromWCharArray(std_path.c_str()));
-    // set registry wallpaper path value
-	QSettings *settings = new QSettings("HKEY_CURRENT_USER\\Control Panel\\Desktop",
-                            QSettings::NativeFormat);
-	settings->setValue("Wallpaper", QVariant(*path));//"C:\\Documents and Settings\\All Users\\Documents\\My Pictures\\Sample Pictures\\Sunset.bmp");
-    // set wallpaper
-	SystemParametersInfoW(SPI_SETDESKWALLPAPER, 1, std_path.data(), SPIF_SENDWININICHANGE);
+    // // init wallpaper path
+    // std::wstring std_path(L"C:\\Users\\gyh18\\Desktop\\WallpaperChanger_rebuild\\wallpapers\\75225040_p0.jpg");
+    // QString *path = new QString(QString::fromWCharArray(std_path.c_str()));
+    // // set registry wallpaper path value
+	// QSettings *settings = new QSettings("HKEY_CURRENT_USER\\Control Panel\\Desktop",
+    //                         QSettings::NativeFormat);
+	// settings->setValue("Wallpaper", QVariant(*path));//"C:\\Documents and Settings\\All Users\\Documents\\My Pictures\\Sample Pictures\\Sunset.bmp");
+    // // set wallpaper
+	// SystemParametersInfoW(SPI_SETDESKWALLPAPER, 1, std_path.data(), SPIF_SENDWININICHANGE);
     
     
     

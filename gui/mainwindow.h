@@ -8,10 +8,15 @@
 #include <QDir>
 #include <QString>
 #include <QProcess>
+#include <QSettings>
 
 // C++ STL
 #include <stdexcept>
+
+// Windows API
 #include <windows.h>
+#include <shtypes.h>
+#include <Shlobj.h>
 
 // others
 #include "timer.h"
@@ -38,15 +43,17 @@ private:
     // helper functions
     std::wstring get_windows_sys_theme_dir();
     std::pair<int, int> get_physical_screen_res();
+    void set_default_wallpaper();
     
     template<class FUNC>
     void menu_add_action(QMenu* menu, const std::wstring& action_name, FUNC action_func);
     QMenu* menu_add_menu(QMenu* parent_menu, const std::wstring& child_menu_name, QMenu* child_menu = nullptr);
     
+    
 private:
     QSystemTrayIcon* trayIcon;
     QMenu* trayIconMenu;
-    Timer timer;
+    Timer* timer;
     
     ConfigManager m_Config;
 };

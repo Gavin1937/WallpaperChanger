@@ -2,9 +2,12 @@
 
 // Qt Libs
 #include <QWidget>
+#include <QString>
+#include <QProcess>
 
-// C++ STL
-#include <fstream>
+// other
+#include "ConfigManager.h"
+#include "GlobTools.h"
 
 
 class Timer : public QWidget
@@ -15,7 +18,7 @@ public:
     Timer(QWidget *parent = 0);
     
 public slots:
-    void updateProgress();
+    void update_wallpapers();
     
 private:
     int counter = 0;
