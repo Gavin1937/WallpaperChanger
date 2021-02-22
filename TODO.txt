@@ -6,8 +6,10 @@
         b. better mainwindow class
         c. extract classes from mainwindow files
 
-    B. add features of core to gui menu (add, del, find, help....)
+    B. let program update wallpaper after screen resolution change
 
-    C. add better setting dialog
+    C. add features of core to gui menu (add, del, find, help....)
+
+    D. add better setting dialog
         a. Integrate .ui file?
     
