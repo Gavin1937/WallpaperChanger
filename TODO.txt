@@ -1,7 +1,13 @@
 
 
-1. work on GUI
-    a. add icon on notification tray
-    b. allow right-click on icon to open setting menu
-    c. add dialogs for different settings
+1. work on gui
+    A. clean gui system structure
+        a. better Timer class
+        b. better mainwindow class
+        c. extract classes from mainwindow files
 
+    B. add features of core to gui menu (add, del, find, help....)
+
+    C. add better setting dialog
+        a. Integrate .ui file?
+    
