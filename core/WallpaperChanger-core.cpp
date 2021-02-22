@@ -52,6 +52,7 @@ int WINAPI wWinMain(
             std::wstring dest_file_dir = config.get(L"system", L"windows_theme_dir");
             if (dest_file_dir[dest_file_dir.size()-1] != L'\\')
                 dest_file_dir += L'\\';
+            dest_file_dir += L"CachedFiles\\";
             // process dest_file_name
             std::wstring dest_file_name = L"CachedImage_";
             if (arg.getWallpaperMode() == WallpaperMode::LANDSCAPE)

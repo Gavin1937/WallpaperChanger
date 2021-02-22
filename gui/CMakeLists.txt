@@ -24,11 +24,15 @@ file(GLOB SRC
     WallpaperChanger-gui.cpp
     mainwindow.cpp
     timer.cpp
+    ConfigManager.cpp
+    GlobTools.cpp
 )
 file(GLOB HEADER
     mainwindow.h
     timer.h
     resources.h
+    ConfigManager.h
+    GlobTools.h
 )
 file(GLOB RES
     resources.qrc
