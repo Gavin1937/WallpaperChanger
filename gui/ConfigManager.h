@@ -143,6 +143,7 @@ public:
     // access data
     std::unordered_map<STRING, Section> getSections();
     std::unordered_map<STRING, Option> getOptions(const STRING& sec_name);
+    Option getOptObj(const STRING& sec_name, const STRING& opt_name);
     
     // setter
     void set(const STRING& sec_name, const STRING& opt_name, const STRING& val);

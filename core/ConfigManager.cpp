@@ -31,7 +31,10 @@ Option::Option()
 // parametric constructor
 Option::Option(const STRING& key, const STRING& val)
     : m_Key(key), m_Val(val)
-{}
+{
+    m_Key = key;
+    m_Val = val;
+}
 // construct obj with whole option line (key = val)
 Option::Option(const STRING& whole_opt_line)
     : m_Key(STRING()), m_Val(STRING())
@@ -110,7 +113,7 @@ const STRING Option::getVal() const
 // get a STRING output like "Key = Val"
 STRING Option::getStr()
 {
-    if (!m_Key.empty() && !m_Val.empty())
+    if (!m_Key.empty())
         return STRING(m_Key + T(" = ") + m_Val);
     else return STRING();
 }
@@ -377,6 +380,26 @@ std::unordered_map<STRING, Option> ConfigManager::getOptions(const STRING& sec_n
 {
     if (isSecExist(sec_name)) {
         return m_Secs[sec_name].getOptions();
+    } else {
+        throw std::invalid_argument((
+            "exception: input section name (" +
+            cvter.to_bytes(sec_name) +
+            ") does not exist"
+        ).c_str());
+    }
+}
+Option ConfigManager::getOptObj(const STRING& sec_name, const STRING& opt_name)
+{
+    if (isSecExist(sec_name)) {
+        if (isOptExist(sec_name, opt_name)) {
+            return m_Secs[sec_name].getOpt(opt_name);
+        } else {
+            throw std::invalid_argument((
+                "exception: input option name (" +
+                cvter.to_bytes(opt_name) +
+                ") does not exist"
+            ).c_str());
+        }
     } else {
         throw std::invalid_argument((
             "exception: input section name (" +
