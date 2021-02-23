@@ -53,3 +53,76 @@ void WallpaperUpdater::update_wallpapers()
 
 
 // ====================== WallpaperUpdater End ======================
+
+
+
+
+// ====================== ScreenModeChangeEvent ======================
+
+ScreenModeChangeEvent::ScreenModeChangeEvent()
+    : QEvent(QEvent::Type(QEvent::User+1))
+{}
+
+
+// ====================== ScreenModeChangeEvent End ======================
+
+
+
+
+// ====================== ScreenMonitor ======================
+
+ScreenMonitor::ScreenMonitor(QObject* event_receiver, QWidget *parent)
+    : m_EventReceiver(event_receiver), QWidget(parent), m_ScreenMode(ScreenMode::Unknow)
+{
+    // determine m_ScreenMode for 1st time
+    
+    // get primary screen resolution after zoom in/out
+    int CX = GetSystemMetrics(SM_CXSCREEN);
+    int CY = GetSystemMetrics(SM_CYSCREEN);
+    // get all screens resolution after zoom in/out
+    int virCX = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+    int virCY = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+    
+    // determine screen mode
+    if (CX == virCX && CY == virCY)
+        m_ScreenMode = ScreenMode::Single;
+    else if (CX != virCX || CY != virCY)
+        m_ScreenMode = ScreenMode::Multi;
+    else
+        m_ScreenMode = ScreenMode::Unknow;
+    
+    // set up QTimer obj
+    m_Timer = new QTimer(this);
+    connect(m_Timer, &QTimer::timeout, this, &ScreenMonitor::detect_screen_mode);
+    // set timer to run every 0.5 sec
+    m_Timer->start(500);
+}
+
+void ScreenMonitor::detect_screen_mode()
+{
+    // get primary screen resolution after zoom in/out
+    int CX = GetSystemMetrics(SM_CXSCREEN);
+    int CY = GetSystemMetrics(SM_CYSCREEN);
+    
+    // get all screens resolution after zoom in/out
+    int virCX = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+    int virCY = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+    
+    // record last screen mode
+    ScreenMode last_mode = m_ScreenMode;
+    
+    // determine screen mode
+    if (CX == virCX && CY == virCY)
+        m_ScreenMode = ScreenMode::Single;
+    else if (CX != virCX || CY != virCY)
+        m_ScreenMode = ScreenMode::Multi;
+    else
+        m_ScreenMode = ScreenMode::Unknow;
+    
+    // post ScreenMode Change Event
+    if (last_mode != m_ScreenMode) // screen mode changed, send update event
+        QApplication::instance()->postEvent(m_EventReceiver, new ScreenModeChangeEvent());
+}
+
+
+// ====================== ScreenMonitor End ======================

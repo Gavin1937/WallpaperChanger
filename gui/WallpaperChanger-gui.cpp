@@ -10,6 +10,7 @@
 // others
 #include "resources.h"
 #include "mainwindow.h"
+#include "timer.h"
 
 
 int APIENTRY WinMain(
@@ -30,8 +31,15 @@ int APIENTRY WinMain(
     MainWindow w;
     w.update_wallpapers();
     
+    // start ScreenMonitor
+    ScreenMonitor sm(&w);
+    
     // show MainWindow for Debugging
     w.show();
+    
+    
+    
+    
     
     
     // execute QApplication

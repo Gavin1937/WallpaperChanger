@@ -1,6 +1,7 @@
 #pragma once
 
 // Qt Libs
+#include <QApplication>
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include <QMenu>
@@ -9,6 +10,7 @@
 #include <QString>
 #include <QProcess>
 #include <QSettings>
+#include <QEvent>
 
 // C++ STL
 #include <stdexcept>
@@ -36,6 +38,9 @@ public:
     
 public slots:
     void iconActivated(QSystemTrayIcon::ActivationReason);
+    
+protected:
+    void customEvent(QEvent* e);
     
 private:
     QMenu* createMenu();

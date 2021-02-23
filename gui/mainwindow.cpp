@@ -1,10 +1,3 @@
-// Qt Libs
-#include <QDebug>
-#include <QMessageBox>
-#include <QCoreApplication>
-
-// C++ STL
-#include <fstream>
 
 // others
 #include "mainwindow.h"
@@ -34,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
         MessageBoxW(0, L"Missing Components in config.ini", L"Warning", 0);
         return;
     }
+    
     
     // check whether to update wallpapers
     bool is_land_port_wallpaper_empty = 
@@ -140,6 +134,15 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason_)
     // }
 }
 
+// protected:
+
+// receive screen resize event
+void MainWindow::customEvent(QEvent* e)
+{
+    // ? Potential Bug: Windows create /CachedFile/ after update_wallpapers()
+    // ? Need to test later
+    update_wallpapers();
+}
 
 // private:
 

@@ -2,10 +2,6 @@
 
 1. work on gui
 
-    B. let program update wallpaper after screen resolution change
-        a. display change detection (QTimer)
-        b. update wallpaper after change
-
     C. add features of core to gui menu (add, del, find, help....)
         a. add
         b. del.
