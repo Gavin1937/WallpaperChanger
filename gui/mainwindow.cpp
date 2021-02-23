@@ -13,7 +13,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , trayIcon(new QSystemTrayIcon(this)),
-    timer(nullptr), m_Config()
+    m_Wallpaper_Updater(nullptr), m_Config()
 {
     // initialize config
     std::wstring config_path = GlobTools::getCurrExePathW();
@@ -47,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
     update_wallpapers();
     
     // init timer
-    timer = new Timer();
+    m_Wallpaper_Updater = new WallpaperUpdater();
     
     // Tray icon menu
     auto menu = this->createMenu();

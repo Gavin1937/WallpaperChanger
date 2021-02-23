@@ -7,9 +7,17 @@
         c. extract classes from mainwindow files
 
     B. let program update wallpaper after screen resolution change
+        a. display change detection (QTimer)
+        b. update wallpaper after change
 
     C. add features of core to gui menu (add, del, find, help....)
+        a. add
+        b. del.
+        c. find
+        d. help
 
     D. add better setting dialog
         a. Integrate .ui file?
+    
+    E. image cropping add to core
     

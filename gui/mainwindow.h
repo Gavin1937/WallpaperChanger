@@ -53,7 +53,7 @@ private:
 private:
     QSystemTrayIcon* trayIcon;
     QMenu* trayIconMenu;
-    Timer* timer;
+    WallpaperUpdater* m_Wallpaper_Updater;
     
     ConfigManager m_Config;
 };

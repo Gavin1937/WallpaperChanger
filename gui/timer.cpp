@@ -1,21 +1,19 @@
-// Qt Libs
-#include <QTimer>
 
 // others
 #include "timer.h"
 
-Timer::Timer(QWidget *parent)
+WallpaperUpdater::WallpaperUpdater(QWidget *parent)
     : QWidget(parent)
 {
     // set up QTimer obj
-    QTimer *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &Timer::update_wallpapers);
+    m_Timer = new QTimer(this);
+    connect(m_Timer, &QTimer::timeout, this, &WallpaperUpdater::update_wallpapers);
     // get sec from config.ini
     ConfigManager loc_config(GlobTools::getCurrExePathW()+L"config.ini", false);
-    timer->start(loc_config.getInt(L"program", L"wallpaper_update_time")*1000);
+    m_Timer->start(loc_config.getInt(L"program", L"wallpaper_update_time")*1000);
 }
 
-void Timer::update_wallpapers()
+void WallpaperUpdater::update_wallpapers()
 {
     ConfigManager loc_config(GlobTools::getCurrExePathW()+L"config.ini", false);
 	QObject* parent1 = new QObject();
@@ -29,7 +27,7 @@ void Timer::update_wallpapers()
 		;
 	QProcess* myProcess1 = new QProcess(parent1);
 	myProcess1->start(program1, arguments1);
-
+	
 	QObject* parent2 = new QObject();
 	QString program2 = QString::fromWCharArray(loc_config.get(L"program", L"core_program").c_str());
 	QStringList arguments2;

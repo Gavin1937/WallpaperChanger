@@ -4,22 +4,23 @@
 #include <QWidget>
 #include <QString>
 #include <QProcess>
+#include <QTimer>
 
 // other
 #include "ConfigManager.h"
 #include "GlobTools.h"
 
 
-class Timer : public QWidget
+class WallpaperUpdater : public QWidget
 {
     Q_OBJECT
     
 public:
-    Timer(QWidget *parent = 0);
+    WallpaperUpdater(QWidget *parent = 0);
     
 public slots:
     void update_wallpapers();
     
 private:
-    int counter = 0;
+    QTimer* m_Timer;
 };
