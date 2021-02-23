@@ -5,6 +5,7 @@
 #include <QString>
 #include <QProcess>
 #include <QTimer>
+#include <QDir>
 
 // other
 #include "ConfigManager.h"

@@ -1,10 +1,6 @@
 
 
 1. work on gui
-    A. clean gui system structure
-        a. better Timer class
-        b. better mainwindow class
-        c. extract classes from mainwindow files
 
     B. let program update wallpaper after screen resolution change
         a. display change detection (QTimer)

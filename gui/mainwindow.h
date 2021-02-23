@@ -51,8 +51,8 @@ private:
     
     
 private:
-    QSystemTrayIcon* trayIcon;
-    QMenu* trayIconMenu;
+    QSystemTrayIcon* m_TrayIcon;
+    QMenu* m_TrayIconMenu;
     WallpaperUpdater* m_Wallpaper_Updater;
     
     ConfigManager m_Config;

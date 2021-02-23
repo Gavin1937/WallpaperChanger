@@ -10,10 +10,15 @@
 #include "mainwindow.h"
 
 
+// ====================== MainWindow ======================
+
+// public
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , trayIcon(new QSystemTrayIcon(this)),
-    m_Wallpaper_Updater(nullptr), m_Config()
+    , m_TrayIcon(new QSystemTrayIcon(this)),
+    m_Wallpaper_Updater(nullptr),
+    m_TrayIconMenu(nullptr), m_Config()
 {
     // initialize config
     std::wstring config_path = GlobTools::getCurrExePathW();
@@ -35,34 +40,35 @@ MainWindow::MainWindow(QWidget *parent)
         m_Config.get(L"wallpaper", L"landscape_wallpaper").empty() ||
         m_Config.get(L"wallpaper", L"portrait_wallpaper").empty();
     if (!is_land_port_wallpaper_empty) { // no empty wallpaper, have both landscape & portrait
+        // set default wappaper and update wallpaper
         set_default_wallpaper();
     } else { // have empty wallpaper, prompt user for input
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // ! NEED TO REPLACE WITH PROPER DIALOG PROMPT
         MessageBoxW(0, L"Missing Components in config.ini", L"Warning", 0);
         return;
+        
+        // // set default wappaper and update wallpaper
+        // set_default_wallpaper();
     }
-    
-    // update wallpapers 1st time
-    update_wallpapers();
     
     // init timer
     m_Wallpaper_Updater = new WallpaperUpdater();
     
-    // Tray icon menu
-    auto menu = this->createMenu();
-    this->trayIcon->setContextMenu(menu);
-    
     // App icon
     auto appIcon = QIcon(":/res/icon.png");
-    this->trayIcon->setIcon(appIcon);
+    this->m_TrayIcon->setIcon(appIcon);
     this->setWindowIcon(appIcon);
     
+    // Tray icon menu
+    m_TrayIconMenu = this->createMenu();
+    this->m_TrayIcon->setContextMenu(m_TrayIconMenu);
+    
     // Displaying the tray icon
-    this->trayIcon->show();
+    this->m_TrayIcon->show();
     
     // Interaction
-    connect(trayIcon, &QSystemTrayIcon::activated, this, &MainWindow::iconActivated);
+    connect(m_TrayIcon, &QSystemTrayIcon::activated, this, &MainWindow::iconActivated);
 }
 
 void MainWindow::write_default_config()
@@ -86,13 +92,21 @@ void MainWindow::write_default_config()
     // write config file
     m_Config.write(L"./config.ini");
 }
+
 void MainWindow::update_wallpapers()
 {
+    // rm -rf /CachedFiles/ first, and then re-create that dir 
+    QDir theme_dir(QString::fromWCharArray(m_Config.get(L"system", L"windows_theme_dir").c_str()));
+    QDir cache_dir(theme_dir.absolutePath()+QString::fromWCharArray(L"CachedFiles"));
+    if (cache_dir.exists())
+        cache_dir.removeRecursively();
+    theme_dir.mkdir(QString::fromWCharArray(L"CachedFiles"));
+    
+    // update landscape wallpaper
     QObject *parent1 = new QObject();
     QString program1 = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
     QStringList arguments1;
     arguments1
-            // update landscape wallpaper
             << QString::fromWCharArray(L"--paste")
             << QString::fromWCharArray(m_Config.get(L"wallpaper", L"landscape_wallpaper").c_str())
             << QString::fromWCharArray(L"LANDSCAPE")
@@ -100,11 +114,11 @@ void MainWindow::update_wallpapers()
     QProcess *myProcess1 = new QProcess(parent1);
     myProcess1->start(program1, arguments1);
     
+    // update portrait wallpaper
     QObject* parent2 = new QObject();
     QString program2 = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
     QStringList arguments2;
     arguments2
-            // update portrait wallpaper
             << QString::fromWCharArray(L"--paste")
             << QString::fromWCharArray(m_Config.get(L"wallpaper", L"portrait_wallpaper").c_str())
             << QString::fromWCharArray(L"PORTRAIT")
@@ -113,17 +127,21 @@ void MainWindow::update_wallpapers()
     myProcess2->start(program2, arguments2);
 }
 
-// void test()
-// {
-//     std::ofstream output("test.txt", std::ios::app);
-//     output << "output test string\n";
-//     output.close();
-// }
 
-void test()
+// public slot:
+void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason_)
 {
-    MessageBoxW(0, L"Hello", L"Information", 0);
+    // switch (reason_) {
+    // case QSystemTrayIcon::Trigger:
+    //     this->trayIcon->showMessage("Hello", "You clicked me!");
+    //     break;
+    // default:
+    //     ;
+    // }
 }
+
+
+// private:
 
 QMenu* MainWindow::createMenu()
 {
@@ -132,10 +150,10 @@ QMenu* MainWindow::createMenu()
     // Update Wallpapers
     menu_add_action(main_menu, L"Update Wallpapers", &MainWindow::update_wallpapers);
     
-    // Sub Menu >
-    auto sub_menu = menu_add_menu(main_menu, L"Sub Menu");
-        // Sub Action
-        menu_add_action(sub_menu, L"Sub Action", test);
+    // // Sub Menu >
+    // auto sub_menu = menu_add_menu(main_menu, L"Sub Menu");
+    //     // Sub Action
+    //     menu_add_action(sub_menu, L"Sub Action", test);
     
     // Quit
     menu_add_action(main_menu, L"Quit", &QCoreApplication::quit);
@@ -144,6 +162,7 @@ QMenu* MainWindow::createMenu()
 }
 
 // helper functions
+
 std::wstring MainWindow::get_windows_sys_theme_dir()
 {
     std::wstring output = QDir::homePath().toStdWString();
@@ -187,15 +206,12 @@ void MainWindow::set_default_wallpaper()
                             QSettings::NativeFormat);
 	settings->setValue("Wallpaper", QVariant(*path));
     // set wallpaper
-	SystemParametersInfoW(SPI_SETDESKWALLPAPER, 1, default_wallpaper.data(), SPIF_SENDWININICHANGE);
-    
-    if (SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, default_wallpaper.data(),
-        SPIF_UPDATEINIFILE | SPIF_SENDCHANGE) != 0)
+	if (SystemParametersInfoW(SPI_SETDESKWALLPAPER, 1, default_wallpaper.data(),
+        SPIF_SENDWININICHANGE) != 0)
     { //success
         // SystemParametersInfoW() will delete /CachedFiles/ under Windows Theme Dir
-        // Create a new /CachedFiles/ folder under that Dir for wallpaper updates later
-        QDir theme_dir(QString::fromWCharArray(m_Config.get(L"system", L"windows_theme_dir").c_str()));
-        theme_dir.mkdir(QString::fromWCharArray(L"CachedFiles"));
+        // So update /CachedFiles/ after success
+        update_wallpapers();
     }
 }
 
@@ -221,13 +237,5 @@ QMenu* MainWindow::menu_add_menu(
     return child_menu;
 }
 
-void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason_)
-{
-    // switch (reason_) {
-    // case QSystemTrayIcon::Trigger:
-    //     this->trayIcon->showMessage("Hello", "You clicked me!");
-    //     break;
-    // default:
-    //     ;
-    // }
-}
+
+// ====================== MainWindow End ======================
