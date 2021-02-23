@@ -91,9 +91,10 @@ void MainWindow::update_wallpapers()
 {
     // rm -rf /CachedFiles/ first, and then re-create that dir 
     QDir theme_dir(QString::fromWCharArray(m_Config.get(L"system", L"windows_theme_dir").c_str()));
-    QDir cache_dir(theme_dir.absolutePath()+QString::fromWCharArray(L"CachedFiles"));
-    if (cache_dir.exists())
-        cache_dir.removeRecursively();
+    QDir cache_dir(theme_dir.absolutePath()+QString::fromWCharArray(L"/CachedFiles"));
+    while (!cache_dir.exists())
+        Sleep(500); // wait until /CachedFiles/ been create
+    cache_dir.removeRecursively(); // remove auto create dir and make a new one
     theme_dir.mkdir(QString::fromWCharArray(L"CachedFiles"));
     
     // update landscape wallpaper
@@ -139,8 +140,6 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason_)
 // receive screen resize event
 void MainWindow::customEvent(QEvent* e)
 {
-    // ? Potential Bug: Windows create /CachedFile/ after update_wallpapers()
-    // ? Need to test later
     update_wallpapers();
 }
 

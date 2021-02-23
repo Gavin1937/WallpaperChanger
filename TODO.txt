@@ -1,7 +1,13 @@
 
+**BUG**
+    A. Potential BUG: Windows may auto generate /CachedFile/ after program generated it
+    B. Unsure BUG: WallpaperLists may be overwrite somehow
+
 
 1. work on gui
-
+    
+    
+    
     C. add features of core to gui menu (add, del, find, help....)
         a. add
         b. del.
