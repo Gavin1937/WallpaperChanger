@@ -2,6 +2,9 @@
 **BUG**
     A. Potential BUG: Windows may auto generate /CachedFile/ after program generated it
     B. Unsure BUG: WallpaperLists may be overwrite somehow
+    
+    C. [core] do not add more than 2 files to /Wallpapers/
+    D. ./core_cache does not work properly
 
 
 1. work on gui

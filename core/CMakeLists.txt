@@ -13,12 +13,14 @@ file(GLOB SRC
     GlobTools.cpp
     WallpaperManager.cpp
     ConfigManager.cpp
+    CacheIO.cpp
 )
 file(GLOB HEADER
     ArgumentHandler.h
     GlobTools.h
     WallpaperManager.h
     ConfigManager.h
+    CacheIO.h
 )
 
 add_executable(WallpaperChanger-core
