@@ -24,8 +24,15 @@ MainWindow::MainWindow(QWidget *parent)
         // prompt user to input basic configs
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // ! NEED TO REPLACE WITH PROPER DIALOG PROMPT
-        MessageBoxW(0, L"Missing Components in config.ini", L"Warning", 0);
-        return;
+        // MessageBoxW(0, L"Missing Components in config.ini", L"Warning", 0);
+        // return;
+        
+        if (m_Config.get(L"wallpaper", L"default_wallpaper_path").empty())
+            add_default_wallpaper();
+        if (m_Config.get(L"wallpaper", L"landscape_wallpaper").empty())
+            add_landscape_wallpaper();
+        if (m_Config.get(L"wallpaper", L"portrait_wallpaper").empty())
+        add_portrait_wallpaper();
     }
     
     
@@ -152,10 +159,12 @@ QMenu* MainWindow::createMenu()
     // Update Wallpapers
     menu_add_action(main_menu, L"Update Wallpapers", &MainWindow::update_wallpapers);
     
-    // // Sub Menu >
-    // auto sub_menu = menu_add_menu(main_menu, L"Sub Menu");
-    //     // Sub Action
-    //     menu_add_action(sub_menu, L"Sub Action", test);
+    // Add >
+    auto add_menu = menu_add_menu(main_menu, L"Add");
+        // Add Landscape Wallpaper
+        menu_add_action(add_menu, L"Add Default Wallpaper", &MainWindow::add_default_wallpaper);
+        menu_add_action(add_menu, L"Add Landscape Wallpaper", &MainWindow::add_landscape_wallpaper);
+        menu_add_action(add_menu, L"Add Portrait Wallpaper", &MainWindow::add_portrait_wallpaper);
     
     // Quit
     menu_add_action(main_menu, L"Quit", &QCoreApplication::quit);
@@ -215,6 +224,72 @@ void MainWindow::set_default_wallpaper()
         // So update /CachedFiles/ after success
         update_wallpapers();
     }
+}
+
+void MainWindow::add_default_wallpaper()
+{
+    // get user input default wallpaper path
+    QString default_wallpaper = select_image("Select Default Wallpaper");
+    m_Config.set(L"wallpaper", L"default_wallpaper_path", default_wallpaper.toStdWString());
+}
+void MainWindow::add_landscape_wallpaper()
+{
+    // get user input landscape wallpaper path
+    QString landscape_wallpaper = select_image("Select Landscape Wallpaper");
+    // cache wallpaper
+    QObject* parent = new QObject();
+    QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
+    QStringList arguments;
+    arguments
+            << QString::fromWCharArray(L"--add")
+            << landscape_wallpaper
+    ;
+    QProcess *myProcess = new QProcess(parent);
+    myProcess->start(program, arguments);
+    // get wallpaper ID from ./core_cache
+    std::wifstream cache(L"core_cache");
+    std::wstring wallpaper_ID;
+    if (!cache.fail()) {
+        cache >> wallpaper_ID;
+        m_Config.set(L"wallpaper", L"landscape_wallpaper", wallpaper_ID);
+    }
+    cache.close();
+}
+void MainWindow::add_portrait_wallpaper()
+{
+    // get user input portrait wallpaper path
+    QString portrait_wallpaper = select_image("Select Portrait Wallpaper");
+    // cache wallpaper
+    QObject* parent = new QObject();
+    QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
+    QStringList arguments;
+    arguments
+            << QString::fromWCharArray(L"--add")
+            << portrait_wallpaper
+    ;
+    QProcess *myProcess = new QProcess(parent);
+    myProcess->start(program, arguments);
+    // get wallpaper ID from ./core_cache
+    std::wifstream cache(L"core_cache");
+    std::wstring wallpaper_ID;
+    if (!cache.fail()) {
+        cache >> wallpaper_ID;
+        m_Config.set(L"wallpaper", L"landscape_wallpaper", wallpaper_ID);
+    }
+    cache.close();
+}
+
+QString MainWindow::select_image(std::string dlg_caption, std::string default_filename)
+{
+    if (default_filename[0] != '/')
+        default_filename = '/' + default_filename;
+	return QFileDialog::getOpenFileName(this, tr(dlg_caption.data()),
+                                                tr(default_filename.data()),
+                                                tr("All Images (*.png *.jpg *.jpeg *.bmp)\n"
+                                                    "JPEG/JPG (*.jpg *.jpeg)\n"
+                                                    "PNG (*.png)\n"
+                                                    "BMP (*.bmp)\n"
+                                                    "All Files (*.*)"));
 }
 
 template<class FUNC>

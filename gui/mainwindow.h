@@ -11,9 +11,13 @@
 #include <QProcess>
 #include <QSettings>
 #include <QEvent>
+#include <QFileDialog>
 
 // C++ STL
 #include <stdexcept>
+#include <string>
+
+#include <fstream>
 
 // Windows API
 #include <windows.h>
@@ -49,6 +53,11 @@ private:
     std::wstring get_windows_sys_theme_dir();
     std::pair<int, int> get_physical_screen_res();
     void set_default_wallpaper();
+    
+    void add_default_wallpaper();
+    void add_landscape_wallpaper();
+    void add_portrait_wallpaper();
+    QString select_image(std::string dlg_caption = "Select Image", std::string default_filename = "/Select Image");
     
     template<class FUNC>
     void menu_add_action(QMenu* menu, const std::wstring& action_name, FUNC action_func);
