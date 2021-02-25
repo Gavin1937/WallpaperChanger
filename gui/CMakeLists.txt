@@ -20,28 +20,34 @@ set(CMAKE_PREFIX_PATH "C:/Qt/6.0.0/msvc2019_64")
 
 find_package(Qt6 COMPONENTS Widgets REQUIRED)
 
+include_directories(utilities)
+
 file(GLOB SRC
     WallpaperChanger-gui.cpp
     mainwindow.cpp
     timer.cpp
-    ConfigManager.cpp
-    GlobTools.cpp
 )
 file(GLOB HEADER
     mainwindow.h
     timer.h
     resources.h
-    ConfigManager.h
-    GlobTools.h
 )
 file(GLOB RES
     resources.qrc
     resources.rc
 )
+file(GLOB UTIL
+    ../utilities/CacheRW.h
+    ../utilities/CacheRW.cpp
+    ../utilities/ConfigManager.h
+    ../utilities/ConfigManager.cpp
+    ../utilities/GlobTools.h
+    ../utilities/GlobTools.cpp
+)
 
 add_executable(WallpaperChanger-gui
     WIN32
-    ${SRC} ${HEADER} ${RES}
+    ${SRC} ${HEADER} ${RES} ${UTIL}
 )
 
 

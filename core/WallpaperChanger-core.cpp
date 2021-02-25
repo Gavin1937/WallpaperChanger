@@ -9,8 +9,8 @@
 // others
 #include "ArgumentHandler.h"
 #include "WallpaperManager.h"
-#include "ConfigManager.h"
-#include "CacheIO.h"
+#include "../utilities/ConfigManager.h"
+#include "../utilities/CacheRW.h"
 
 
 int WINAPI wWinMain(

@@ -26,8 +26,8 @@
 
 // others
 #include "timer.h"
-#include "GlobTools.h"
-#include "ConfigManager.h"
+#include "../utilities/GlobTools.h"
+#include "../utilities/ConfigManager.h"
 
 
 class MainWindow : public QMainWindow

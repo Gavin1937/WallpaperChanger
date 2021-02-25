@@ -1,5 +1,5 @@
 #include "WallpaperManager.h"
-#include "GlobTools.h"
+#include "../utilities/GlobTools.h"
 
 namespace {
     std::vector<std::wstring> SupportedImageFileExtension = {

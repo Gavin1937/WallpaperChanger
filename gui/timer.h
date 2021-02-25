@@ -14,8 +14,8 @@
 #include <Windows.h>
 
 // other
-#include "ConfigManager.h"
-#include "GlobTools.h"
+#include "../utilities/ConfigManager.h"
+#include "../utilities/GlobTools.h"
 
 
 // update wallpaper autometically

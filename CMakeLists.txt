@@ -6,3 +6,4 @@ add_definitions(-DUNICODE -D_UNICODE)
 
 add_subdirectory(core)
 add_subdirectory(gui)
+include_directories(utilities)

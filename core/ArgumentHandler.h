@@ -3,7 +3,7 @@
 #include <iostream>
 #include <windows.h>
 
-#include "GlobTools.h"
+#include "../utilities/GlobTools.h"
 
 /*
  * Allowed Arguments

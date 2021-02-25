@@ -7,25 +7,29 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_definitions(-DUNICODE -D_UNICODE)
 
+include_directories(utilities)
+
 file(GLOB SRC
     WallpaperChanger-core.cpp
     ArgumentHandler.cpp
-    GlobTools.cpp
     WallpaperManager.cpp
-    ConfigManager.cpp
-    CacheIO.cpp
 )
 file(GLOB HEADER
     ArgumentHandler.h
-    GlobTools.h
     WallpaperManager.h
-    ConfigManager.h
-    CacheIO.h
+)
+file(GLOB UTIL
+    ../utilities/CacheRW.h
+    ../utilities/CacheRW.cpp
+    ../utilities/ConfigManager.h
+    ../utilities/ConfigManager.cpp
+    ../utilities/GlobTools.h
+    ../utilities/GlobTools.cpp
 )
 
 add_executable(WallpaperChanger-core
     WIN32
-    ${SRC} ${HEADER}
+    ${SRC} ${HEADER} ${UTIL}
 )
 
 install(TARGETS WallpaperChanger-core RUNTIME DESTINATION build)
