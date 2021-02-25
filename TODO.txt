@@ -6,12 +6,21 @@
     C. [core] do not add more than 2 files to /Wallpapers/
     D. ./core_cache does not work properly
 
+    E. [gui] may take a while to create icon in multi-screen mode
+
+    F. [gui] replace ./TranscodedWallpaper file w/ default_wallpaper BEFORE set wallpaper w/ SystemParameterInfo()
+             to avoid Windows from auto create low quality wallpapers from low quality cached ./TranscodedWallpaper
+             This happens on multi-screen mode, all screen will receive wallpaper came from ./TranscodedWallpaper
+
 
 1. work on gui
     
     
     
     C. add features of core to gui menu (add, del, find, help....)
+        
+        1. use a tab dialog to show user about missing configs & help them to complete config
+        
         a. add
         b. del.
         c. find
@@ -20,5 +29,5 @@
     D. add better setting dialog
         a. Integrate .ui file?
     
-    E. image cropping add to core
+    E. image cropping & rotation add to core (w/ QImage lib)
     
