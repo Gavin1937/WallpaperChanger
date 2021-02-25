@@ -1,8 +1,11 @@
 #pragma once
 #include <string>
+#include <vector>
 #include <iostream>
+#include <stdexcept>
 #include <windows.h>
 
+#include "WallpaperManager.h"
 #include "../utilities/GlobTools.h"
 
 /*
@@ -41,7 +44,7 @@ namespace {
 // Mode of Wallpaper, PORTRAIT or LANDSCAPE
 enum class WallpaperMode {
     UNKNOW = 0,
-    PORTRAIT, LANDSCAPE
+    DEFAULT, PORTRAIT, LANDSCAPE
 };
 
 // handling arguments in wmain() function
@@ -53,12 +56,14 @@ public:
     ArgumentHandlerW(int argc, wchar_t** argv);
     
     void helpMsgBox();
+    std::wstring helpMsgStr();
     
     // getters
     std::wstring getFileName();
     std::wstring getFilePath();
     WallpaperMode getWallpaperMode();
     
+    // argument flags
     bool hasAdd();
     const bool hasAdd() const;
     bool hasDel();
@@ -69,6 +74,16 @@ public:
     const bool hasPaste() const;
     bool hasHelp();
     const bool hasHelp() const;
+    
+    // argument validation
+    bool isAddValid();
+    const bool isAddValid() const;
+    bool isDelValid(const WallpaperInfo* wallpaperInfo_arr, const int& arr_size);
+    const bool isDelValid(const WallpaperInfo* wallpaperInfo_arr, const int& arr_size) const;
+    bool isFindValid();
+    const bool isFindValid() const;
+    bool isPasteValid(const WallpaperInfo* wallpaperInfo_arr, const int& arr_size);
+    const bool isPasteValid(const WallpaperInfo* wallpaperInfo_arr, const int& arr_size) const;
     
 private:
     // argument buffer
@@ -93,6 +108,7 @@ public:
     ArgumentHandlerA(int argc, char** argv);
     
     void helpMsgBox();
+    std::string helpMsgStr();
     
     // getters
     std::string getFileName();

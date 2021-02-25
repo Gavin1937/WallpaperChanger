@@ -246,6 +246,39 @@ WallpaperInfo& WallpaperManager::find_wallpaperInfo_via_time(const int& add_time
     } return *(new WallpaperInfo());
 }
 
+// CachedWallpaperInfo data accessing
+WallpaperInfo& WallpaperManager::get_first_wallpaperInfo()
+{
+    return m_CachedWallpaperInfo[0];
+}
+WallpaperInfo& WallpaperManager::get_last_wallpaperInfo()
+{
+    return m_CachedWallpaperInfo[m_CachedWallpaperInfo.size()-1];
+}
+WallpaperInfo* WallpaperManager::get_wallpaperInfo_data()
+{
+    return m_CachedWallpaperInfo.data();
+}
+
+// CachedWallpaperInfo basic info
+size_t WallpaperManager::get_wallpaperInfo_size()
+{
+    return m_CachedWallpaperInfo.size();
+}
+const size_t WallpaperManager::get_wallpaperInfo_size() const
+{
+    return m_CachedWallpaperInfo.size();
+}
+bool WallpaperManager::is_wallpaperInfo_empty()
+{
+    return m_CachedWallpaperInfo.empty();
+}
+const bool WallpaperManager::is_wallpaperInfo_empty() const
+{
+    return m_CachedWallpaperInfo.empty();
+}
+
+
 // ====================== WallpaperManager End ======================
 
 

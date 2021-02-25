@@ -23,14 +23,13 @@ class Cache_Writer
 public:
     // parametric constructor
     Cache_Writer(const STRING& str, const STRING& output_filename = T("core_cache"));
-    Cache_Writer(const STRING str_arr[], const STRING& output_filename = T("core_cache"));
+    Cache_Writer(const STRING str_arr[], const int& arr_size, const STRING& output_filename = T("core_cache"));
     
     // destructor
     ~Cache_Writer();
     
     // write cache
     void write_to(const STRING& filename);
-    void write_to(const STRING filename[]);
     
 private:
     STRING *p_CacheBuff;

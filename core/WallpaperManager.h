@@ -69,6 +69,16 @@ public:
     WallpaperInfo& find_wallpaperInfo_via_new(const std::wstring& new_filename_hexID);
     WallpaperInfo& find_wallpaperInfo_via_time(const int& add_time);
     
+    // CachedWallpaperInfo data accessing
+    WallpaperInfo& get_first_wallpaperInfo();
+    WallpaperInfo& get_last_wallpaperInfo();
+    WallpaperInfo* get_wallpaperInfo_data();
+    
+    // CachedWallpaperInfo basic info
+    size_t get_wallpaperInfo_size();
+    const size_t get_wallpaperInfo_size() const;
+    bool is_wallpaperInfo_empty();
+    const bool is_wallpaperInfo_empty() const;
     
 private:
     // appent & update to WallpaperList file under ./Wallpapers/

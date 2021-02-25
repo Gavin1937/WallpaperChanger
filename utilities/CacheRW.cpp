@@ -17,12 +17,12 @@ Cache_Writer::Cache_Writer(const STRING& str, const STRING& output_filename)
         this->write_to(output_filename);
     }
 }
-Cache_Writer::Cache_Writer(const STRING str_arr[], const STRING& output_filename)
+Cache_Writer::Cache_Writer(const STRING str_arr[], const int& arr_size, const STRING& output_filename)
     : p_CacheBuff(nullptr), m_ArrSize(0)
 {
     if (str_arr != nullptr) {
         // initialize members
-        m_ArrSize = *(&str_arr + 1) - str_arr;
+        m_ArrSize = arr_size;
         p_CacheBuff = new STRING[m_ArrSize];
         // copy
         for (int i = 0; i < m_ArrSize; ++i)

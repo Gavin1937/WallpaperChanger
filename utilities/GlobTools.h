@@ -52,7 +52,8 @@ namespace GlobTools
     // get file list of input directory
     // return true if success, false if fail
     bool getFilesUnderDirW(const std::wstring& dir, std::vector<std::wstring>& buff);
-    
+
+
     
     // ifstream w/ utf8 locale set
     class utf8_ifstream : public std::ifstream
