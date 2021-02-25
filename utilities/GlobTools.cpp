@@ -85,71 +85,71 @@ bool GlobTools::getFilesUnderDirW(const std::wstring& dir, std::vector<std::wstr
 // ifstream w/ utf8 locale set
 GlobTools::utf8_ifstream::utf8_ifstream()
 {
-    imbue(std::locale());
+	imbue(std::locale("", LC_CTYPE));
 }
 GlobTools::utf8_ifstream::utf8_ifstream(
     const std::string& path, std::ios_base::openmode mode)
 {
-    imbue(std::locale());
+	imbue(std::locale("", LC_CTYPE));
     open(path, mode);
 }
 GlobTools::utf8_ifstream::utf8_ifstream(
     const std::wstring& path, std::ios_base::openmode mode)
 {
-    imbue(std::locale());
+	imbue(std::locale("", LC_CTYPE));
     open(path, mode);
 }
 
 // wifstream w/ utf8 locale set
 GlobTools::utf8_wifstream::utf8_wifstream()
 {
-    imbue(std::locale());
+	imbue(std::locale("", LC_CTYPE));
 }
 GlobTools::utf8_wifstream::utf8_wifstream(
     const std::string& path, std::ios_base::openmode mode)
 {
-    imbue(std::locale());
+	imbue(std::locale("", LC_CTYPE));
     open(path, mode);
 }
 GlobTools::utf8_wifstream::utf8_wifstream(
     const std::wstring& path, std::ios_base::openmode mode)
 {
-    imbue(std::locale());
+	imbue(std::locale("", LC_CTYPE));
     open(path, mode);
 }
 
 // ofstream w/ utf8 locale set
 GlobTools::utf8_ofstream::utf8_ofstream()
 {
-    imbue(std::locale());
+	imbue(std::locale("", LC_CTYPE));
 }
 GlobTools::utf8_ofstream::utf8_ofstream(
     const std::string& path, std::ios_base::openmode mode)
 {
-    imbue(std::locale());
+	imbue(std::locale("", LC_CTYPE));
     open(path, mode);
 }
 GlobTools::utf8_ofstream::utf8_ofstream(
     const std::wstring& path, std::ios_base::openmode mode)
 {
-    imbue(std::locale());
+	imbue(std::locale("", LC_CTYPE));
     open(path, mode);
 }
 
 // wofstream w/ utf8 locale set
 GlobTools::utf8_wofstream::utf8_wofstream()
 {
-    imbue(std::locale());
+	imbue(std::locale("", LC_CTYPE));
 }
 GlobTools::utf8_wofstream::utf8_wofstream(
     const std::string& path, std::ios_base::openmode mode)
 {
-    imbue(std::locale());
+	imbue(std::locale("", LC_CTYPE));
     open(path, mode);
 }
 GlobTools::utf8_wofstream::utf8_wofstream(
     const std::wstring& path, std::ios_base::openmode mode)
 {
-    imbue(std::locale());
+    imbue(std::locale("", LC_CTYPE));
     open(path, mode);
 }

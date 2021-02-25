@@ -22,6 +22,9 @@ STRING all2lower(const STRING& str)
 // ====================== Public Functions End ======================
 
 
+
+
+
 // ====================== Option ======================
 
 // default constructor
@@ -270,7 +273,9 @@ ConfigManager::~ConfigManager()
 void ConfigManager::read(const STRING& config_path)
 {
     if (is_file_exist(config_path)) {
-        IFSTREAM input(config_path);
+        IFSTREAM input;
+        input.imbue(std::locale("", LC_CTYPE));
+        input.open(config_path);
         STRING buff;
         if (input.fail()) {
             throw std::invalid_argument((
@@ -301,6 +306,7 @@ void ConfigManager::read(const STRING& config_path)
 void ConfigManager::write(const STRING& write_path)
 {
     OFSTREAM output;
+    output.imbue(std::locale("", LC_CTYPE));
     output.open(write_path);
     for (auto it_sec : m_Secs) {
         output << T("[") << it_sec.first << T("]\n");

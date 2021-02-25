@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <windows.h>
 #include <shellapi.h>
+#include <locale>
 
 // others
 #include "ArgumentHandler.h"

@@ -52,8 +52,9 @@ namespace GlobTools
     // get file list of input directory
     // return true if success, false if fail
     bool getFilesUnderDirW(const std::wstring& dir, std::vector<std::wstring>& buff);
-
-
+    
+    
+    // LC_CTYPE => locale will only handle characters
     
     // ifstream w/ utf8 locale set
     class utf8_ifstream : public std::ifstream
