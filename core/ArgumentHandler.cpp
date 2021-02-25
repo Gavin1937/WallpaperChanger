@@ -1,9 +1,9 @@
 #include "ArgumentHandler.h"
 
-// ====================== ArgumentHandlerW ======================
+// ====================== ArgumentHandler ======================
 
 // constructor
-ArgumentHandlerW::ArgumentHandlerW(int argc, wchar_t** argv)
+ArgumentHandler::ArgumentHandler(int argc, wchar_t** argv)
     : m_HasAdd(false), m_HasDel(false),
     m_HasFind(false), m_HasPaste(false),
     m_HasHelp(false), m_WallpaperMode(WallpaperMode::UNKNOW)
@@ -45,14 +45,14 @@ ArgumentHandlerW::ArgumentHandlerW(int argc, wchar_t** argv)
     }
 }
 
-void ArgumentHandlerW::helpMsgBox()
+void ArgumentHandler::helpMsgBox()
 {
     std::wstring msg;
     for (auto it : helpArrW)
         msg += it + L"\n";
     MessageBoxW(0, msg.c_str(), L"Help Information", 0);
 }
-std::wstring ArgumentHandlerW::helpMsgStr()
+std::wstring ArgumentHandler::helpMsgStr()
 {
 	std::wstring msg;
 	for (auto it : helpArrW)
@@ -61,76 +61,76 @@ std::wstring ArgumentHandlerW::helpMsgStr()
 }
 
 // getters
-std::wstring ArgumentHandlerW::getFileName()
+std::wstring ArgumentHandler::getFileName()
 {
     return m_FileName;
 }
-std::wstring ArgumentHandlerW::getFilePath()
+std::wstring ArgumentHandler::getFilePath()
 {
     return m_FilePath;
 }
-WallpaperMode ArgumentHandlerW::getWallpaperMode()
+WallpaperMode ArgumentHandler::getWallpaperMode()
 {
     return m_WallpaperMode;
 }
 
 
 // argument flags
-bool ArgumentHandlerW::hasAdd()
+bool ArgumentHandler::hasAdd()
 {
     return m_HasAdd;
 }
-const bool ArgumentHandlerW::hasAdd() const
+const bool ArgumentHandler::hasAdd() const
 {
     return m_HasAdd;
 }
-bool ArgumentHandlerW::hasDel()
+bool ArgumentHandler::hasDel()
 {
     return m_HasDel;
 }
-const bool ArgumentHandlerW::hasDel() const
+const bool ArgumentHandler::hasDel() const
 {
     return m_HasDel;
 }
-bool ArgumentHandlerW::hasFind()
+bool ArgumentHandler::hasFind()
 {
     return m_HasFind;
 }
-const bool ArgumentHandlerW::hasFind() const
+const bool ArgumentHandler::hasFind() const
 {
     return m_HasFind;
 }
-bool ArgumentHandlerW::hasPaste()
+bool ArgumentHandler::hasPaste()
 {
     return m_HasPaste;
 }
-const bool ArgumentHandlerW::hasPaste() const
+const bool ArgumentHandler::hasPaste() const
 {
     return m_HasPaste;
 }
-bool ArgumentHandlerW::hasHelp()
+bool ArgumentHandler::hasHelp()
 {
     return m_HasHelp;
 }
-const bool ArgumentHandlerW::hasHelp() const
+const bool ArgumentHandler::hasHelp() const
 {
     return m_HasHelp;
 }
 
 // argument validation
-bool ArgumentHandlerW::isAddValid()
+bool ArgumentHandler::isAddValid()
 {
     return (!m_FilePath.empty() && // has FilePath argument
             GlobTools::is_filedir_existW(m_FilePath) // FilePath exist
     );
 }
-const bool ArgumentHandlerW::isAddValid() const
+const bool ArgumentHandler::isAddValid() const
 {
     return (!m_FilePath.empty() && // has FilePath argument
             GlobTools::is_filedir_existW(m_FilePath) // FilePath exist
     );
 }
-bool ArgumentHandlerW::isDelValid(const WallpaperInfo* wallpaperInfo_arr, const int& arr_size) 
+bool ArgumentHandler::isDelValid(const WallpaperInfo* wallpaperInfo_arr, const int& arr_size) 
 {
     if (!m_FileName.empty() && wallpaperInfo_arr != nullptr) {
         bool is_filename_exist = false;
@@ -143,7 +143,7 @@ bool ArgumentHandlerW::isDelValid(const WallpaperInfo* wallpaperInfo_arr, const 
         return is_filename_exist; // FileName exist, valid
     } else return false;
 }
-const bool ArgumentHandlerW::isDelValid(const WallpaperInfo* wallpaperInfo_arr, const int& arr_size) const
+const bool ArgumentHandler::isDelValid(const WallpaperInfo* wallpaperInfo_arr, const int& arr_size) const
 {
     if (!m_FileName.empty() && wallpaperInfo_arr != nullptr) {
         bool is_filename_exist = false;
@@ -156,15 +156,15 @@ const bool ArgumentHandlerW::isDelValid(const WallpaperInfo* wallpaperInfo_arr, 
         return is_filename_exist; // FileName exist, valid
     } else return false;
 }
-bool ArgumentHandlerW::isFindValid()
+bool ArgumentHandler::isFindValid()
 {
     return (!m_FileName.empty()); // has FileName argument
 }
-const bool ArgumentHandlerW::isFindValid() const
+const bool ArgumentHandler::isFindValid() const
 {
     return (!m_FileName.empty()); // has FileName argument
 }
-bool ArgumentHandlerW::isPasteValid(const WallpaperInfo* wallpaperInfo_arr, const int& arr_size)
+bool ArgumentHandler::isPasteValid(const WallpaperInfo* wallpaperInfo_arr, const int& arr_size)
 {
     if (!m_FileName.empty() && wallpaperInfo_arr != nullptr) {
         bool is_filename_exist = false;
@@ -179,7 +179,7 @@ bool ArgumentHandlerW::isPasteValid(const WallpaperInfo* wallpaperInfo_arr, cons
         );
     } else return false;
 }
-const bool ArgumentHandlerW::isPasteValid(const WallpaperInfo* wallpaperInfo_arr, const int& arr_size) const
+const bool ArgumentHandler::isPasteValid(const WallpaperInfo* wallpaperInfo_arr, const int& arr_size) const
 {
     if (!m_FileName.empty() && wallpaperInfo_arr != nullptr) {
         bool is_filename_exist = false;
@@ -196,113 +196,4 @@ const bool ArgumentHandlerW::isPasteValid(const WallpaperInfo* wallpaperInfo_arr
 }
 
 
-// ====================== ArgumentHandlerW End ======================
-
-
-
-
-// ====================== ArgumentHandlerA ======================
-
-// constructor
-ArgumentHandlerA::ArgumentHandlerA(int argc, char** argv)
-    : m_HasAdd(false), m_HasDel(false),
-    m_HasFind(false), m_HasPaste(false),
-    m_HasHelp(false), m_WallpaperMode(WallpaperMode::UNKNOW)
-{
-    std::string buff;
-    for (int i = 1; i < argc; ++i) {
-        buff.assign(argv[i]);
-        if (buff == "--add") {
-            m_HasAdd = true;
-            m_FilePath = argv[i+1];
-        } 
-        if (buff == "--del") {
-            m_HasDel = true;
-            m_FileName = argv[i+1];
-        } 
-        if (buff == "--find") {
-            m_HasFind = true;
-            m_FileName = argv[i+1];
-        } 
-        if (buff == "--paste") {
-            m_HasPaste = true;
-            m_FileName = argv[i+1];
-        }
-        if (buff == "--help" || buff == "-h") {
-            m_HasHelp = true;
-        }
-    }
-}
-
-void ArgumentHandlerA::helpMsgBox()
-{
-    std::string msg;
-    for (auto it : helpArrA)
-        msg += it + "\n";
-    MessageBoxA(0, msg.c_str(), "Help Information", 0);
-}
-std::string ArgumentHandlerA::helpMsgStr()
-{
-    std::string msg;
-    for (auto it : helpArrA)
-        msg += it + "\n";
-    return msg;
-}
-
-// getters
-std::string ArgumentHandlerA::getFileName()
-{
-    return m_FileName;
-}
-std::string ArgumentHandlerA::getFilePath()
-{
-    return m_FilePath;
-}
-WallpaperMode ArgumentHandlerA::getWallpaperMode()
-{
-    return m_WallpaperMode;
-}
-
-bool ArgumentHandlerA::hasAdd()
-{
-    return m_HasAdd;
-}
-const bool ArgumentHandlerA::hasAdd() const
-{
-    return m_HasAdd;
-}
-bool ArgumentHandlerA::hasDel()
-{
-    return m_HasDel;
-}
-const bool ArgumentHandlerA::hasDel() const
-{
-    return m_HasDel;
-}
-bool ArgumentHandlerA::hasFind()
-{
-    return m_HasFind;
-}
-const bool ArgumentHandlerA::hasFind() const
-{
-    return m_HasFind;
-}
-bool ArgumentHandlerA::hasPaste()
-{
-    return m_HasPaste;
-}
-const bool ArgumentHandlerA::hasPaste() const
-{
-    return m_HasPaste;
-}
-bool ArgumentHandlerA::hasHelp()
-{
-    return m_HasHelp;
-}
-const bool ArgumentHandlerA::hasHelp() const
-{
-    return m_HasHelp;
-}
-
-
-// ====================== ArgumentHandlerA End ======================
+// ====================== ArgumentHandler End ======================

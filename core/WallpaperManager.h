@@ -12,6 +12,9 @@
 #include <codecvt>
 #include <locale>
 
+// others
+#include "../utilities/GlobTools.h"
+
 
 // class, struct, function declaration
 class WallpaperManager;
