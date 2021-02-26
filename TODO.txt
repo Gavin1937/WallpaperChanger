@@ -5,6 +5,11 @@
     
     G. Potential issue: [gui] program mem usage may continue add-up w/ update_wallpaper()
     
+    H. [gui] use a lot of memory
+
+    I. [gui] will left a ./core_cache file after created icon
+ 
+ 
     
 
 1. work on gui
