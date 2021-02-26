@@ -3,6 +3,9 @@
     A. Potential BUG: Windows may auto generate /CachedFile/ after program generated it
     B. Unsure BUG: WallpaperLists may be overwrite somehow
     
+    G. Potential issue: [gui] program mem usage may continue add-up w/ update_wallpaper()
+    
+    
 
 1. work on gui
     

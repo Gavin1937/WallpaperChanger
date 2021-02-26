@@ -14,7 +14,6 @@
 #include "resources.h"
 #include "mainwindow.h"
 #include "timer.h"
-
 #include "../utilities/CacheRW.h"
 
 
@@ -42,21 +41,9 @@ int APIENTRY WinMain(
     // show MainWindow for Debugging
     w.show();
     
-    
+    // clear potentially left over ./core_cache file
     Cache_ReaderW cleaner;
     
-    
-    
-    // Cache_ReaderW reader;
-    // auto ptr = reader.getData();
-    
-    // if (reader.isCacheExist()) {
-    //     std::wstring out;
-    //     for (auto it : *ptr)
-    //         out += it + L'\n';
-        
-    //     MessageBoxW(0, out.c_str(), L"Info", 0);
-    // }
     
     
     // execute QApplication

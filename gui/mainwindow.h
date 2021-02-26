@@ -55,7 +55,7 @@ private:
     std::pair<int, int> get_physical_screen_res();
     void set_default_wallpaper();
     std::wstring get_default_wallpaper_src();
-
+    
     void paste_default_wallpaper_to_themes();
     
     void add_default_wallpaper();

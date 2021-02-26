@@ -287,7 +287,7 @@ void MainWindow::paste_default_wallpaper_to_themes()
 	// wait for core to finish
 	while (!myProcess->waitForFinished())
 		Sleep(500);
-
+    
 	// read new added wallpaper from cache 
 	Cache_ReaderW cache;
 	if (cache.isCacheExist()) {
