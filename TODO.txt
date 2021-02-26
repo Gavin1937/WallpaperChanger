@@ -12,10 +12,6 @@
 
 1. work on gui
     
-    F. add Cache_Reader class
-        1. read from ./core_cache
-        2. delete ./core_cache after reading
-    
     
     C. add features of core to gui menu (add, del, find, help....)
         
