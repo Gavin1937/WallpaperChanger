@@ -96,10 +96,16 @@ void MainWindow::write_default_config()
 
 void MainWindow::update_wallpapers()
 {
+    // replace ./TranscodedWallpaper w/ default wallpaper
+	try {
+		paste_default_wallpaper_to_themes();
+	} catch (std::exception& err) {
+		throw err;
+	}
     // rm -rf /CachedFiles/ first, and then re-create that dir 
     QDir theme_dir(QString::fromWCharArray(m_Config.get(L"system", L"windows_theme_dir").c_str()));
     QDir cache_dir(theme_dir.absolutePath()+QString::fromWCharArray(L"/CachedFiles"));
-    while (!cache_dir.exists())
+    for (int i = 0; !cache_dir.exists() && i < 20; ++i)
         Sleep(500); // wait until /CachedFiles/ been create
     cache_dir.removeRecursively(); // remove auto create dir and make a new one
     theme_dir.mkdir(QString::fromWCharArray(L"CachedFiles"));
@@ -210,6 +216,7 @@ std::pair<int, int> MainWindow::get_physical_screen_res()
 void MainWindow::set_default_wallpaper()
 {
     // init wallpaper path
+    std::wstring default_wallpaper_id = m_Config.get(L"wallpaper", L"default_wallpaper_id");
     std::wstring default_wallpaper_src = get_default_wallpaper_src();
     if (!default_wallpaper_src.empty()) {
         QString *path = new QString(QString::fromWCharArray(default_wallpaper_src.c_str()));
@@ -217,6 +224,13 @@ void MainWindow::set_default_wallpaper()
         QSettings *settings = new QSettings("HKEY_CURRENT_USER\\Control Panel\\Desktop",
                                 QSettings::NativeFormat);
         settings->setValue("Wallpaper", QVariant(*path));
+        // replace ./TranscodedWallpaper w/ default wallpaper
+        try {
+            paste_default_wallpaper_to_themes();
+        } catch (std::exception& err) {
+            throw err;
+        }
+        
         // set wallpaper
         if (SystemParametersInfoW(SPI_SETDESKWALLPAPER, 1, default_wallpaper_src.data(),
             SPIF_SENDWININICHANGE) != 0)
@@ -249,10 +263,40 @@ std::wstring MainWindow::get_default_wallpaper_src()
     // read new added wallpaper from cache 
     Cache_ReaderW cache;
     if (cache.isCacheExist()) {
-        return cache.getData()->at(0);
+        std::wstring output(cache.getData()->at(0));
+        output.assign(output.begin()+output.find(L':')+2, output.end());
+        return output;
     } else {
         return std::wstring();
     }
+}
+void MainWindow::paste_default_wallpaper_to_themes()
+{
+    std::wstring default_wallpaper_id = m_Config.get(L"wallpaper", L"default_wallpaper_id");
+	// replace ./TranscodedWallpaper w/ default wallpaper
+	QObject* parent = new QObject();
+	QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
+	QStringList arguments;
+	arguments
+		<< "--paste"
+		<< QString::fromStdWString(default_wallpaper_id)
+		<< "DEFAULT"
+		;
+	QProcess* myProcess = new QProcess(parent);
+	myProcess->start(program, arguments);
+	// wait for core to finish
+	while (!myProcess->waitForFinished())
+		Sleep(500);
+
+	// read new added wallpaper from cache 
+	Cache_ReaderW cache;
+	if (cache.isCacheExist()) {
+		if (cache.getData()->at(0) != default_wallpaper_id)
+			throw std::invalid_argument("Error occurs during replacing TranscodedWallpaper");
+	}
+	else {
+        throw std::invalid_argument("Error occurs during reading/writing core_cache file");
+	}
 }
 
 void MainWindow::add_default_wallpaper()

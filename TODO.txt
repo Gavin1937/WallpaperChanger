@@ -3,12 +3,6 @@
     A. Potential BUG: Windows may auto generate /CachedFile/ after program generated it
     B. Unsure BUG: WallpaperLists may be overwrite somehow
     
-    E. [gui] may take a while to create icon in multi-screen mode
-
-    F. [gui] replace ./TranscodedWallpaper file w/ default_wallpaper BEFORE set wallpaper w/ SystemParameterInfo()
-             to avoid Windows from auto create low quality wallpapers from low quality cached ./TranscodedWallpaper
-             This happens on multi-screen mode, all screen will receive wallpaper came from ./TranscodedWallpaper
-
 
 1. work on gui
     

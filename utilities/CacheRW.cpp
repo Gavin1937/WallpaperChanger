@@ -111,7 +111,7 @@ Cache_ReaderA::Cache_ReaderA(const std::string& cache_filename, const bool& enab
         input.open(m_CacheFileName);
         std::string buff;
         p_CacheBuff = new std::vector<std::string>();
-        while(input >> buff) {
+        while(std::getline(input, buff)) {
             p_CacheBuff->push_back(buff);
             buff.clear();
         }
@@ -166,7 +166,7 @@ Cache_ReaderW::Cache_ReaderW(const std::wstring& cache_filename, const bool& ena
         input.open(m_CacheFileName);
         std::wstring buff;
         p_CacheBuff = new std::vector<std::wstring>();
-        while(input >> buff) {
+        while(std::getline(input, buff)) {
             p_CacheBuff->push_back(buff);
             buff.clear();
         }

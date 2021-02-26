@@ -43,6 +43,9 @@ int APIENTRY WinMain(
     w.show();
     
     
+    Cache_ReaderW cleaner;
+    
+    
     
     // Cache_ReaderW reader;
     // auto ptr = reader.getData();
