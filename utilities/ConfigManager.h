@@ -169,6 +169,9 @@ private:
     bool is_sec_line(const STRING& sec_line);
     bool is_opt_line(const STRING& opt_line);
     
+    // auto update config file if auto_write_flag set to true
+    void auto_update();
+    
 private:
     std::unordered_map<STRING, Section> m_Secs;
     STRING m_ConfigPath;

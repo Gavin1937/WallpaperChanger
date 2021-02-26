@@ -32,7 +32,7 @@ void WallpaperUpdater::update_wallpapers()
     QStringList arguments1;
     arguments1
             << QString::fromWCharArray(L"--paste")
-            << QString::fromWCharArray(loc_config.get(L"wallpaper", L"landscape_wallpaper").c_str())
+            << QString::fromWCharArray(loc_config.get(L"wallpaper", L"landscape_wallpaper_id").c_str())
             << QString::fromWCharArray(L"LANDSCAPE")
     ;
     QProcess *myProcess1 = new QProcess(parent1);
@@ -44,7 +44,7 @@ void WallpaperUpdater::update_wallpapers()
     QStringList arguments2;
     arguments2
             << QString::fromWCharArray(L"--paste")
-            << QString::fromWCharArray(loc_config.get(L"wallpaper", L"portrait_wallpaper").c_str())
+            << QString::fromWCharArray(loc_config.get(L"wallpaper", L"portrait_wallpaper_id").c_str())
             << QString::fromWCharArray(L"PORTRAIT")
     ;
     QProcess *myProcess2 = new QProcess(parent2);

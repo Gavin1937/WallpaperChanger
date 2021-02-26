@@ -5,12 +5,17 @@
 #include <QString>
 
 // C++ STL
+#include <string>
+
+// Windows API
 #include <windows.h>
 
 // others
 #include "resources.h"
 #include "mainwindow.h"
 #include "timer.h"
+
+#include "../utilities/CacheRW.h"
 
 
 int APIENTRY WinMain(
@@ -39,7 +44,16 @@ int APIENTRY WinMain(
     
     
     
+    // Cache_ReaderW reader;
+    // auto ptr = reader.getData();
     
+    // if (reader.isCacheExist()) {
+    //     std::wstring out;
+    //     for (auto it : *ptr)
+    //         out += it + L'\n';
+        
+    //     MessageBoxW(0, out.c_str(), L"Info", 0);
+    // }
     
     
     // execute QApplication

@@ -307,8 +307,10 @@ WallpaperInfo::WallpaperInfo(const std::wstring& src_path, const std::wstring& n
         curr_fileExtension.assign(temp_src_path.begin(), temp_src_path.begin()+temp_src_path.find(L'.'));
         reverse(curr_fileExtension.begin(), curr_fileExtension.end());
         for (auto it : SupportedImageFileExtension) {
-            if (it == curr_fileExtension)
+            if (it == curr_fileExtension) {
                 whether_support = true;
+                break;
+            }
         }
         
         if (whether_support) { // support file, assign m_OriFileName & m_AddTime

@@ -240,12 +240,12 @@ bool Section::isOptExist(const STRING& opt_name)
 // Default constructor
 ConfigManager::ConfigManager(const bool& auto_write_flag)
     : m_Secs(std::unordered_map<STRING, Section>()), m_ConfigPath(STRING()),
-    m_AutoWrite_flag(false)
+    m_AutoWrite_flag(auto_write_flag)
 {}
 // parametric constructor
 ConfigManager::ConfigManager(const STRING& config_path, const bool& auto_write_flag)
     : m_Secs(std::unordered_map<STRING, Section>()), m_ConfigPath(STRING()),
-    m_AutoWrite_flag(false)
+    m_AutoWrite_flag(auto_write_flag)
 {
     // checking input config_path
     if (is_file_exist(config_path))
@@ -260,10 +260,7 @@ ConfigManager::ConfigManager(const STRING& config_path, const bool& auto_write_f
 // destructor
 ConfigManager::~ConfigManager()
 {
-    if (!m_ConfigPath.empty() && m_AutoWrite_flag) {
-        // write config to file
-        this->write(m_ConfigPath);
-    }
+    auto_update();
     // destruct
     m_Secs.clear();
     m_ConfigPath.~basic_string();
@@ -315,6 +312,8 @@ void ConfigManager::write(const STRING& write_path)
         output << T("\n");
     }
     output.close();
+    if (m_ConfigPath.empty())
+        m_ConfigPath = write_path;
 }
 
 // getter
@@ -435,6 +434,7 @@ void ConfigManager::set(const STRING& sec_name, const STRING& opt_name, const ST
             ") does not exist"
         ).c_str());
     }
+    auto_update();
 }
 void ConfigManager::setSection(const STRING& sec_name, const Section& new_sec)
 {
@@ -447,6 +447,7 @@ void ConfigManager::setSection(const STRING& sec_name, const Section& new_sec)
             ") does not exist"
         ).c_str());
     }
+    auto_update();
 }
 void ConfigManager::setOption(const STRING& sec_name, const STRING& opt_name, const Option& new_opt)
 {
@@ -467,6 +468,7 @@ void ConfigManager::setOption(const STRING& sec_name, const STRING& opt_name, co
             ") does not exist"
         ).c_str());
     }
+    auto_update();
 }
 
 // modifier
@@ -481,6 +483,7 @@ void ConfigManager::addSection(const STRING& sec_name, const Section& new_sec)
             ") already exist"
         ).c_str());
     }
+    auto_update();
 }
 void ConfigManager::removeSection(const STRING& sec_name)
 {
@@ -514,6 +517,7 @@ void ConfigManager::addOption(const STRING& sec_name, const Option& new_opt)
             ") does not exist"
         ).c_str());
     }
+    auto_update();
 }
 void ConfigManager::removeOption(const STRING& sec_name, const STRING& opt_name)
 {
@@ -547,6 +551,7 @@ void ConfigManager::add(const STRING& sec_name, const STRING& opt_name, const ST
         m_Secs.insert(m_Secs.end(), std::pair<STRING, Section>(sec_name, Section()));
         m_Secs[sec_name].addOpt(Option(opt_name, val));
     }
+    auto_update();
 }
 
 // existence checking
@@ -597,6 +602,13 @@ bool ConfigManager::is_opt_line(const STRING& opt_line)
         else return false;
     }
     else return false;
+}
+
+// auto update config file if auto_write_flag set to true
+void ConfigManager::auto_update()
+{
+    if (m_AutoWrite_flag && !m_ConfigPath.empty())
+        this->write(m_ConfigPath);
 }
 
 

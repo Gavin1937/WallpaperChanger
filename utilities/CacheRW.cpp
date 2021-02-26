@@ -92,4 +92,114 @@ void Cache_Writer::write_to(const std::wstring& filename)
 }
 
 
-// ====================== Cache_Writer ======================
+// ====================== Cache_Writer End ======================
+
+
+
+
+
+// ====================== Cache_ReaderA ======================
+
+// constructor
+Cache_ReaderA::Cache_ReaderA(const std::string& cache_filename, const bool& enable_auto_delete)
+    : p_CacheBuff(nullptr), m_CacheFileName(cache_filename), m_EnableAutoDelete(enable_auto_delete), m_FileExist(false)
+{
+    if (std::filesystem::exists(m_CacheFileName)) {
+        m_FileExist = true;
+        std::ifstream input;
+        input.imbue(std::locale("", LC_CTYPE));
+        input.open(m_CacheFileName);
+        std::string buff;
+        p_CacheBuff = new std::vector<std::string>();
+        while(input >> buff) {
+            p_CacheBuff->push_back(buff);
+            buff.clear();
+        }
+    }
+}
+// destructor
+Cache_ReaderA::~Cache_ReaderA()
+{
+    if (m_EnableAutoDelete && m_FileExist)
+        delete_cache_file();
+    delete p_CacheBuff;
+    m_CacheFileName.~basic_string();
+    m_EnableAutoDelete = NULL;
+    m_FileExist = NULL;
+}
+
+// access data
+std::vector<std::string>* Cache_ReaderA::getData()
+{
+    return p_CacheBuff;
+}
+
+bool Cache_ReaderA::isCacheExist()
+{
+    return (p_CacheBuff != nullptr);
+}
+
+// private
+void Cache_ReaderA::delete_cache_file()
+{
+    if (m_FileExist)
+        std::filesystem::remove(m_CacheFileName);
+}
+
+
+// ====================== Cache_ReaderA End ======================
+
+
+
+
+
+// ====================== Cache_ReaderW ======================
+
+// constructor
+Cache_ReaderW::Cache_ReaderW(const std::wstring& cache_filename, const bool& enable_auto_delete)
+    : p_CacheBuff(nullptr), m_CacheFileName(cache_filename), m_EnableAutoDelete(enable_auto_delete), m_FileExist(false)
+{
+    if (std::filesystem::exists(m_CacheFileName)) {
+        m_FileExist = true;
+        std::wifstream input;
+        input.imbue(std::locale("", LC_CTYPE));
+        input.open(m_CacheFileName);
+        std::wstring buff;
+        p_CacheBuff = new std::vector<std::wstring>();
+        while(input >> buff) {
+            p_CacheBuff->push_back(buff);
+            buff.clear();
+        }
+    }
+}
+// destructor
+Cache_ReaderW::~Cache_ReaderW()
+{
+    if (m_EnableAutoDelete && m_FileExist)
+        delete_cache_file();
+    delete p_CacheBuff;
+    m_CacheFileName.~basic_string();
+    m_EnableAutoDelete = NULL;
+    m_FileExist = NULL;
+}
+
+// access data
+std::vector<std::wstring>* Cache_ReaderW::getData()
+{
+    return p_CacheBuff;
+}
+
+bool Cache_ReaderW::isCacheExist()
+{
+    return (p_CacheBuff != nullptr);
+}
+
+// private
+void Cache_ReaderW::delete_cache_file()
+{
+    if (m_FileExist)
+        std::filesystem::remove(m_CacheFileName);
+}
+
+
+// ====================== Cache_ReaderW End ======================

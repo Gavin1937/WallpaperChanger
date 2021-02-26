@@ -28,6 +28,7 @@
 #include "timer.h"
 #include "../utilities/GlobTools.h"
 #include "../utilities/ConfigManager.h"
+#include "../utilities/CacheRW.h"
 
 
 class MainWindow : public QMainWindow
@@ -53,6 +54,7 @@ private:
     std::wstring get_windows_sys_theme_dir();
     std::pair<int, int> get_physical_screen_res();
     void set_default_wallpaper();
+    std::wstring get_default_wallpaper_src();
     
     void add_default_wallpaper();
     void add_landscape_wallpaper();

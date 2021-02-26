@@ -27,7 +27,7 @@ int WINAPI wWinMain(
         WallpaperManager wm;
         ConfigManager config(false);
         try { // try to open ./config.ini
-            config.read(L"./config.ini");
+            config.read(GlobTools::getCurrExePathW()+L"config.ini");
         } catch(...) { // cannot open ./config.ini, exit
             return -1;
         }

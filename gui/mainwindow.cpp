@@ -27,19 +27,19 @@ MainWindow::MainWindow(QWidget *parent)
         // MessageBoxW(0, L"Missing Components in config.ini", L"Warning", 0);
         // return;
         
-        if (m_Config.get(L"wallpaper", L"default_wallpaper_path").empty())
+        if (m_Config.get(L"wallpaper", L"default_wallpaper_id").empty())
             add_default_wallpaper();
-        if (m_Config.get(L"wallpaper", L"landscape_wallpaper").empty())
+        if (m_Config.get(L"wallpaper", L"landscape_wallpaper_id").empty())
             add_landscape_wallpaper();
-        if (m_Config.get(L"wallpaper", L"portrait_wallpaper").empty())
-        add_portrait_wallpaper();
+        if (m_Config.get(L"wallpaper", L"portrait_wallpaper_id").empty())
+            add_portrait_wallpaper();
     }
     
     
     // check whether to update wallpapers
     bool is_land_port_wallpaper_empty = 
-        m_Config.get(L"wallpaper", L"landscape_wallpaper").empty() ||
-        m_Config.get(L"wallpaper", L"portrait_wallpaper").empty();
+        m_Config.get(L"wallpaper", L"landscape_wallpaper_id").empty() ||
+        m_Config.get(L"wallpaper", L"portrait_wallpaper_id").empty();
     if (!is_land_port_wallpaper_empty) { // no empty wallpaper, have both landscape & portrait
         // set default wappaper and update wallpaper
         set_default_wallpaper();
@@ -86,12 +86,12 @@ void MainWindow::write_default_config()
     m_Config.add(L"program", L"wallpaper_update_time", L"1800"); // val in seconds, default = 30min
     
     // wallpaper
-    m_Config.add(L"wallpaper", L"default_wallpaper_path", L"");
-    m_Config.add(L"wallpaper", L"landscape_wallpaper", L"");
-    m_Config.add(L"wallpaper", L"portrait_wallpaper", L"");
+    m_Config.add(L"wallpaper", L"default_wallpaper_id", L"");
+    m_Config.add(L"wallpaper", L"landscape_wallpaper_id", L"");
+    m_Config.add(L"wallpaper", L"portrait_wallpaper_id", L"");
     
     // write config file
-    m_Config.write(L"./config.ini");
+    m_Config.write(GlobTools::getCurrExePathW()+L"config.ini");
 }
 
 void MainWindow::update_wallpapers()
@@ -110,7 +110,7 @@ void MainWindow::update_wallpapers()
     QStringList arguments1;
     arguments1
             << QString::fromWCharArray(L"--paste")
-            << QString::fromWCharArray(m_Config.get(L"wallpaper", L"landscape_wallpaper").c_str())
+            << QString::fromWCharArray(m_Config.get(L"wallpaper", L"landscape_wallpaper_id").c_str())
             << QString::fromWCharArray(L"LANDSCAPE")
     ;
     QProcess *myProcess1 = new QProcess(parent1);
@@ -122,7 +122,7 @@ void MainWindow::update_wallpapers()
     QStringList arguments2;
     arguments2
             << QString::fromWCharArray(L"--paste")
-            << QString::fromWCharArray(m_Config.get(L"wallpaper", L"portrait_wallpaper").c_str())
+            << QString::fromWCharArray(m_Config.get(L"wallpaper", L"portrait_wallpaper_id").c_str())
             << QString::fromWCharArray(L"PORTRAIT")
     ;
     QProcess *myProcess2 = new QProcess(parent2);
@@ -210,19 +210,48 @@ std::pair<int, int> MainWindow::get_physical_screen_res()
 void MainWindow::set_default_wallpaper()
 {
     // init wallpaper path
-    std::wstring default_wallpaper = m_Config.get(L"wallpaper", L"default_wallpaper_path");
-    QString *path = new QString(QString::fromWCharArray(default_wallpaper.c_str()));
-    // set registry wallpaper path value
-	QSettings *settings = new QSettings("HKEY_CURRENT_USER\\Control Panel\\Desktop",
-                            QSettings::NativeFormat);
-	settings->setValue("Wallpaper", QVariant(*path));
-    // set wallpaper
-	if (SystemParametersInfoW(SPI_SETDESKWALLPAPER, 1, default_wallpaper.data(),
-        SPIF_SENDWININICHANGE) != 0)
-    { //success
-        // SystemParametersInfoW() will delete /CachedFiles/ under Windows Theme Dir
-        // So update /CachedFiles/ after success
-        update_wallpapers();
+    std::wstring default_wallpaper_src = get_default_wallpaper_src();
+    if (!default_wallpaper_src.empty()) {
+        QString *path = new QString(QString::fromWCharArray(default_wallpaper_src.c_str()));
+        // set registry wallpaper path value
+        QSettings *settings = new QSettings("HKEY_CURRENT_USER\\Control Panel\\Desktop",
+                                QSettings::NativeFormat);
+        settings->setValue("Wallpaper", QVariant(*path));
+        // set wallpaper
+        if (SystemParametersInfoW(SPI_SETDESKWALLPAPER, 1, default_wallpaper_src.data(),
+            SPIF_SENDWININICHANGE) != 0)
+        { //success
+            // SystemParametersInfoW() will delete /CachedFiles/ under Windows Theme Dir
+            // So update /CachedFiles/ after success
+            update_wallpapers();
+        }
+    } else {
+        throw std::invalid_argument("Cannot set Default Wallpaper");
+    }
+}
+std::wstring MainWindow::get_default_wallpaper_src()
+{
+    std::wstring default_wallpaper_id = m_Config.get(L"wallpaper", L"default_wallpaper_id");
+    // get default wallpaper info
+    QObject* parent = new QObject();
+    QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
+    QStringList arguments;
+    arguments
+            << "--find"
+            << QString::fromStdWString(default_wallpaper_id)
+    ;
+    QProcess *myProcess = new QProcess(parent);
+    // QProcess *myProcess = new QProcess(this);
+    myProcess->start(program, arguments);
+    // get wallpaper ID from ./core_cache
+    while (!myProcess->waitForFinished())
+        Sleep(500);
+    // read new added wallpaper from cache 
+    Cache_ReaderW cache;
+    if (cache.isCacheExist()) {
+        return cache.getData()->at(0);
+    } else {
+        return std::wstring();
     }
 }
 
@@ -230,7 +259,27 @@ void MainWindow::add_default_wallpaper()
 {
     // get user input default wallpaper path
     QString default_wallpaper = select_image("Select Default Wallpaper");
-    m_Config.set(L"wallpaper", L"default_wallpaper_path", default_wallpaper.toStdWString());
+    // cache wallpaper
+    QObject* parent = new QObject();
+    QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
+    QStringList arguments;
+    arguments
+            << "--add"
+            << default_wallpaper
+    ;
+    QProcess *myProcess = new QProcess(parent);
+    myProcess->start(program, arguments);
+    // wait for core to finish
+    while (!myProcess->waitForFinished())
+        Sleep(500);
+    
+    // read new added wallpaper from cache 
+    Cache_ReaderW cache;
+    if (cache.isCacheExist()) {
+        m_Config.set(L"wallpaper", L"default_wallpaper_id", cache.getData()->at(0));
+    } else {
+        MessageBoxW(0, L"No core_cache for Default", L"Info", 0);
+    }
 }
 void MainWindow::add_landscape_wallpaper()
 {
@@ -241,19 +290,22 @@ void MainWindow::add_landscape_wallpaper()
     QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
     QStringList arguments;
     arguments
-            << QString::fromWCharArray(L"--add")
+            << "--add"
             << landscape_wallpaper
     ;
     QProcess *myProcess = new QProcess(parent);
     myProcess->start(program, arguments);
-    // get wallpaper ID from ./core_cache
-    std::wifstream cache(L"core_cache");
-    std::wstring wallpaper_ID;
-    if (!cache.fail()) {
-        cache >> wallpaper_ID;
-        m_Config.set(L"wallpaper", L"landscape_wallpaper", wallpaper_ID);
+    // wait for core to finish
+    while (!myProcess->waitForFinished())
+        Sleep(500);
+    
+    // read new added wallpaper from cache 
+    Cache_ReaderW cache;
+    if (cache.isCacheExist()) {
+        m_Config.set(L"wallpaper", L"landscape_wallpaper_id", cache.getData()->at(0));
+    } else {
+        MessageBoxW(0, L"No core_cache for Landscape", L"Info", 0);
     }
-    cache.close();
 }
 void MainWindow::add_portrait_wallpaper()
 {
@@ -264,32 +316,39 @@ void MainWindow::add_portrait_wallpaper()
     QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
     QStringList arguments;
     arguments
-            << QString::fromWCharArray(L"--add")
+            << "--add"
             << portrait_wallpaper
     ;
     QProcess *myProcess = new QProcess(parent);
     myProcess->start(program, arguments);
-    // get wallpaper ID from ./core_cache
-    std::wifstream cache(L"core_cache");
-    std::wstring wallpaper_ID;
-    if (!cache.fail()) {
-        cache >> wallpaper_ID;
-        m_Config.set(L"wallpaper", L"landscape_wallpaper", wallpaper_ID);
+    // wait for core to finish
+    while (!myProcess->waitForFinished())
+        Sleep(500);
+    
+    // read new added wallpaper from cache 
+    Cache_ReaderW cache;
+    if (cache.isCacheExist()) {
+        m_Config.set(L"wallpaper", L"portrait_wallpaper_id", cache.getData()->at(0));
+    } else {
+        MessageBoxW(0, L"No core_cache for Portrait", L"Info", 0);
     }
-    cache.close();
+    
 }
 
 QString MainWindow::select_image(std::string dlg_caption, std::string default_filename)
 {
     if (default_filename[0] != '/')
         default_filename = '/' + default_filename;
-	return QFileDialog::getOpenFileName(this, tr(dlg_caption.data()),
-                                                tr(default_filename.data()),
-                                                tr("All Images (*.png *.jpg *.jpeg *.bmp)\n"
-                                                    "JPEG/JPG (*.jpg *.jpeg)\n"
-                                                    "PNG (*.png)\n"
-                                                    "BMP (*.bmp)\n"
-                                                    "All Files (*.*)"));
+	QString output =  QFileDialog::getOpenFileName(this, tr(dlg_caption.data()),
+                                                    tr(default_filename.data()),
+                                                    tr("All Images (*.png *.jpg *.jpeg *.bmp)\n"
+                                                        "JPEG/JPG (*.jpg *.jpeg)\n"
+                                                        "PNG (*.png)\n"
+                                                        "BMP (*.bmp)\n"
+                                                        "All Files (*.*)"));
+    for (auto& it : output)
+        if (it == '/') it = '\\';
+    return output;
 }
 
 template<class FUNC>
