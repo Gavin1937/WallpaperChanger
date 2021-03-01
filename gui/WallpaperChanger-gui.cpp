@@ -42,7 +42,6 @@ int APIENTRY WinMain(
     w.show();
     
     // clear potentially left over ./core_cache file
-    // Cache_ReaderW cleaner(GlobTools::getCurrExePathW()+L"core_cache");
     CleanCache(L"core_cache");
     
     

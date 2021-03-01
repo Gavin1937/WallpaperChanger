@@ -12,7 +12,6 @@
 class Cache_Writer;
 class Cache_ReaderA;
 class Cache_ReaderW;
-// class Cache_Cleaner;
 
 
 // clean cache file

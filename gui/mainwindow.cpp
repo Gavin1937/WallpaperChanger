@@ -102,13 +102,18 @@ void MainWindow::update_wallpapers()
 	} catch (std::exception& err) {
 		throw err;
 	}
-    // rm -rf /CachedFiles/ first, and then re-create that dir 
+    // get dirs
     QDir theme_dir(QString::fromWCharArray(m_Config.get(L"system", L"windows_theme_dir").c_str()));
     QDir cache_dir(theme_dir.absolutePath()+QString::fromWCharArray(L"/CachedFiles"));
-    for (int i = 0; !cache_dir.exists() && i < 20; ++i)
-        Sleep(500); // wait until /CachedFiles/ been create
-    cache_dir.removeRecursively(); // remove auto create dir and make a new one
-    theme_dir.mkdir(QString::fromWCharArray(L"CachedFiles"));
+    
+    // for (int i = 0; !cache_dir.exists() && i < 20; ++i)
+    //     Sleep(500); // wait until /CachedFiles/ been create
+    
+    // rm -rf /CachedFiles/ first, and then re-create that dir 
+    if (getScreenMode() == ScreenMode::Single) { // if is single screen
+        cache_dir.removeRecursively(); // remove auto create dir and make a new one
+        theme_dir.mkdir(QString::fromWCharArray(L"CachedFiles"));
+    }
     
     // update landscape wallpaper
     QObject *parent1 = new QObject();

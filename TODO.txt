@@ -1,7 +1,6 @@
 
 **BUG**
     A. Potential BUG: Windows may auto generate /CachedFile/ after program generated it
-    B. Unsure BUG: WallpaperLists may be overwrite somehow
     
     G. Potential issue: [gui] program mem usage may continue add-up w/ update_wallpaper()
     
@@ -12,6 +11,7 @@
              continue crashing when program start
              This may due to uncleared ./core_cache file
 
+    K. [core][gui] WallpaperLists will be overwrite after update_wallpaper() been called multiple time
 
 
 

@@ -102,20 +102,7 @@ ScreenModeChangeEvent::ScreenModeChangeEvent()
 ScreenMonitor::ScreenMonitor(QObject* event_receiver, QWidget *parent)
     : m_EventReceiver(event_receiver), QWidget(parent), m_ScreenMode(ScreenMode::Unknow)
 {
-    // get primary screen resolution after zoom in/out
-    int CX = GetSystemMetrics(SM_CXSCREEN);
-    int CY = GetSystemMetrics(SM_CYSCREEN);
-    // get all screens resolution after zoom in/out
-    int virCX = GetSystemMetrics(SM_CXVIRTUALSCREEN);
-    int virCY = GetSystemMetrics(SM_CYVIRTUALSCREEN);
-    
-    // determine screen mode
-    if (CX == virCX && CY == virCY)
-        m_ScreenMode = ScreenMode::Single;
-    else if (CX != virCX || CY != virCY)
-        m_ScreenMode = ScreenMode::Multi;
-    else
-        m_ScreenMode = ScreenMode::Unknow;
+    m_ScreenMode = getScreenMode();
     
     // set up QTimer obj
     m_Timer = new QTimer(this);
