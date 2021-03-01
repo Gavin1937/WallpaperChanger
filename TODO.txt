@@ -7,8 +7,6 @@
     
     H. [gui] use a lot of memory
 
-    I. [gui] will left a ./core_cache file after created icon
-
     J. [gui] will crash after running for a long time. After running for a long time, gui
              will take less memory, but will crash when update_wallpaper. And later, it will
              continue crashing when program start

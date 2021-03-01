@@ -8,6 +8,18 @@
 #include <locale>
 #include <filesystem>
 
+// class declaration
+class Cache_Writer;
+class Cache_ReaderA;
+class Cache_ReaderW;
+// class Cache_Cleaner;
+
+
+// clean cache file
+bool CleanCache(const std::string& cache_filepath);
+bool CleanCache(const std::wstring& cache_filepath);
+
+
 
 // write cache from char*/char** wchar_t*/wchar_t**
 class Cache_Writer
@@ -48,9 +60,6 @@ public:
     bool isCacheExist();
     
 private:
-    void delete_cache_file();
-    
-private:
     std::vector<std::string> *p_CacheBuff;
     std::string m_CacheFileName;
     bool m_EnableAutoDelete;
@@ -71,9 +80,6 @@ public:
     std::vector<std::wstring>* getData();
     
     bool isCacheExist();
-    
-private:
-    void delete_cache_file();
     
 private:
     std::vector<std::wstring> *p_CacheBuff;

@@ -133,6 +133,12 @@ void MainWindow::update_wallpapers()
     ;
     QProcess *myProcess2 = new QProcess(parent2);
     myProcess2->start(program2, arguments2);
+    
+    // 2 processes are running async, so wait for both of them finished
+    while (!myProcess1->waitForFinished() && !myProcess2->waitForFinished())
+        Sleep(500);
+    // clean ./core_cache file
+    CleanCache(L"core_cache");
 }
 
 
