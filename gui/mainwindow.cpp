@@ -103,45 +103,47 @@ void MainWindow::update_wallpapers()
 		throw err;
 	}
     
-    // get dirs
-    QDir theme_dir(QString::fromWCharArray(m_Config.get(L"system", L"windows_theme_dir").c_str()));
-    QDir cache_dir(theme_dir.absolutePath()+QString::fromWCharArray(L"/CachedFiles"));
-    
     // rm -rf /CachedFiles/ first, and then re-create that dir 
     if (getScreenMode() == ScreenMode::Single) { // if is single screen
-        cache_dir.removeRecursively(); // remove auto create dir and make a new one
-        theme_dir.mkdir(QString::fromWCharArray(L"CachedFiles"));
+        // get dirs
+        QDir theme_dir(QString::fromWCharArray(m_Config.get(L"system", L"windows_theme_dir").c_str()));
+        QDir cache_dir(theme_dir.absolutePath()+"/CachedFiles");
+        // remove auto create dir and make a new one
+        cache_dir.removeRecursively(); 
+        theme_dir.mkdir("CachedFiles");
     }
     
     // update landscape wallpaper
-    QObject *parent1 = new QObject();
+    QObject parent1;
     QString program1 = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
     QStringList arguments1;
     arguments1
-            << QString::fromWCharArray(L"--paste")
+            << "--paste"
             << QString::fromWCharArray(m_Config.get(L"wallpaper", L"landscape_wallpaper_id").c_str())
-            << QString::fromWCharArray(L"LANDSCAPE")
+            << "LANDSCAPE"
     ;
-    QProcess *myProcess1 = new QProcess(parent1);
-    myProcess1->start(program1, arguments1);
+    QProcess myProcess1(&parent1);
+    myProcess1.start(program1, arguments1);
     // wait for myProcess1 to finish 
-    while (!myProcess1->waitForFinished())
+    while (!myProcess1.waitForFinished())
         Sleep(500);
+    myProcess1.close();
     
     // update portrait wallpaper
-    QObject* parent2 = new QObject();
+    QObject parent2;
     QString program2 = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
     QStringList arguments2;
     arguments2
-            << QString::fromWCharArray(L"--paste")
+            << "--paste"
             << QString::fromWCharArray(m_Config.get(L"wallpaper", L"portrait_wallpaper_id").c_str())
-            << QString::fromWCharArray(L"PORTRAIT")
+            << "PORTRAIT"
     ;
-    QProcess *myProcess2 = new QProcess(parent2);
-    myProcess2->start(program2, arguments2);
+    QProcess myProcess2(&parent2);
+    myProcess2.start(program2, arguments2);
     // wait for myProcess2 to finish
-    while (!myProcess2->waitForFinished())
+    while (!myProcess2.waitForFinished())
         Sleep(500);
+    myProcess2.close();
     
     // clean ./core_cache file
     CleanCache(L"core_cache");
@@ -231,11 +233,11 @@ void MainWindow::set_default_wallpaper()
     std::wstring default_wallpaper_id = m_Config.get(L"wallpaper", L"default_wallpaper_id");
     std::wstring default_wallpaper_src = get_default_wallpaper_src();
     if (!default_wallpaper_src.empty()) {
-        QString *path = new QString(QString::fromWCharArray(default_wallpaper_src.c_str()));
+        QString path(QString::fromWCharArray(default_wallpaper_src.c_str()));
         // set registry wallpaper path value
-        QSettings *settings = new QSettings("HKEY_CURRENT_USER\\Control Panel\\Desktop",
+        QSettings settings("HKEY_CURRENT_USER\\Control Panel\\Desktop",
                                 QSettings::NativeFormat);
-        settings->setValue("Wallpaper", QVariant(*path));
+        settings.setValue("Wallpaper", QVariant(path));
         // replace ./TranscodedWallpaper w/ default wallpaper
         try {
             paste_default_wallpaper_to_themes();
@@ -259,19 +261,20 @@ std::wstring MainWindow::get_default_wallpaper_src()
 {
     std::wstring default_wallpaper_id = m_Config.get(L"wallpaper", L"default_wallpaper_id");
     // get default wallpaper info
-    QObject* parent = new QObject();
+    QObject parent;
     QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
     QStringList arguments;
     arguments
             << "--find"
             << QString::fromStdWString(default_wallpaper_id)
     ;
-    QProcess *myProcess = new QProcess(parent);
+    QProcess myProcess(&parent);
     // QProcess *myProcess = new QProcess(this);
-    myProcess->start(program, arguments);
+    myProcess.start(program, arguments);
     // get wallpaper ID from ./core_cache
-    while (!myProcess->waitForFinished())
+    while (!myProcess.waitForFinished())
         Sleep(500);
+    myProcess.close();
     // read new added wallpaper from cache 
     Cache_ReaderW cache(L"core_cache");
     if (cache.isCacheExist()) {
@@ -286,7 +289,7 @@ void MainWindow::paste_default_wallpaper_to_themes()
 {
     std::wstring default_wallpaper_id = m_Config.get(L"wallpaper", L"default_wallpaper_id");
 	// replace ./TranscodedWallpaper w/ default wallpaper
-	QObject* parent = new QObject();
+	QObject parent;
 	QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
 	QStringList arguments;
 	arguments
@@ -294,11 +297,12 @@ void MainWindow::paste_default_wallpaper_to_themes()
 		<< QString::fromStdWString(default_wallpaper_id)
 		<< "DEFAULT"
 		;
-	QProcess* myProcess = new QProcess(parent);
-	myProcess->start(program, arguments);
+	QProcess myProcess(&parent);
+	myProcess.start(program, arguments);
 	// wait for core to finish
-	while (!myProcess->waitForFinished())
+	while (!myProcess.waitForFinished())
 		Sleep(500);
+    myProcess.close();
     
 	// read new added wallpaper from cache 
 	Cache_ReaderW cache(L"core_cache");
@@ -315,19 +319,22 @@ void MainWindow::add_default_wallpaper()
 {
     // get user input default wallpaper path
     QString default_wallpaper = select_image("Select Default Wallpaper");
+    if (default_wallpaper.isEmpty())
+        return;
     // cache wallpaper
-    QObject* parent = new QObject();
+    QObject parent;
     QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
     QStringList arguments;
     arguments
             << "--add"
             << default_wallpaper
     ;
-    QProcess *myProcess = new QProcess(parent);
-    myProcess->start(program, arguments);
+    QProcess myProcess(&parent);
+    myProcess.start(program, arguments);
     // wait for core to finish
-    while (!myProcess->waitForFinished())
+    while (!myProcess.waitForFinished())
         Sleep(500);
+    myProcess.close();
     
     // read new added wallpaper from cache 
     Cache_ReaderW cache(L"core_cache");
@@ -341,19 +348,22 @@ void MainWindow::add_landscape_wallpaper()
 {
     // get user input landscape wallpaper path
     QString landscape_wallpaper = select_image("Select Landscape Wallpaper");
+    if (landscape_wallpaper.isEmpty())
+        return;
     // cache wallpaper
-    QObject* parent = new QObject();
+    QObject parent;
     QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
     QStringList arguments;
     arguments
             << "--add"
             << landscape_wallpaper
     ;
-    QProcess *myProcess = new QProcess(parent);
-    myProcess->start(program, arguments);
+    QProcess myProcess(&parent);
+    myProcess.start(program, arguments);
     // wait for core to finish
-    while (!myProcess->waitForFinished())
+    while (!myProcess.waitForFinished())
         Sleep(500);
+    myProcess.close();
     
     // read new added wallpaper from cache 
     Cache_ReaderW cache(L"core_cache");
@@ -367,19 +377,22 @@ void MainWindow::add_portrait_wallpaper()
 {
     // get user input portrait wallpaper path
     QString portrait_wallpaper = select_image("Select Portrait Wallpaper");
+    if (portrait_wallpaper.isEmpty())
+        return;
     // cache wallpaper
-    QObject* parent = new QObject();
+    QObject parent;
     QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
     QStringList arguments;
     arguments
             << "--add"
             << portrait_wallpaper
     ;
-    QProcess *myProcess = new QProcess(parent);
-    myProcess->start(program, arguments);
+    QProcess myProcess(&parent);
+    myProcess.start(program, arguments);
     // wait for core to finish
-    while (!myProcess->waitForFinished())
+    while (!myProcess.waitForFinished())
         Sleep(500);
+    myProcess.close();
     
     // read new added wallpaper from cache 
     Cache_ReaderW cache(L"core_cache");
@@ -402,8 +415,10 @@ QString MainWindow::select_image(std::string dlg_caption, std::string default_fi
                                                         "PNG (*.png)\n"
                                                         "BMP (*.bmp)\n"
                                                         "All Files (*.*)"));
-    for (auto& it : output)
-        if (it == '/') it = '\\';
+    if (!output.isEmpty()) {
+        for (auto& it : output)
+            if (it == '/') it = '\\';
+    }
     return output;
 }
 

@@ -2,14 +2,21 @@
 **BUG**
     A. Potential BUG: Windows may auto generate /CachedFile/ after program generated it
     
-    G. Potential issue: [gui] program mem usage may continue add-up w/ update_wallpaper()
-    
-    H. [gui] use a lot of memory
+    G. Unsure issue: [gui] program mem usage may continue add-up w/ update_wallpaper()
 
-    J. [gui] will crash after running for a long time. After running for a long time, gui
+    J. Unsure issue: [gui] will crash after running for a long time. After running for a long time, gui
              will take less memory, but will crash when update_wallpaper. And later, it will
              continue crashing when program start
              This may due to uncleared ./core_cache file
+
+
+
+**Identified**
+
+    H. [gui] use a lot of memory after open file selecting dialog.
+       Windows will automatically cache after 1st time open a
+       file selecting dialog for faster opening later.
+       This happens in notepad and softwares as well.
 
 
 
@@ -19,11 +26,11 @@
     C. add features of core to gui menu (add, del, find, help....)
         
         1. use a tab dialog to show user about missing configs & help them to complete config
-        
-        a. add
-        b. del.
-        c. find
-        d. help
+            
+            a. add
+            b. del.
+            c. find
+            d. help
 
     D. add better setting dialog
         a. Integrate .ui file?

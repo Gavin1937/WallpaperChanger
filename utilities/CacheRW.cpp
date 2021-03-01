@@ -154,7 +154,7 @@ Cache_ReaderA::~Cache_ReaderA()
 }
 
 // access data
-std::vector<std::string>* Cache_ReaderA::getData()
+const std::vector<std::string>* Cache_ReaderA::getData() const
 {
     return p_CacheBuff;
 }
@@ -205,7 +205,7 @@ Cache_ReaderW::~Cache_ReaderW()
 }
 
 // access data
-std::vector<std::wstring>* Cache_ReaderW::getData()
+const std::vector<std::wstring>* Cache_ReaderW::getData() const
 {
     return p_CacheBuff;
 }

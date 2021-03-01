@@ -54,7 +54,7 @@ public:
     ~Cache_ReaderA();
     
     // access data
-    std::vector<std::string>* getData();
+    const std::vector<std::string>* getData() const;
     
     bool isCacheExist();
     
@@ -76,7 +76,7 @@ public:
     ~Cache_ReaderW();
     
     // access data
-    std::vector<std::wstring>* getData();
+    const std::vector<std::wstring>* getData() const;
     
     bool isCacheExist();
     
