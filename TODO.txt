@@ -1,8 +1,5 @@
 
 **BUG**
-    A. Potential BUG: Windows may auto generate /CachedFile/ after program generated it
-    
-    G. Unsure issue: [gui] program mem usage may continue add-up w/ update_wallpaper()
 
     J. Unsure issue: [gui] will crash after running for a long time. After running for a long time, gui
              will take less memory, but will crash when update_wallpaper. And later, it will
@@ -12,6 +9,11 @@
 
 
 **Identified**
+
+    G. [gui] program mem usage may continue add-up w/ update_wallpaper()
+       This only happens when rapidly calling update_wallpaper().
+       Windows will temporarily cache something to program's running memory
+       Those cached memory will be automatically remove later.
 
     H. [gui] use a lot of memory after open file selecting dialog.
        Windows will automatically cache after 1st time open a
