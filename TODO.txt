@@ -19,6 +19,8 @@
        Windows will automatically cache after 1st time open a
        file selecting dialog for faster opening later.
        This happens in notepad and softwares as well.
+       Or, QProcess in update_wallpaper() will last for a while after
+       function finished because it's running async.
 
 
 
