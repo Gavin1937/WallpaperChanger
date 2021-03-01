@@ -12,6 +12,7 @@
 #include "WallpaperManager.h"
 #include "../utilities/ConfigManager.h"
 #include "../utilities/CacheRW.h"
+#include "../utilities/GlobTools.h"
 
 
 int WINAPI wWinMain(
@@ -41,7 +42,7 @@ int WINAPI wWinMain(
                 
                 // output
                 auto new_wallpaper = wm.get_last_wallpaperInfo();
-                Cache_Writer cache(new_wallpaper.getNewFilename());
+                Cache_Writer cache(new_wallpaper.getNewFilename(), L"core_cache");
             }
             if (arg.hasDel() && arg.isDelValid(wm.get_wallpaperInfo_data(), wm.get_wallpaperInfo_size())) {
                 auto wallpaper_to_del = wm.find_wallpaperInfo_via_new(arg.getFileName());
@@ -49,7 +50,7 @@ int WINAPI wWinMain(
                 wm.remove_wallpaper(wallpaper_to_del);
                 
                 // output
-                Cache_Writer cache(old_wallpaper_id);
+                Cache_Writer cache(old_wallpaper_id, L"core_cache");
             }
             if (arg.hasFind() && arg.isFindValid()) {
                 // output
@@ -61,7 +62,7 @@ int WINAPI wWinMain(
                     (L"NewFilename (FileID): " + temp_obj.getNewFilename()),
                     (L"AddTime: " + std::to_wstring(temp_obj.getAddTime()))
                 };
-                Cache_Writer cache(msg, 4);
+                Cache_Writer cache(msg, 4, L"core_cache");
             }
             if (arg.hasPaste() && arg.isPasteValid(wm.get_wallpaperInfo_data(), wm.get_wallpaperInfo_size())) {
                 // get loc_file & dest_file_dir
@@ -91,7 +92,7 @@ int WINAPI wWinMain(
                     loc_file.getNewFilename(),
                     dest_file_dir + dest_file_name
                 };
-                Cache_Writer cache(msg, 2);
+                Cache_Writer cache(msg, 2, L"core_cache");
             }
         }
 	}

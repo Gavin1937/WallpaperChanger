@@ -115,6 +115,8 @@ Cache_ReaderA::Cache_ReaderA(const std::string& cache_filename, const bool& enab
             p_CacheBuff->push_back(buff);
             buff.clear();
         }
+        // delete cache file after finish reading
+        delete_cache_file();
     }
 }
 // destructor
@@ -142,8 +144,10 @@ bool Cache_ReaderA::isCacheExist()
 // private
 void Cache_ReaderA::delete_cache_file()
 {
-    if (m_FileExist)
-        std::filesystem::remove(m_CacheFileName);
+    if (m_FileExist) {
+        // std::remove(m_CacheFileName.c_str());
+        std::filesystem::remove(m_CacheFileName.c_str());
+    }
 }
 
 
@@ -170,6 +174,8 @@ Cache_ReaderW::Cache_ReaderW(const std::wstring& cache_filename, const bool& ena
             p_CacheBuff->push_back(buff);
             buff.clear();
         }
+        // delete cache file after finish reading
+        delete_cache_file();
     }
 }
 // destructor
@@ -197,8 +203,11 @@ bool Cache_ReaderW::isCacheExist()
 // private
 void Cache_ReaderW::delete_cache_file()
 {
-    if (m_FileExist)
-        std::filesystem::remove(m_CacheFileName);
+    if (m_FileExist) {
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> cvter;
+        // std::remove(cvter.to_bytes(m_CacheFileName).c_str());
+        std::filesystem::remove(cvter.to_bytes(m_CacheFileName).c_str());
+    }
 }
 
 

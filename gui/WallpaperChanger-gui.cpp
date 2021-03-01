@@ -39,10 +39,10 @@ int APIENTRY WinMain(
     ScreenMonitor sm(&w);
     
     // show MainWindow for Debugging
-    // w.show();
+    w.show();
     
     // clear potentially left over ./core_cache file
-    Cache_ReaderW cleaner;
+    Cache_ReaderW cleaner(GlobTools::getCurrExePathW()+L"core_cache");
     
     
     

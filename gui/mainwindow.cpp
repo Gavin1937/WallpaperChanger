@@ -261,7 +261,7 @@ std::wstring MainWindow::get_default_wallpaper_src()
     while (!myProcess->waitForFinished())
         Sleep(500);
     // read new added wallpaper from cache 
-    Cache_ReaderW cache;
+    Cache_ReaderW cache(L"core_cache");
     if (cache.isCacheExist()) {
         std::wstring output(cache.getData()->at(0));
         output.assign(output.begin()+output.find(L':')+2, output.end());
@@ -289,7 +289,7 @@ void MainWindow::paste_default_wallpaper_to_themes()
 		Sleep(500);
     
 	// read new added wallpaper from cache 
-	Cache_ReaderW cache;
+	Cache_ReaderW cache(L"core_cache");
 	if (cache.isCacheExist()) {
 		if (cache.getData()->at(0) != default_wallpaper_id)
 			throw std::invalid_argument("Error occurs during replacing TranscodedWallpaper");
@@ -318,7 +318,7 @@ void MainWindow::add_default_wallpaper()
         Sleep(500);
     
     // read new added wallpaper from cache 
-    Cache_ReaderW cache;
+    Cache_ReaderW cache(L"core_cache");
     if (cache.isCacheExist()) {
         m_Config.set(L"wallpaper", L"default_wallpaper_id", cache.getData()->at(0));
     } else {
@@ -344,7 +344,7 @@ void MainWindow::add_landscape_wallpaper()
         Sleep(500);
     
     // read new added wallpaper from cache 
-    Cache_ReaderW cache;
+    Cache_ReaderW cache(L"core_cache");
     if (cache.isCacheExist()) {
         m_Config.set(L"wallpaper", L"landscape_wallpaper_id", cache.getData()->at(0));
     } else {
@@ -370,7 +370,7 @@ void MainWindow::add_portrait_wallpaper()
         Sleep(500);
     
     // read new added wallpaper from cache 
-    Cache_ReaderW cache;
+    Cache_ReaderW cache(L"core_cache");
     if (cache.isCacheExist()) {
         m_Config.set(L"wallpaper", L"portrait_wallpaper_id", cache.getData()->at(0));
     } else {

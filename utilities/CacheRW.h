@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <codecvt>
 #include <locale>
 #include <filesystem>
 
@@ -13,10 +14,10 @@ class Cache_Writer
 {
 public:
     // parametric constructor
-    Cache_Writer(const std::string& str, const std::string& output_filename = "core_cache");
-    Cache_Writer(const std::string str_arr[], const int& arr_size, const std::string& output_filename = "core_cache");
-    Cache_Writer(const std::wstring& str, const std::wstring& output_filename = L"core_cache");
-    Cache_Writer(const std::wstring str_arr[], const int& arr_size, const std::wstring& output_filename = L"core_cache");
+    Cache_Writer(const std::string& str, const std::string& output_filename);
+    Cache_Writer(const std::string str_arr[], const int& arr_size, const std::string& output_filename);
+    Cache_Writer(const std::wstring& str, const std::wstring& output_filename);
+    Cache_Writer(const std::wstring str_arr[], const int& arr_size, const std::wstring& output_filename);
     
     // destructor
     ~Cache_Writer();
@@ -37,7 +38,7 @@ class Cache_ReaderA
 {
 public:
     // constructor
-    Cache_ReaderA(const std::string& cache_filename = "core_cache", const bool& enable_auto_delete = true);
+    Cache_ReaderA(const std::string& cache_filename, const bool& enable_auto_delete = true);
     // destructor
     ~Cache_ReaderA();
     
@@ -62,7 +63,7 @@ class Cache_ReaderW
 {
 public:
     // constructor
-    Cache_ReaderW(const std::wstring& cache_filename = L"core_cache", const bool& enable_auto_delete = true);
+    Cache_ReaderW(const std::wstring& cache_filename, const bool& enable_auto_delete = true);
     // destructor
     ~Cache_ReaderW();
     

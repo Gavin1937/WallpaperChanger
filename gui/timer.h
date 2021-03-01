@@ -18,6 +18,16 @@
 #include "../utilities/GlobTools.h"
 
 
+// class & struct declaration
+class WallpaperUpdater;
+enum class ScreenMode;
+class ScreenModeChangeEvent;
+class ScreenMonitor;
+
+// public function
+ScreenMode getScreenMode();
+
+
 // update wallpaper autometically
 class WallpaperUpdater : public QWidget
 {
