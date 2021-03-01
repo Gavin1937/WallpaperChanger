@@ -102,12 +102,10 @@ void MainWindow::update_wallpapers()
 	} catch (std::exception& err) {
 		throw err;
 	}
+    
     // get dirs
     QDir theme_dir(QString::fromWCharArray(m_Config.get(L"system", L"windows_theme_dir").c_str()));
     QDir cache_dir(theme_dir.absolutePath()+QString::fromWCharArray(L"/CachedFiles"));
-    
-    // for (int i = 0; !cache_dir.exists() && i < 20; ++i)
-    //     Sleep(500); // wait until /CachedFiles/ been create
     
     // rm -rf /CachedFiles/ first, and then re-create that dir 
     if (getScreenMode() == ScreenMode::Single) { // if is single screen
@@ -126,6 +124,9 @@ void MainWindow::update_wallpapers()
     ;
     QProcess *myProcess1 = new QProcess(parent1);
     myProcess1->start(program1, arguments1);
+    // wait for myProcess1 to finish 
+    while (!myProcess1->waitForFinished())
+        Sleep(500);
     
     // update portrait wallpaper
     QObject* parent2 = new QObject();
@@ -138,10 +139,10 @@ void MainWindow::update_wallpapers()
     ;
     QProcess *myProcess2 = new QProcess(parent2);
     myProcess2->start(program2, arguments2);
-    
-    // 2 processes are running async, so wait for both of them finished
-    while (!myProcess1->waitForFinished() && !myProcess2->waitForFinished())
+    // wait for myProcess2 to finish
+    while (!myProcess2->waitForFinished())
         Sleep(500);
+    
     // clean ./core_cache file
     CleanCache(L"core_cache");
 }

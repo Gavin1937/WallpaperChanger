@@ -11,8 +11,6 @@
              continue crashing when program start
              This may due to uncleared ./core_cache file
 
-    K. [core][gui] WallpaperLists will be overwrite after update_wallpaper() been called multiple time
-
 
 
 1. work on gui
