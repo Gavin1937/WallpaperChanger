@@ -7,18 +7,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_definitions(-DUNICODE -D_UNICODE)
 
-include_directories(utilities)
-
-file(GLOB SRC
+set(SRC
     WallpaperChanger-core.cpp
     ArgumentHandler.cpp
     WallpaperManager.cpp
 )
-file(GLOB HEADER
+set(HEADER
     ArgumentHandler.h
     WallpaperManager.h
 )
-file(GLOB UTIL
+set(UTIL
     ../utilities/CacheRW.h
     ../utilities/CacheRW.cpp
     ../utilities/ConfigManager.h

@@ -27,6 +27,14 @@ MainWindow::MainWindow(QWidget *parent)
         // MessageBoxW(0, L"Missing Components in config.ini", L"Warning", 0);
         // return;
         
+        // setup UI
+        setupUi(this);
+        
+        this->show();
+        
+        // while(true)
+        //     Sleep(1000);
+        
         if (m_Config.get(L"wallpaper", L"default_wallpaper_id").empty())
             add_default_wallpaper();
         if (m_Config.get(L"wallpaper", L"landscape_wallpaper_id").empty())

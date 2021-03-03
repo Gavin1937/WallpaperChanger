@@ -13,6 +13,9 @@
 #include <QEvent>
 #include <QFileDialog>
 
+// Qt ui
+#include "./ui/ui_mainwindow.h"
+
 // C++ STL
 #include <stdexcept>
 #include <string>
@@ -31,7 +34,7 @@
 #include "../utilities/GlobTools.h"
 
 
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow, public Ui_MainWindow
 {
     Q_OBJECT
 
