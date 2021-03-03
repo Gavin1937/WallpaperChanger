@@ -23,6 +23,9 @@ int APIENTRY WinMain(
     LPSTR     lpCmdLine,
     int       nShowCmd)
 {
+    // clear potentially left over ./core_cache file
+    CleanCache(L"core_cache");
+    
     // init .qrc resources file
     Q_INIT_RESOURCE(resources);
     
