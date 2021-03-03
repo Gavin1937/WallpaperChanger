@@ -44,8 +44,14 @@ public:
     void write_default_config();
     void update_wallpapers();
     
+    bool is_all_wallpaper_set();
+    
 public slots:
     void iconActivated(QSystemTrayIcon::ActivationReason);
+    void onTextEditChanged();
+    void onOKPressed();
+    void onCancelPressed();
+    void onApplyPressed();
     
 protected:
     void customEvent(QEvent* e);
@@ -58,12 +64,16 @@ private:
     std::pair<int, int> get_physical_screen_res();
     void set_default_wallpaper();
     std::wstring get_default_wallpaper_src();
+    QString get_wallpaper_src(const QString& wallpaper_id);
     
     void paste_default_wallpaper_to_themes();
     
     void add_default_wallpaper();
+    void select_default_wallpaper();
     void add_landscape_wallpaper();
+    void select_landscape_wallpaper();
     void add_portrait_wallpaper();
+    void select_portrait_wallpaper();
     QString select_image(std::string dlg_caption = "Select Image", std::string default_filename = "/Select Image");
     
     template<class FUNC>
@@ -77,4 +87,12 @@ private:
     WallpaperUpdater* m_Wallpaper_Updater;
     
     ConfigManager m_Config;
+    
+    // config status
+    bool m_ControlChanged;
+    
+    // Wallpaper Path
+    QString m_DefaultWallpaper;
+    QString m_LandscapeWallpaper;
+    QString m_PortraitWallpaper;
 };

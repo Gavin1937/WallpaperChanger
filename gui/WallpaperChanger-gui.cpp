@@ -31,19 +31,21 @@ int APIENTRY WinMain(
     char** argv = nullptr;
     QApplication a(argc, argv);
     
+    // set Application Style
+    a.setStyle("fusion");
+    
     // create MainWindow
     MainWindow w;
-    w.update_wallpapers();
+    
+    // show MainWindow dlg when missing wallpaper
+    if (!w.is_all_wallpaper_set())
+        w.show();
     
     // start ScreenMonitor
     ScreenMonitor sm(&w);
     
-    // show MainWindow for Debugging
-    w.show();
-    
     // clear potentially left over ./core_cache file
     CleanCache(L"core_cache");
-    
     
     
     // execute QApplication

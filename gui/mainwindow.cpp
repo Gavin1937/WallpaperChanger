@@ -11,8 +11,33 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , m_TrayIcon(new QSystemTrayIcon(this)),
     m_Wallpaper_Updater(nullptr),
-    m_TrayIconMenu(nullptr), m_Config()
+    m_TrayIconMenu(nullptr), m_Config(),
+    m_ControlChanged(false),
+    m_DefaultWallpaper(""),
+    m_LandscapeWallpaper(""),
+    m_PortraitWallpaper("")
 {
+    // App icon
+    auto appIcon = QIcon(":/res/icon.png");
+    this->m_TrayIcon->setIcon(appIcon);
+    this->setWindowIcon(appIcon);
+    
+    // setup UI
+    setupUi(this);
+    // this->setFixedSize(420,430);
+    setFixedSize(420,430);
+    // setup "General" tab
+    mainwindowTab->setTabText(0, "General");
+    connect(defaultBrowseBnt, &QPushButton::clicked, this, &MainWindow::select_default_wallpaper);
+    connect(landscapeBrowseBnt, &QPushButton::clicked, this, &MainWindow::select_landscape_wallpaper);
+    connect(portraitBrowseBnt, &QPushButton::clicked, this, &MainWindow::select_portrait_wallpaper);
+    connect(defaultTextEdit, &QLineEdit::textChanged, this, &MainWindow::onTextEditChanged);
+    connect(landscapeTextEdit, &QLineEdit::textChanged, this, &MainWindow::onTextEditChanged);
+    connect(portraitTextEdit, &QLineEdit::textChanged, this, &MainWindow::onTextEditChanged);
+    connect(tab0OK, &QPushButton::clicked, this, &MainWindow::onOKPressed);
+    connect(tab0Cancel, &QPushButton::clicked, this, &MainWindow::onCancelPressed);
+    connect(tab0Apply, &QPushButton::clicked, this, &MainWindow::onApplyPressed);
+    
     // initialize config
     std::wstring config_path = GlobTools::getCurrExePathW();
     config_path += L"config.ini";
@@ -27,20 +52,20 @@ MainWindow::MainWindow(QWidget *parent)
         // MessageBoxW(0, L"Missing Components in config.ini", L"Warning", 0);
         // return;
         
-        // setup UI
-        setupUi(this);
         
-        this->show();
-        
-        // while(true)
-        //     Sleep(1000);
-        
-        if (m_Config.get(L"wallpaper", L"default_wallpaper_id").empty())
-            add_default_wallpaper();
-        if (m_Config.get(L"wallpaper", L"landscape_wallpaper_id").empty())
-            add_landscape_wallpaper();
-        if (m_Config.get(L"wallpaper", L"portrait_wallpaper_id").empty())
-            add_portrait_wallpaper();
+        // // set App dlg text edit
+        // if (defaultWal.isEmpty())
+        //     defaultTextEdit->setText("Missing Wallpaper");
+        // else
+        //     defaultTextEdit->setText(defaultWal);
+        // if (landscapeWal.isEmpty())
+        //     landscapeTextEdit->setText("Missing Wallpaper");
+        // else
+        //     landscapeTextEdit->setText(landscapeWal);
+        // if (portraitWal.isEmpty())
+        //     portraitTextEdit->setText("Missing Wallpaper");
+        // else
+        //     portraitTextEdit->setText(portraitWal);
     }
     
     
@@ -51,23 +76,20 @@ MainWindow::MainWindow(QWidget *parent)
     if (!is_land_port_wallpaper_empty) { // no empty wallpaper, have both landscape & portrait
         // set default wappaper and update wallpaper
         set_default_wallpaper();
-    } else { // have empty wallpaper, prompt user for input
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // ! NEED TO REPLACE WITH PROPER DIALOG PROMPT
-        MessageBoxW(0, L"Missing Components in config.ini", L"Warning", 0);
-        return;
-        
-        // // set default wappaper and update wallpaper
-        // set_default_wallpaper();
     }
+    // } else { // have empty wallpaper, prompt user for input
+    //     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //     // ! NEED TO REPLACE WITH PROPER DIALOG PROMPT
+    //     MessageBoxW(0, L"Missing Components in config.ini", L"Warning", 0);
+    //     return;
+        
+    //     // // set default wappaper and update wallpaper
+    //     // set_default_wallpaper();
+    // }
     
     // init timer
     m_Wallpaper_Updater = new WallpaperUpdater();
     
-    // App icon
-    auto appIcon = QIcon(":/res/icon.png");
-    this->m_TrayIcon->setIcon(appIcon);
-    this->setWindowIcon(appIcon);
     
     // Tray icon menu
     m_TrayIconMenu = this->createMenu();
@@ -157,6 +179,29 @@ void MainWindow::update_wallpapers()
     CleanCache(L"core_cache");
 }
 
+bool MainWindow::is_all_wallpaper_set()
+{
+    QString defaultWal, landscapeWal, portraitWal;
+    
+    // set wallpaper path & loop condition
+    defaultWal = QString::fromWCharArray(m_Config.get(L"wallpaper", L"default_wallpaper_id").c_str());
+    landscapeWal = QString::fromWCharArray(m_Config.get(L"wallpaper", L"landscape_wallpaper_id").c_str());
+    portraitWal = QString::fromWCharArray(m_Config.get(L"wallpaper", L"portrait_wallpaper_id").c_str());
+    // set App dlg text edit
+    if (!defaultWal.isEmpty())
+        defaultTextEdit->setText(get_wallpaper_src(defaultWal));
+    if (!landscapeWal.isEmpty())
+        landscapeTextEdit->setText(get_wallpaper_src(landscapeWal));
+    if (!portraitWal.isEmpty())
+        portraitTextEdit->setText(get_wallpaper_src(portraitWal));
+    // return
+    return ( 
+        !defaultWal.isEmpty() &&
+        !landscapeWal.isEmpty() &&
+        !portraitWal.isEmpty()
+    );
+}
+
 
 // public slot:
 void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason_)
@@ -169,6 +214,152 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason_)
     //     ;
     // }
 }
+void MainWindow::onTextEditChanged()
+{
+    m_ControlChanged = true;
+}
+
+// save all setting & quit App dlg
+void MainWindow::onOKPressed()
+{
+    // save
+    if (m_ControlChanged) {
+        if (!landscapeTextEdit->text().isEmpty() && // text edit has value
+            m_Config.get(L"wallpaper", L"landscape_wallpaper_id").empty()) // config file dont have value
+        {
+            // QDir tempdir(landscapeTextEdit->text());
+            if (GlobTools::is_filedir_existW(landscapeTextEdit->text().toStdWString())) {
+                m_LandscapeWallpaper = landscapeTextEdit->text();
+                add_landscape_wallpaper();
+            }
+            else {
+                MessageBoxW(0, 
+                    (L"Entered File Path:\n"+
+                    landscapeTextEdit->text().toStdWString()+
+                    L"\nDoes Not Exist.").c_str(), 
+                    L"Exception", 0);
+            }
+        }
+        if (!portraitTextEdit->text().isEmpty() && // text edit has value
+            m_Config.get(L"wallpaper", L"portrait_wallpaper_id").empty()) // config file dont have value
+        {
+            // QDir tempdir(portraitTextEdit->text());
+            if (GlobTools::is_filedir_existW(portraitTextEdit->text().toStdWString())) {
+                m_PortraitWallpaper = portraitTextEdit->text();
+                add_portrait_wallpaper();
+            }
+            else {
+                MessageBoxW(0, 
+                    (L"Entered File Path:\n"+
+                    portraitTextEdit->text().toStdWString()+
+                    L"\nDoes Not Exist.").c_str(), 
+                    L"Exception", 0);
+            }
+        }
+        if (!defaultTextEdit->text().isEmpty() && // text edit has value
+            m_Config.get(L"wallpaper", L"default_wallpaper_id").empty()) // config file dont have value
+        {
+            // QDir tempdir(defaultTextEdit->text());
+            if (GlobTools::is_filedir_existW(defaultTextEdit->text().toStdWString())) {
+                m_DefaultWallpaper = defaultTextEdit->text();
+                add_default_wallpaper();
+            }
+            else {
+                MessageBoxW(0, 
+                    (L"Entered File Path:\n"+
+                    defaultTextEdit->text().toStdWString()+
+                    L"\nDoes Not Exist.").c_str(), 
+                    L"Exception", 0);
+            }
+            try {
+                set_default_wallpaper();
+            } catch(std::exception& err) {
+                MessageBoxA(0, err.what(), "Exception", 0);
+            }
+        }
+        m_ControlChanged = false;
+    }
+    // quit
+    if (is_all_wallpaper_set())
+        this->hide();
+    else {
+        MessageBoxW(0, L"Please fill in all Wallpapers", L"Warning", 0);
+        return;
+    }
+}
+// quit App dlg
+void MainWindow::onCancelPressed()
+{
+    // quit
+    if (is_all_wallpaper_set())
+        this->hide();
+    else {
+        MessageBoxW(0, L"Please fill in all Wallpapers", L"Warning", 0);
+        return;
+    }
+}
+// save all setting
+void MainWindow::onApplyPressed()
+{
+    // save
+    if (m_ControlChanged) {
+        if (!landscapeTextEdit->text().isEmpty() && // text edit has value
+            m_Config.get(L"wallpaper", L"landscape_wallpaper_id").empty()) // config file dont have value
+        {
+            // QDir tempdir(landscapeTextEdit->text());
+            if (GlobTools::is_filedir_existW(landscapeTextEdit->text().toStdWString())) {
+                m_LandscapeWallpaper = landscapeTextEdit->text();
+                add_landscape_wallpaper();
+            }
+            else {
+                MessageBoxW(0, 
+                    (L"Entered File Path:\n"+
+                    landscapeTextEdit->text().toStdWString()+
+                    L"\nDoes Not Exist.").c_str(), 
+                    L"Exception", 0);
+            }
+        }
+        if (!portraitTextEdit->text().isEmpty() && // text edit has value
+            m_Config.get(L"wallpaper", L"portrait_wallpaper_id").empty()) // config file dont have value
+        {
+            // QDir tempdir(portraitTextEdit->text());
+            if (GlobTools::is_filedir_existW(portraitTextEdit->text().toStdWString())) {
+                m_PortraitWallpaper = portraitTextEdit->text();
+                add_portrait_wallpaper();
+            }
+            else {
+                MessageBoxW(0, 
+                    (L"Entered File Path:\n"+
+                    portraitTextEdit->text().toStdWString()+
+                    L"\nDoes Not Exist.").c_str(), 
+                    L"Exception", 0);
+            }
+        }
+        if (!defaultTextEdit->text().isEmpty() && // text edit has value
+            m_Config.get(L"wallpaper", L"default_wallpaper_id").empty()) // config file dont have value
+        {
+            // QDir tempdir(defaultTextEdit->text());
+            if (GlobTools::is_filedir_existW(defaultTextEdit->text().toStdWString())) {
+                m_DefaultWallpaper = defaultTextEdit->text();
+                add_default_wallpaper();
+            }
+            else {
+                MessageBoxW(0, 
+                    (L"Entered File Path:\n"+
+                    defaultTextEdit->text().toStdWString()+
+                    L"\nDoes Not Exist.").c_str(), 
+                    L"Exception", 0);
+            }
+            try {
+                set_default_wallpaper();
+            } catch(std::exception& err) {
+                MessageBoxA(0, err.what(), "Exception", 0);
+            }
+        }
+        m_ControlChanged = false;
+    }
+}
+
 
 // protected:
 
@@ -188,11 +379,14 @@ QMenu* MainWindow::createMenu()
     menu_add_action(main_menu, L"Update Wallpapers", &MainWindow::update_wallpapers);
     
     // Add >
-    auto add_menu = menu_add_menu(main_menu, L"Add");
-        // Add Landscape Wallpaper
-        menu_add_action(add_menu, L"Add Default Wallpaper", &MainWindow::add_default_wallpaper);
-        menu_add_action(add_menu, L"Add Landscape Wallpaper", &MainWindow::add_landscape_wallpaper);
-        menu_add_action(add_menu, L"Add Portrait Wallpaper", &MainWindow::add_portrait_wallpaper);
+    // auto add_menu = menu_add_menu(main_menu, L"Add");
+    //     // Add Landscape Wallpaper
+    //     menu_add_action(add_menu, L"Add Default Wallpaper", &MainWindow::add_default_wallpaper);
+    //     menu_add_action(add_menu, L"Add Landscape Wallpaper", &MainWindow::add_landscape_wallpaper);
+    //     menu_add_action(add_menu, L"Add Portrait Wallpaper", &MainWindow::add_portrait_wallpaper);
+    
+    // Set Wallpapers
+    menu_add_action(main_menu, L"Set Wallpapers", &MainWindow::show);
     
     // Quit
     menu_add_action(main_menu, L"Quit", &QCoreApplication::quit);
@@ -293,6 +487,33 @@ std::wstring MainWindow::get_default_wallpaper_src()
         return std::wstring();
     }
 }
+QString MainWindow::get_wallpaper_src(const QString& wallpaper_id)
+{
+    // get default wallpaper info
+    QObject parent;
+    QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
+    QStringList arguments;
+    arguments
+            << "--find"
+            << wallpaper_id
+    ;
+    QProcess myProcess(&parent);
+    // QProcess *myProcess = new QProcess(this);
+    myProcess.start(program, arguments);
+    // get wallpaper ID from ./core_cache
+    while (!myProcess.waitForFinished())
+        Sleep(500);
+    myProcess.close();
+    // read new added wallpaper from cache 
+    Cache_ReaderW cache(L"core_cache");
+    if (cache.isCacheExist()) {
+        std::wstring output(cache.getData()->at(0));
+        output.assign(output.begin()+output.find(L':')+2, output.end());
+        return QString::fromWCharArray(output.c_str());
+    } else {
+        return QString();
+    }
+}
 void MainWindow::paste_default_wallpaper_to_themes()
 {
     std::wstring default_wallpaper_id = m_Config.get(L"wallpaper", L"default_wallpaper_id");
@@ -325,17 +546,22 @@ void MainWindow::paste_default_wallpaper_to_themes()
 
 void MainWindow::add_default_wallpaper()
 {
-    // get user input default wallpaper path
-    QString default_wallpaper = select_image("Select Default Wallpaper");
-    if (default_wallpaper.isEmpty())
+    if (m_DefaultWallpaper.isEmpty())
         return;
+    //     // get user input default wallpaper path
+    //     default_wallpaper = select_image("Select Default Wallpaper");
+    //     if (default_wallpaper.isEmpty())
+    //         return;
+    // } else {
+    //     default_wallpaper = wallpaper;
+    // }
     // cache wallpaper
     QObject parent;
     QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
     QStringList arguments;
     arguments
             << "--add"
-            << default_wallpaper
+            << m_DefaultWallpaper
     ;
     QProcess myProcess(&parent);
     myProcess.start(program, arguments);
@@ -351,20 +577,38 @@ void MainWindow::add_default_wallpaper()
     } else {
         MessageBoxW(0, L"No core_cache for Default", L"Info", 0);
     }
+    
+    // update control status 
+    m_ControlChanged = true;
+}
+void MainWindow::select_default_wallpaper()
+{
+    m_DefaultWallpaper = select_image("Select Default Wallpaper");
+    if (!m_DefaultWallpaper.isEmpty())
+        defaultTextEdit->setText(m_DefaultWallpaper);
+    // update control status 
+    m_ControlChanged = true;
 }
 void MainWindow::add_landscape_wallpaper()
 {
-    // get user input landscape wallpaper path
-    QString landscape_wallpaper = select_image("Select Landscape Wallpaper");
-    if (landscape_wallpaper.isEmpty())
+    if (m_LandscapeWallpaper.isEmpty())
         return;
+    // QString landscape_wallpaper;
+    // if (wallpaper.isEmpty()) {
+    //     // get user input landscape wallpaper path
+    //     landscape_wallpaper = select_image("Select Landscape Wallpaper");
+    //     if (landscape_wallpaper.isEmpty())
+    //         return;
+    // } else {
+    //     landscape_wallpaper = wallpaper;
+    // }
     // cache wallpaper
     QObject parent;
     QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
     QStringList arguments;
     arguments
             << "--add"
-            << landscape_wallpaper
+            << m_LandscapeWallpaper
     ;
     QProcess myProcess(&parent);
     myProcess.start(program, arguments);
@@ -379,21 +623,39 @@ void MainWindow::add_landscape_wallpaper()
         m_Config.set(L"wallpaper", L"landscape_wallpaper_id", cache.getData()->at(0));
     } else {
         MessageBoxW(0, L"No core_cache for Landscape", L"Info", 0);
-    }
+    }    
+    
+    // update control status 
+    m_ControlChanged = true;
+}
+void MainWindow::select_landscape_wallpaper()
+{
+    m_LandscapeWallpaper = select_image("Select Landscape Wallpaper");
+    if (!m_LandscapeWallpaper.isEmpty())
+        landscapeTextEdit->setText(m_LandscapeWallpaper);
+    // update control status 
+    m_ControlChanged = true;
 }
 void MainWindow::add_portrait_wallpaper()
 {
-    // get user input portrait wallpaper path
-    QString portrait_wallpaper = select_image("Select Portrait Wallpaper");
-    if (portrait_wallpaper.isEmpty())
+    if (m_PortraitWallpaper.isEmpty())
         return;
+    // // get user input portrait wallpaper path
+    // QString portrait_wallpaper;
+    // if (wallpaper.isEmpty()) {
+    //     portrait_wallpaper = select_image("Select Portrait Wallpaper");
+    //     if (portrait_wallpaper.isEmpty())
+    //         return;
+    // } else {
+    //     portrait_wallpaper = wallpaper;
+    // }
     // cache wallpaper
     QObject parent;
     QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
     QStringList arguments;
     arguments
             << "--add"
-            << portrait_wallpaper
+            << m_PortraitWallpaper
     ;
     QProcess myProcess(&parent);
     myProcess.start(program, arguments);
@@ -410,6 +672,16 @@ void MainWindow::add_portrait_wallpaper()
         MessageBoxW(0, L"No core_cache for Portrait", L"Info", 0);
     }
     
+    // update control status 
+    m_ControlChanged = true;
+}
+void MainWindow::select_portrait_wallpaper()
+{
+    m_PortraitWallpaper = select_image("Select Portrait Wallpaper");
+    if (!m_PortraitWallpaper.isEmpty())
+        portraitTextEdit->setText(m_PortraitWallpaper);
+    // update control status 
+    m_ControlChanged = true;
 }
 
 QString MainWindow::select_image(std::string dlg_caption, std::string default_filename)
