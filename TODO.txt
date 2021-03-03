@@ -36,8 +36,6 @@
             c. find
             d. help
 
-    D. add better setting dialog
-        a. Integrate .ui file?
-    
     E. image cropping & rotation add to core (w/ QImage lib)
     
+    F. cached wallpaper display in a separate dlg (w/ QImage lib)

@@ -46,28 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
     } catch(std::exception& err) { // cannot find config.ini under current dir
         // write a new config.ini
         write_default_config();
-        // prompt user to input basic configs
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // ! NEED TO REPLACE WITH PROPER DIALOG PROMPT
-        // MessageBoxW(0, L"Missing Components in config.ini", L"Warning", 0);
-        // return;
-        
-        
-        // // set App dlg text edit
-        // if (defaultWal.isEmpty())
-        //     defaultTextEdit->setText("Missing Wallpaper");
-        // else
-        //     defaultTextEdit->setText(defaultWal);
-        // if (landscapeWal.isEmpty())
-        //     landscapeTextEdit->setText("Missing Wallpaper");
-        // else
-        //     landscapeTextEdit->setText(landscapeWal);
-        // if (portraitWal.isEmpty())
-        //     portraitTextEdit->setText("Missing Wallpaper");
-        // else
-        //     portraitTextEdit->setText(portraitWal);
     }
-    
     
     // check whether to update wallpapers
     bool is_land_port_wallpaper_empty = 
@@ -77,15 +56,6 @@ MainWindow::MainWindow(QWidget *parent)
         // set default wappaper and update wallpaper
         set_default_wallpaper();
     }
-    // } else { // have empty wallpaper, prompt user for input
-    //     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    //     // ! NEED TO REPLACE WITH PROPER DIALOG PROMPT
-    //     MessageBoxW(0, L"Missing Components in config.ini", L"Warning", 0);
-    //     return;
-        
-    //     // // set default wappaper and update wallpaper
-    //     // set_default_wallpaper();
-    // }
     
     // init timer
     m_Wallpaper_Updater = new WallpaperUpdater();
@@ -99,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->m_TrayIcon->show();
     
     // Interaction
-    connect(m_TrayIcon, &QSystemTrayIcon::activated, this, &MainWindow::iconActivated);
+    // connect(m_TrayIcon, &QSystemTrayIcon::activated, this, &MainWindow::iconActivated);
 }
 
 void MainWindow::write_default_config()
@@ -378,13 +348,6 @@ QMenu* MainWindow::createMenu()
     // Update Wallpapers
     menu_add_action(main_menu, L"Update Wallpapers", &MainWindow::update_wallpapers);
     
-    // Add >
-    // auto add_menu = menu_add_menu(main_menu, L"Add");
-    //     // Add Landscape Wallpaper
-    //     menu_add_action(add_menu, L"Add Default Wallpaper", &MainWindow::add_default_wallpaper);
-    //     menu_add_action(add_menu, L"Add Landscape Wallpaper", &MainWindow::add_landscape_wallpaper);
-    //     menu_add_action(add_menu, L"Add Portrait Wallpaper", &MainWindow::add_portrait_wallpaper);
-    
     // Set Wallpapers
     menu_add_action(main_menu, L"Set Wallpapers", &MainWindow::show);
     
@@ -548,13 +511,6 @@ void MainWindow::add_default_wallpaper()
 {
     if (m_DefaultWallpaper.isEmpty())
         return;
-    //     // get user input default wallpaper path
-    //     default_wallpaper = select_image("Select Default Wallpaper");
-    //     if (default_wallpaper.isEmpty())
-    //         return;
-    // } else {
-    //     default_wallpaper = wallpaper;
-    // }
     // cache wallpaper
     QObject parent;
     QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
@@ -593,15 +549,6 @@ void MainWindow::add_landscape_wallpaper()
 {
     if (m_LandscapeWallpaper.isEmpty())
         return;
-    // QString landscape_wallpaper;
-    // if (wallpaper.isEmpty()) {
-    //     // get user input landscape wallpaper path
-    //     landscape_wallpaper = select_image("Select Landscape Wallpaper");
-    //     if (landscape_wallpaper.isEmpty())
-    //         return;
-    // } else {
-    //     landscape_wallpaper = wallpaper;
-    // }
     // cache wallpaper
     QObject parent;
     QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
@@ -640,15 +587,6 @@ void MainWindow::add_portrait_wallpaper()
 {
     if (m_PortraitWallpaper.isEmpty())
         return;
-    // // get user input portrait wallpaper path
-    // QString portrait_wallpaper;
-    // if (wallpaper.isEmpty()) {
-    //     portrait_wallpaper = select_image("Select Portrait Wallpaper");
-    //     if (portrait_wallpaper.isEmpty())
-    //         return;
-    // } else {
-    //     portrait_wallpaper = wallpaper;
-    // }
     // cache wallpaper
     QObject parent;
     QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
