@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
 // SysTrayIcon relate
     m_TrayIcon(new QSystemTrayIcon(this)),
     m_TrayIconMenu(nullptr),
-// GeneralTab relate
+// WallpaperTab relate
     m_LastSelectPath(""),
     m_DefaultWallpaper(""),
     m_LandscapeWallpaper(""),
@@ -31,8 +31,8 @@ MainWindow::MainWindow(QWidget *parent)
     setupUi(this);
     setFixedSize(420,430);
     mainwindowTab->setCurrentIndex(0);
-    // init "General" tab (index: 0)
-    init_GeneralTab();
+    // init "Wallpaper" tab (index: 0)
+    init_WallpaperTab();
     
     // initialize config
     std::wstring config_path = GlobTools::getCurrExePathW();

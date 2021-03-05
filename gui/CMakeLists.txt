@@ -26,7 +26,7 @@ set(SRC
     WallpaperChanger-gui.cpp
     mainwindow.cpp
     mainwindow_TrayIcon.cpp
-    mainwindow_GeneralTab.cpp
+    mainwindow_WallpaperTab.cpp
     timer.cpp
 )
 set(HEADER

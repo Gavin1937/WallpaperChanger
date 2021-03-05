@@ -94,18 +94,18 @@ private:
 
 
 
-// * General Tab relate members
+// * Wallpaper Tab relate members
 public:
     bool is_all_wallpaper_set();
     
-public slots: // General Tab slots
+public slots: // Wallpaper Tab slots
     void onTextEditChanged();
     void onOKPressed();
     void onCancelPressed();
     void onApplyPressed();
     
 private: // helper functions
-    void init_GeneralTab();
+    void init_WallpaperTab();
     
     // adding wallpapers
     void add_default_wallpaper();

@@ -1,10 +1,10 @@
 
-// General Tab UI implementation of class MainWindow
+// Wallpaper Tab UI implementation of class MainWindow
 
 #include "mainwindow.h"
 
 
-// ====================== mainwindow_GeneralTab ======================
+// ====================== mainwindow_WallpaperTab ======================
 
 // public:
 bool MainWindow::is_all_wallpaper_set()
@@ -31,7 +31,7 @@ bool MainWindow::is_all_wallpaper_set()
 }
 
 
-// General Tab slots
+// Wallpaper Tab slots
 void MainWindow::onTextEditChanged()
 {
     m_ControlChanged = true;
@@ -179,10 +179,10 @@ void MainWindow::onApplyPressed()
 
 
 // private:
-void MainWindow::init_GeneralTab()
+void MainWindow::init_WallpaperTab()
 {
-    // setup "General" tab
-    mainwindowTab->setTabText(0, "General");
+    // setup "Wallpaper" tab
+    mainwindowTab->setTabText(0, "Wallpaper");
     connect(defaultBrowseBnt, &QPushButton::clicked, this, &MainWindow::select_default_wallpaper);
     connect(landscapeBrowseBnt, &QPushButton::clicked, this, &MainWindow::select_landscape_wallpaper);
     connect(portraitBrowseBnt, &QPushButton::clicked, this, &MainWindow::select_portrait_wallpaper);
@@ -373,4 +373,4 @@ QString MainWindow::get_wallpaper_src(const QString& wallpaper_id)
 }
 
 
-// ====================== mainwindow_GeneralTab End ======================
+// ====================== mainwindow_WallpaperTab End ======================
