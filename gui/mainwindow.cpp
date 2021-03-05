@@ -33,6 +33,8 @@ MainWindow::MainWindow(QWidget *parent)
     mainwindowTab->setCurrentIndex(0);
     // init "Wallpaper" tab (index: 0)
     init_WallpaperTab();
+    // init "Setting" tab (index: 1)
+    init_SettingTab();
     
     // initialize config
     std::wstring config_path = GlobTools::getCurrExePathW();
@@ -68,6 +70,7 @@ void MainWindow::write_default_config()
     // program
     m_Config.add(L"program", L"core_program", GlobTools::getCurrExePathW() + L"WallpaperChanger-core.exe");
     m_Config.add(L"program", L"gui_program", GlobTools::getCurrExePathW() + L"WallpaperChanger-gui.exe");
+    m_Config.add(L"program", L"hide_when_closed", L"true"); // toggle hide/exit when user close program
     m_Config.add(L"program", L"wallpaper_update_time", L"1800"); // val in seconds, default = 30min
     
     // wallpaper
@@ -132,6 +135,150 @@ void MainWindow::update_wallpapers()
     
     // clean ./core_cache file
     CleanCache(L"core_cache");
+}
+
+
+// public slots: handle bnt OK, Cancel, & Apply through whole program
+
+// save all setting & quit App dlg
+void MainWindow::onOKPressed()
+{
+    // save
+    if (m_ControlChanged) {
+        if (!landscapeTextEdit->text().isEmpty() && // text edit has value
+            m_Config.get(L"wallpaper", L"landscape_wallpaper_id").empty()) // config file dont have value
+        {
+            // QDir tempdir(landscapeTextEdit->text());
+            if (GlobTools::is_filedir_existW(landscapeTextEdit->text().toStdWString())) {
+                m_LandscapeWallpaper = landscapeTextEdit->text();
+                add_landscape_wallpaper();
+            }
+            else {
+                MessageBoxW(0, 
+                    (L"Entered File Path:\n"+
+                    landscapeTextEdit->text().toStdWString()+
+                    L"\nDoes Not Exist.").c_str(), 
+                    L"Exception", 0);
+            }
+        }
+        if (!portraitTextEdit->text().isEmpty() && // text edit has value
+            m_Config.get(L"wallpaper", L"portrait_wallpaper_id").empty()) // config file dont have value
+        {
+            // QDir tempdir(portraitTextEdit->text());
+            if (GlobTools::is_filedir_existW(portraitTextEdit->text().toStdWString())) {
+                m_PortraitWallpaper = portraitTextEdit->text();
+                add_portrait_wallpaper();
+            }
+            else {
+                MessageBoxW(0, 
+                    (L"Entered File Path:\n"+
+                    portraitTextEdit->text().toStdWString()+
+                    L"\nDoes Not Exist.").c_str(), 
+                    L"Exception", 0);
+            }
+        }
+        if (!defaultTextEdit->text().isEmpty() && // text edit has value
+            m_Config.get(L"wallpaper", L"default_wallpaper_id").empty()) // config file dont have value
+        {
+            // QDir tempdir(defaultTextEdit->text());
+            if (GlobTools::is_filedir_existW(defaultTextEdit->text().toStdWString())) {
+                m_DefaultWallpaper = defaultTextEdit->text();
+                add_default_wallpaper();
+            }
+            else {
+                MessageBoxW(0, 
+                    (L"Entered File Path:\n"+
+                    defaultTextEdit->text().toStdWString()+
+                    L"\nDoes Not Exist.").c_str(), 
+                    L"Exception", 0);
+            }
+            try {
+                set_default_wallpaper();
+            } catch(std::exception& err) {
+                MessageBoxA(0, err.what(), "Exception", 0);
+            }
+        }
+        m_ControlChanged = false;
+    }
+    // quit
+    if (is_all_wallpaper_set())
+        this->hide();
+    else {
+        MessageBoxW(0, L"Please fill in all Wallpapers", L"Warning", 0);
+        return;
+    }
+}
+// quit App dlg
+void MainWindow::onCancelPressed()
+{
+    // quit
+    if (is_all_wallpaper_set())
+        this->hide();
+    else {
+        MessageBoxW(0, L"Please fill in all Wallpapers", L"Warning", 0);
+        return;
+    }
+}
+// save all setting
+void MainWindow::onApplyPressed()
+{
+    // save
+    if (m_ControlChanged) {
+        if (!landscapeTextEdit->text().isEmpty() && // text edit has value
+            m_Config.get(L"wallpaper", L"landscape_wallpaper_id").empty()) // config file dont have value
+        {
+            // QDir tempdir(landscapeTextEdit->text());
+            if (GlobTools::is_filedir_existW(landscapeTextEdit->text().toStdWString())) {
+                m_LandscapeWallpaper = landscapeTextEdit->text();
+                add_landscape_wallpaper();
+            }
+            else {
+                MessageBoxW(0, 
+                    (L"Entered File Path:\n"+
+                    landscapeTextEdit->text().toStdWString()+
+                    L"\nDoes Not Exist.").c_str(), 
+                    L"Exception", 0);
+            }
+        }
+        if (!portraitTextEdit->text().isEmpty() && // text edit has value
+            m_Config.get(L"wallpaper", L"portrait_wallpaper_id").empty()) // config file dont have value
+        {
+            // QDir tempdir(portraitTextEdit->text());
+            if (GlobTools::is_filedir_existW(portraitTextEdit->text().toStdWString())) {
+                m_PortraitWallpaper = portraitTextEdit->text();
+                add_portrait_wallpaper();
+            }
+            else {
+                MessageBoxW(0, 
+                    (L"Entered File Path:\n"+
+                    portraitTextEdit->text().toStdWString()+
+                    L"\nDoes Not Exist.").c_str(), 
+                    L"Exception", 0);
+            }
+        }
+        if (!defaultTextEdit->text().isEmpty() && // text edit has value
+            m_Config.get(L"wallpaper", L"default_wallpaper_id").empty()) // config file dont have value
+        {
+            // QDir tempdir(defaultTextEdit->text());
+            if (GlobTools::is_filedir_existW(defaultTextEdit->text().toStdWString())) {
+                m_DefaultWallpaper = defaultTextEdit->text();
+                add_default_wallpaper();
+            }
+            else {
+                MessageBoxW(0, 
+                    (L"Entered File Path:\n"+
+                    defaultTextEdit->text().toStdWString()+
+                    L"\nDoes Not Exist.").c_str(), 
+                    L"Exception", 0);
+            }
+            try {
+                set_default_wallpaper();
+            } catch(std::exception& err) {
+                MessageBoxA(0, err.what(), "Exception", 0);
+            }
+        }
+        m_ControlChanged = false;
+    }
 }
 
 

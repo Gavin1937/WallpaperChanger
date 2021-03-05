@@ -53,6 +53,11 @@ public:
     void write_default_config();
     void update_wallpapers();
     
+public slots: // handle universal buttons (OK, Cancel, Apply)
+    void onOKPressed();
+    void onCancelPressed();
+    void onApplyPressed();
+    
 protected: // protected event handlers
     // on program close
     virtual void closeEvent(QCloseEvent * event);
@@ -100,9 +105,6 @@ public:
     
 public slots: // Wallpaper Tab slots
     void onTextEditChanged();
-    void onOKPressed();
-    void onCancelPressed();
-    void onApplyPressed();
     
 private: // helper functions
     void init_WallpaperTab();
@@ -128,6 +130,13 @@ private:
     QString m_PortraitWallpaper;
     // config status
     bool m_ControlChanged;
+
+
+
+// * Setting Tab relate members
+private:
+    void init_SettingTab();
+
 
 
 };

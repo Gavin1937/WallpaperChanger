@@ -27,6 +27,7 @@ set(SRC
     mainwindow.cpp
     mainwindow_TrayIcon.cpp
     mainwindow_WallpaperTab.cpp
+    mainwindow_SettingTab.cpp
     timer.cpp
 )
 set(HEADER
