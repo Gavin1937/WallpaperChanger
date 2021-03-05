@@ -78,6 +78,7 @@ CachedImage_${V}_${H}_POS${M}
 
 ## Requirements:
 
+* A **Windows** Tablet or Laptop with screen rotation enabled
 * **C++17** and above
 * **Qt 5** and above
 * **CMake 3.18** and above
