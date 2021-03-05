@@ -2,6 +2,7 @@
 
 // Qt Libs
 #include <QApplication>
+#include <QCloseEvent>
 #include <QDir>
 #include <QEvent>
 #include <QFileDialog>
@@ -20,8 +21,7 @@
 // C++ STL
 #include <stdexcept>
 #include <string>
-
-#include <fstream>
+#include <algorithm>
 
 // Windows API
 #include <windows.h>
@@ -34,11 +34,17 @@
 #include "../utilities/ConfigManager.h"
 #include "../utilities/GlobTools.h"
 
+// structs & enums
+enum class ProgramCloseMode {
+    UNKNOWN = 0, EXIT, HIDE
+};
+
 
 class MainWindow : public QMainWindow, public Ui_MainWindow
 {
     Q_OBJECT
-    
+
+
 // * mainwindow primary members
 public:
     // constructor
@@ -47,12 +53,15 @@ public:
     void write_default_config();
     void update_wallpapers();
     
-protected:
+protected: // protected event handlers
+    // on program close
+    virtual void closeEvent(QCloseEvent * event);
+    
+    // handle screen resize event
     void customEvent(QEvent* e);
     
-private:
+private: // helper functions
     
-    // helper functions
     std::wstring get_windows_sys_theme_dir();
     std::pair<int, int> get_physical_screen_res();
     void set_default_wallpaper();
@@ -63,6 +72,7 @@ private:
 private:
     WallpaperUpdater* m_Wallpaper_Updater;
     ConfigManager m_Config;
+    ProgramCloseMode m_ProgramCloseMode; 
 
 
 
@@ -70,7 +80,7 @@ private:
 public slots: // TrayIcon slots
     void iconActivated(QSystemTrayIcon::ActivationReason);
     
-private:
+private: // helper functions
     void init_SysTrayIcon(QIcon* icon);
     QMenu* createMenu();
     
@@ -94,7 +104,7 @@ public slots: // General Tab slots
     void onCancelPressed();
     void onApplyPressed();
     
-private:
+private: // helper functions
     void init_GeneralTab();
     
     // adding wallpapers
@@ -110,6 +120,8 @@ private:
     QString get_wallpaper_src(const QString& wallpaper_id);
     
 private:
+    // last select path
+    QString m_LastSelectPath;
     // Wallpaper Path
     QString m_DefaultWallpaper;
     QString m_LandscapeWallpaper;

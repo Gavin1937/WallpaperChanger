@@ -314,8 +314,15 @@ QString MainWindow::select_image(std::string dlg_caption, std::string default_fi
 {
     if (default_filename[0] != '/')
         default_filename = '/' + default_filename;
-	QString output =  QFileDialog::getOpenFileName(this, tr(dlg_caption.data()),
-                                                    tr(default_filename.data()),
+    // set current dir
+    QString dir;
+    if (!m_LastSelectPath.isEmpty())
+        dir = m_LastSelectPath + QString(default_filename.c_str());
+    else
+        dir = QString(default_filename.c_str());
+	QString output = QFileDialog::getOpenFileName(this, tr(dlg_caption.data()),
+                                                    // tr(default_filename.data()),
+                                                    dir,
                                                     tr("All Images (*.png *.jpg *.jpeg *.bmp)\n"
                                                         "JPEG/JPG (*.jpg *.jpeg)\n"
                                                         "PNG (*.png)\n"
@@ -325,6 +332,14 @@ QString MainWindow::select_image(std::string dlg_caption, std::string default_fi
         for (auto& it : output)
             if (it == '/') it = '\\';
     }
+    // update last select path
+    m_LastSelectPath = output;
+    std::reverse(m_LastSelectPath.begin(), m_LastSelectPath.end());
+    auto it = std::find(m_LastSelectPath.begin(), m_LastSelectPath.end(), '\\');
+    size_t shrink_size = it - m_LastSelectPath.begin();
+    std::reverse(m_LastSelectPath.begin(), m_LastSelectPath.end());
+    m_LastSelectPath.resize(m_LastSelectPath.length() - shrink_size);
+    // output
     return output;
 }
 

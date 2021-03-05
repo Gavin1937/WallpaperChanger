@@ -10,14 +10,16 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), m_Config(),
     m_Wallpaper_Updater(nullptr),
+    m_ProgramCloseMode(ProgramCloseMode::UNKNOWN),
 // SysTrayIcon relate
     m_TrayIcon(new QSystemTrayIcon(this)),
     m_TrayIconMenu(nullptr),
 // GeneralTab relate
-    m_ControlChanged(false),
+    m_LastSelectPath(""),
     m_DefaultWallpaper(""),
     m_LandscapeWallpaper(""),
-    m_PortraitWallpaper("")
+    m_PortraitWallpaper(""),
+    m_ControlChanged(false)
 {
     // App icon
     QIcon appIcon = QIcon(":/res/icon.png");
@@ -133,9 +135,23 @@ void MainWindow::update_wallpapers()
 }
 
 
-// protected:
+// protected event handlers
 
-// receive screen resize event
+// on program close
+void MainWindow::closeEvent(QCloseEvent * event)
+{
+    switch(m_ProgramCloseMode)
+    {
+    case ProgramCloseMode::HIDE:
+        event->ignore();
+        this->hide();
+        break;
+    default:
+        break;
+    }
+}
+
+// handle screen resize event
 void MainWindow::customEvent(QEvent* e)
 {
     update_wallpapers();
