@@ -32,7 +32,7 @@ bool MainWindow::is_all_wallpaper_set()
 
 
 // Wallpaper Tab slots
-void MainWindow::onTextEditChanged()
+void MainWindow::onTab0_TextEditChanged()
 {
     m_ControlChanged = true;
 }
@@ -43,16 +43,74 @@ void MainWindow::init_WallpaperTab()
 {
     // setup "Wallpaper" tab
     mainwindowTab->setTabText(0, "Wallpaper");
+    
+    // connect controls to functions
     connect(defaultBrowseBnt, &QPushButton::clicked, this, &MainWindow::select_default_wallpaper);
     connect(landscapeBrowseBnt, &QPushButton::clicked, this, &MainWindow::select_landscape_wallpaper);
     connect(portraitBrowseBnt, &QPushButton::clicked, this, &MainWindow::select_portrait_wallpaper);
-    connect(defaultTextEdit, &QLineEdit::textChanged, this, &MainWindow::onTextEditChanged);
-    connect(landscapeTextEdit, &QLineEdit::textChanged, this, &MainWindow::onTextEditChanged);
-    connect(portraitTextEdit, &QLineEdit::textChanged, this, &MainWindow::onTextEditChanged);
+    connect(defaultTextEdit, &QLineEdit::textChanged, this, &MainWindow::onTab0_TextEditChanged);
+    connect(landscapeTextEdit, &QLineEdit::textChanged, this, &MainWindow::onTab0_TextEditChanged);
+    connect(portraitTextEdit, &QLineEdit::textChanged, this, &MainWindow::onTab0_TextEditChanged);
     // universal buttons (OK, Cancel, Apply)
     connect(tab0OK, &QPushButton::clicked, this, &MainWindow::onOKPressed);
     connect(tab0Cancel, &QPushButton::clicked, this, &MainWindow::onCancelPressed);
     connect(tab0Apply, &QPushButton::clicked, this, &MainWindow::onApplyPressed);
+}
+void MainWindow::save_WallpaperTab()
+{
+    if (!landscapeTextEdit->text().isEmpty() && // text edit has value
+        m_Config.get(L"wallpaper", L"landscape_wallpaper_id").empty()) // config file dont have value
+    {
+        // QDir tempdir(landscapeTextEdit->text());
+        if (GlobTools::is_filedir_existW(landscapeTextEdit->text().toStdWString())) {
+            m_LandscapeWallpaper = landscapeTextEdit->text();
+            add_landscape_wallpaper();
+        }
+        else {
+            MessageBoxW(0, 
+                (L"Entered File Path:\n"+
+                landscapeTextEdit->text().toStdWString()+
+                L"\nDoes Not Exist.").c_str(), 
+                L"Exception", 0);
+        }
+    }
+    if (!portraitTextEdit->text().isEmpty() && // text edit has value
+        m_Config.get(L"wallpaper", L"portrait_wallpaper_id").empty()) // config file dont have value
+    {
+        // QDir tempdir(portraitTextEdit->text());
+        if (GlobTools::is_filedir_existW(portraitTextEdit->text().toStdWString())) {
+            m_PortraitWallpaper = portraitTextEdit->text();
+            add_portrait_wallpaper();
+        }
+        else {
+            MessageBoxW(0, 
+                (L"Entered File Path:\n"+
+                portraitTextEdit->text().toStdWString()+
+                L"\nDoes Not Exist.").c_str(), 
+                L"Exception", 0);
+        }
+    }
+    if (!defaultTextEdit->text().isEmpty() && // text edit has value
+        m_Config.get(L"wallpaper", L"default_wallpaper_id").empty()) // config file dont have value
+    {
+        // QDir tempdir(defaultTextEdit->text());
+        if (GlobTools::is_filedir_existW(defaultTextEdit->text().toStdWString())) {
+            m_DefaultWallpaper = defaultTextEdit->text();
+            add_default_wallpaper();
+        }
+        else {
+            MessageBoxW(0, 
+                (L"Entered File Path:\n"+
+                defaultTextEdit->text().toStdWString()+
+                L"\nDoes Not Exist.").c_str(), 
+                L"Exception", 0);
+        }
+        try {
+            set_default_wallpaper();
+        } catch(std::exception& err) {
+            MessageBoxA(0, err.what(), "Exception", 0);
+        }
+    }
 }
 
 // adding wallpapers

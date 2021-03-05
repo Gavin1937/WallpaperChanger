@@ -9,13 +9,14 @@
 // TrayIcon slots
 void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason_)
 {
-    // switch (reason_) {
-    // case QSystemTrayIcon::Trigger:
-    //     this->trayIcon->showMessage("Hello", "You clicked me!");
-    //     break;
-    // default:
-    //     ;
-    // }
+    switch (reason_) {
+    case QSystemTrayIcon::DoubleClick: // show MainWindow Dialog
+        mainwindowTab->setCurrentIndex(0);
+        this->show();
+        break;
+    default:
+        break;
+    }
 }
 
 // private:
@@ -29,7 +30,7 @@ void MainWindow::init_SysTrayIcon(QIcon* icon)
     // Displaying the tray icon
     this->m_TrayIcon->show();
     // SysTrayIcon Interaction
-    // connect(m_TrayIcon, &QSystemTrayIcon::activated, this, &MainWindow::iconActivated);
+    connect(m_TrayIcon, &QSystemTrayIcon::activated, this, &MainWindow::iconActivated);
 }
 QMenu* MainWindow::createMenu()
 {

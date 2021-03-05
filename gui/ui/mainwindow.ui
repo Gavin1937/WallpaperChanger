@@ -219,27 +219,27 @@
       </property>
       <item>
        <property name="text">
-        <string>Second</string>
+        <string>Seconds</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Minute</string>
+        <string>Minutes</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Hour</string>
+        <string>Hours</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Day</string>
+        <string>Days</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Week</string>
+        <string>Weeks</string>
        </property>
       </item>
      </widget>

@@ -2,7 +2,9 @@
 
 // Qt Libs
 #include <QApplication>
+#include <QCheckBox>
 #include <QCloseEvent>
+#include <QComboBox>
 #include <QDir>
 #include <QEvent>
 #include <QFileDialog>
@@ -37,6 +39,9 @@
 // structs & enums
 enum class ProgramCloseMode {
     UNKNOWN = 0, EXIT, HIDE
+};
+enum class DropDownState {
+    Seconds = 0, Minutes, Hours, Days, Weeks
 };
 
 
@@ -78,7 +83,8 @@ private:
     WallpaperUpdater* m_Wallpaper_Updater;
     ConfigManager m_Config;
     ProgramCloseMode m_ProgramCloseMode; 
-
+    // control status
+    bool m_ControlChanged;
 
 
 // * TrayIcon relate members
@@ -104,10 +110,11 @@ public:
     bool is_all_wallpaper_set();
     
 public slots: // Wallpaper Tab slots
-    void onTextEditChanged();
+    void onTab0_TextEditChanged();
     
 private: // helper functions
     void init_WallpaperTab();
+    void save_WallpaperTab();
     
     // adding wallpapers
     void add_default_wallpaper();
@@ -128,15 +135,25 @@ private:
     QString m_DefaultWallpaper;
     QString m_LandscapeWallpaper;
     QString m_PortraitWallpaper;
-    // config status
-    bool m_ControlChanged;
 
 
 
 // * Setting Tab relate members
-private:
+public slots: // Setting Tab slots
+    void onTab1_TextEditChanged();
+    void onTab1_DropDownChanged();
+    void onTab1_ChkBoxStatusChanged();
+    
+private: // helper functions
     void init_SettingTab();
-
-
+    void save_SettingTab();
+    
+    // convert m_WallpaperUpdateInterval between different DropDownState (sec, min, hour, day, week)
+    void time_converter(int& time, const DropDownState& curr_state, const DropDownState& last_state);
+    
+private:
+    DropDownState m_Curr_DropDownState;
+    DropDownState m_Last_DropDownState;
+    int m_WallpaperUpdateInterval;
 
 };
