@@ -13,7 +13,7 @@
 
 This Program will Change Wallpaper base on Screen Rotation on tablet/laptop. This program is aiming to allow user to customize their wallpapers base on different screen orientation. You can set different wallpaper for different orientation.
 
-## [**Take me to Installation!**](#Requirements:)
+## [**Take me to Installation!**](#Requirements)
 
 ## [**Go To TODO.md**](TODO.md)
 
