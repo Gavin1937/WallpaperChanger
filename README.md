@@ -16,7 +16,7 @@ This Program will Change Wallpaper base on Screen Rotation on tablet/laptop. Thi
 
 ## [**Go To TODO.md**](TODO.md)
 
-## [**Go To Changelog.md**](Changelog.md)
+## [**Go To ChangeLog.md**](ChangeLog.md)
 
 
 ## How It Work:
