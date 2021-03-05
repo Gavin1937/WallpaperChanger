@@ -39,32 +39,13 @@ class MainWindow : public QMainWindow, public Ui_MainWindow
 {
     Q_OBJECT
     
+// * mainwindow primary members
 public:
+    // constructor
     MainWindow(QWidget *parent = 0);
     
     void write_default_config();
     void update_wallpapers();
-    
-    bool is_all_wallpaper_set();
-    
-private:
-    WallpaperUpdater* m_Wallpaper_Updater;
-    
-    ConfigManager m_Config;
-    
-    // config status
-    bool m_ControlChanged;
-    
-    // Wallpaper Path
-    QString m_DefaultWallpaper;
-    QString m_LandscapeWallpaper;
-    QString m_PortraitWallpaper;
-    
-public slots:
-    void onTextEditChanged();
-    void onOKPressed();
-    void onCancelPressed();
-    void onApplyPressed();
     
 protected:
     void customEvent(QEvent* e);
@@ -76,20 +57,13 @@ private:
     std::pair<int, int> get_physical_screen_res();
     void set_default_wallpaper();
     std::wstring get_default_wallpaper_src();
-    QString get_wallpaper_src(const QString& wallpaper_id);
     
     void paste_default_wallpaper_to_themes();
     
-    void add_default_wallpaper();
-    void select_default_wallpaper();
-    void add_landscape_wallpaper();
-    void select_landscape_wallpaper();
-    void add_portrait_wallpaper();
-    void select_portrait_wallpaper();
-    QString select_image(std::string dlg_caption = "Select Image", std::string default_filename = "/Select Image");
-    
-    
-    
+private:
+    WallpaperUpdater* m_Wallpaper_Updater;
+    ConfigManager m_Config;
+
 
 
 // * TrayIcon relate members
@@ -108,6 +82,40 @@ private:
     QSystemTrayIcon* m_TrayIcon;
     QMenu* m_TrayIconMenu;
 
+
+
+// * General Tab relate members
+public:
+    bool is_all_wallpaper_set();
+    
+public slots: // General Tab slots
+    void onTextEditChanged();
+    void onOKPressed();
+    void onCancelPressed();
+    void onApplyPressed();
+    
+private:
+    void init_GeneralTab();
+    
+    // adding wallpapers
+    void add_default_wallpaper();
+    void select_default_wallpaper();
+    void add_landscape_wallpaper();
+    void select_landscape_wallpaper();
+    void add_portrait_wallpaper();
+    void select_portrait_wallpaper();
+    QString select_image(std::string dlg_caption = "Select Image", std::string default_filename = "/Select Image");
+    
+    // helper function
+    QString get_wallpaper_src(const QString& wallpaper_id);
+    
+private:
+    // Wallpaper Path
+    QString m_DefaultWallpaper;
+    QString m_LandscapeWallpaper;
+    QString m_PortraitWallpaper;
+    // config status
+    bool m_ControlChanged;
 
 
 };
