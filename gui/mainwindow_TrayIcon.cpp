@@ -12,7 +12,7 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason_)
     switch (reason_) {
     case QSystemTrayIcon::DoubleClick: // show MainWindow Dialog
         mainwindowTab->setCurrentIndex(0);
-        this->show();
+        this->MyShow();
         break;
     default:
         break;
@@ -28,8 +28,9 @@ void MainWindow::init_SysTrayIcon(QIcon* icon)
     m_TrayIconMenu = createMenu();
     m_TrayIcon->setContextMenu(m_TrayIconMenu);
     // Displaying the tray icon
-    this->m_TrayIcon->show();
-    // SysTrayIcon Interaction
+    m_TrayIcon->show();
+    
+    // connect SystemTrayIcon with activation handler
     connect(m_TrayIcon, &QSystemTrayIcon::activated, this, &MainWindow::iconActivated);
 }
 QMenu* MainWindow::createMenu()

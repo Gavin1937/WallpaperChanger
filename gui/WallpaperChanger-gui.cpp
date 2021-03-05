@@ -42,7 +42,7 @@ int APIENTRY WinMain(
     
     // show MainWindow dlg when missing wallpaper
     if (!w.is_all_wallpaper_set())
-        w.show();
+        w.MyShow();
     
     // start ScreenMonitor
     ScreenMonitor sm(&w);

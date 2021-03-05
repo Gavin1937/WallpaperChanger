@@ -41,9 +41,18 @@ void MainWindow::onTab0_TextEditChanged()
 // private:
 void MainWindow::init_WallpaperTab()
 {
+    WallpaperTab_resetCtrls();
+    WallpaperTab_makeConnections();
+}
+void MainWindow::WallpaperTab_resetCtrls()
+{
     // setup "Wallpaper" tab
     mainwindowTab->setTabText(0, "Wallpaper");
-    
+    // set TextEdit text
+    is_all_wallpaper_set();
+}
+void MainWindow::WallpaperTab_makeConnections()
+{
     // connect controls to functions
     connect(defaultBrowseBnt, &QPushButton::clicked, this, &MainWindow::select_default_wallpaper);
     connect(landscapeBrowseBnt, &QPushButton::clicked, this, &MainWindow::select_landscape_wallpaper);

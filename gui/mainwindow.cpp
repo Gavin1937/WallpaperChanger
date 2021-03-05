@@ -20,8 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_DefaultWallpaper(""),
     m_LandscapeWallpaper(""),
     m_PortraitWallpaper(""),
-    m_Curr_DropDownState(DropDownState::Seconds),
-    m_Last_DropDownState(DropDownState::Seconds),
+    m_DropDownState(DropDownState::Seconds),
     m_WallpaperUpdateInterval(0)
 {
     // App icon
@@ -140,6 +139,15 @@ void MainWindow::update_wallpapers()
     CleanCache(L"core_cache");
 }
 
+// ::show() w/ resetting controls
+void MainWindow::MyShow()
+{
+    // reset controls
+    WallpaperTab_resetCtrls();
+    SettingTab_resetCtrls();
+    // show MainWindow
+    this->show();
+}
 
 // public slots: handle bnt OK, Cancel, & Apply through whole program
 
@@ -186,17 +194,24 @@ void MainWindow::onApplyPressed()
 // protected event handlers
 
 // on program close
-void MainWindow::closeEvent(QCloseEvent * event)
+void MainWindow::closeEvent(QCloseEvent* event)
 {
-    switch(m_ProgramCloseMode)
-    {
-    case ProgramCloseMode::EXIT:
-        qApp->exit();
-        break;
-    default: // HIDE & UNKNOWN
+    m_ControlChanged = false;
+    if (!is_all_wallpaper_set()) { // handle unfinished wallpaper path info
+        MessageBoxW(0, L"Please fill in all Wallpapers", L"Warning", 0);
         event->ignore();
-        this->hide();
-        break;
+        return;
+    } else {
+        switch(m_ProgramCloseMode)
+        {
+        case ProgramCloseMode::EXIT:
+            qApp->exit();
+            break;
+        default: // HIDE & UNKNOWN
+            event->ignore();
+            this->hide();
+            break;
+        }
     }
 }
 

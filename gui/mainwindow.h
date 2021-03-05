@@ -58,6 +58,9 @@ public:
     void write_default_config();
     void update_wallpapers();
     
+    // ::show() w/ resetting controls
+    void MyShow();
+    
 public slots: // handle universal buttons (OK, Cancel, Apply)
     void onOKPressed();
     void onCancelPressed();
@@ -65,7 +68,7 @@ public slots: // handle universal buttons (OK, Cancel, Apply)
     
 protected: // protected event handlers
     // on program close
-    virtual void closeEvent(QCloseEvent * event);
+    virtual void closeEvent(QCloseEvent* event);
     
     // handle screen resize event
     void customEvent(QEvent* e);
@@ -114,6 +117,8 @@ public slots: // Wallpaper Tab slots
     
 private: // helper functions
     void init_WallpaperTab();
+    void WallpaperTab_resetCtrls();
+    void WallpaperTab_makeConnections();
     void save_WallpaperTab();
     
     // adding wallpapers
@@ -146,14 +151,15 @@ public slots: // Setting Tab slots
     
 private: // helper functions
     void init_SettingTab();
+    void SettingTab_resetCtrls();
+    void SettingTab_makeConnections();
     void save_SettingTab();
     
     // convert m_WallpaperUpdateInterval between different DropDownState (sec, min, hour, day, week)
     void time_converter(int& time, const DropDownState& curr_state, const DropDownState& last_state);
     
 private:
-    DropDownState m_Curr_DropDownState;
-    DropDownState m_Last_DropDownState;
+    DropDownState m_DropDownState;
     int m_WallpaperUpdateInterval;
-
+    
 };
