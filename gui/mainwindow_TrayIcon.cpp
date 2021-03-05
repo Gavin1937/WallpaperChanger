@@ -41,13 +41,28 @@ QMenu* MainWindow::createMenu()
     menu_add_action(main_menu, L"Update Wallpapers", &MainWindow::update_wallpapers);
     
     // Set Wallpapers
-    menu_add_action(main_menu, L"Set Wallpapers", &MainWindow::show);
+    menu_add_action(main_menu, L"Set Wallpapers", &MainWindow::open_tab0);
+    
+    // Settings
+    menu_add_action(main_menu, L"Settings", &MainWindow::open_tab1);
     
     // Quit
     menu_add_action(main_menu, L"Quit", &QCoreApplication::quit);
     
     return main_menu;
 }
+
+void MainWindow::open_tab0()
+{
+    mainwindowTab->setCurrentIndex(0);
+    this->MyShow();
+}
+void MainWindow::open_tab1()
+{
+    mainwindowTab->setCurrentIndex(1);
+    this->MyShow();
+}
+
 
 template<class FUNC>
 void MainWindow::menu_add_action(

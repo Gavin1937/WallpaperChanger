@@ -98,6 +98,9 @@ private: // helper functions
     void init_SysTrayIcon(QIcon* icon);
     QMenu* createMenu();
     
+    void open_tab0();
+    void open_tab1();
+    
     template<class FUNC>
     void menu_add_action(QMenu* menu, const std::wstring& action_name, FUNC action_func);
     QMenu* menu_add_menu(QMenu* parent_menu, const std::wstring& child_menu_name, QMenu* child_menu = nullptr);
@@ -161,5 +164,6 @@ private: // helper functions
 private:
     DropDownState m_DropDownState;
     int m_WallpaperUpdateInterval;
-    
+
+
 };

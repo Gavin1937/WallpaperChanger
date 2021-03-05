@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_DefaultWallpaper(""),
     m_LandscapeWallpaper(""),
     m_PortraitWallpaper(""),
+// SettingTab relate
     m_DropDownState(DropDownState::Seconds),
     m_WallpaperUpdateInterval(0)
 {
