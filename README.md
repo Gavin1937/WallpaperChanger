@@ -1,6 +1,5 @@
 # WallpaperChanger
 
-<br>
 
 <span style="font-size:2em;">
 
@@ -19,7 +18,6 @@ This Program will Change Wallpaper base on Screen Rotation on tablet/laptop. Thi
 
 ## [**Go To Changelog.md**](Changelog.md)
 
-<br>
 
 ## How It Work:
 
@@ -78,15 +76,12 @@ CachedImage_${V}_${H}_POS${M}
   * Windows will use replaced wallpapers in CachedImage/ as your wallpapers without any problems
 
 
-<br>
-
 ## Requirements:
 
 * **C++17** and above
 * **Qt 5** and above
 * **CMake 3.18** and above
 
-<br>
 
 ## Building
 
@@ -103,7 +98,6 @@ CachedImage_${V}_${H}_POS${M}
 * After Installation, run **WallpaperChanger-gui**
 * If you are **missing DLLs**, you can try to download them from: [https://www.dll-files.com/](https://www.dll-files.com/) 
 
-<br>
 
 ## Further Explanation On GUI
 
