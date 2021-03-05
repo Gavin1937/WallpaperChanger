@@ -25,6 +25,7 @@ include_directories(ui)
 set(SRC
     WallpaperChanger-gui.cpp
     mainwindow.cpp
+    mainwindow_TrayIcon.cpp
     timer.cpp
 )
 set(HEADER

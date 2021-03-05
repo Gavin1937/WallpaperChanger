@@ -2,16 +2,17 @@
 
 // Qt Libs
 #include <QApplication>
-#include <QMainWindow>
-#include <QSystemTrayIcon>
-#include <QMenu>
-#include <QtPlugin>
 #include <QDir>
-#include <QString>
-#include <QProcess>
-#include <QSettings>
 #include <QEvent>
 #include <QFileDialog>
+#include <QIcon>
+#include <QMainWindow>
+#include <QMenu>
+#include <QProcess>
+#include <QSettings>
+#include <QString>
+#include <QSystemTrayIcon>
+#include <QtPlugin>
 
 // Qt ui
 #include "./ui/ui_mainwindow.h"
@@ -29,15 +30,15 @@
 
 // others
 #include "timer.h"
-#include "../utilities/ConfigManager.h"
 #include "../utilities/CacheRW.h"
+#include "../utilities/ConfigManager.h"
 #include "../utilities/GlobTools.h"
 
 
 class MainWindow : public QMainWindow, public Ui_MainWindow
 {
     Q_OBJECT
-
+    
 public:
     MainWindow(QWidget *parent = 0);
     
@@ -46,8 +47,20 @@ public:
     
     bool is_all_wallpaper_set();
     
+private:
+    WallpaperUpdater* m_Wallpaper_Updater;
+    
+    ConfigManager m_Config;
+    
+    // config status
+    bool m_ControlChanged;
+    
+    // Wallpaper Path
+    QString m_DefaultWallpaper;
+    QString m_LandscapeWallpaper;
+    QString m_PortraitWallpaper;
+    
 public slots:
-    void iconActivated(QSystemTrayIcon::ActivationReason);
     void onTextEditChanged();
     void onOKPressed();
     void onCancelPressed();
@@ -57,7 +70,6 @@ protected:
     void customEvent(QEvent* e);
     
 private:
-    QMenu* createMenu();
     
     // helper functions
     std::wstring get_windows_sys_theme_dir();
@@ -76,23 +88,26 @@ private:
     void select_portrait_wallpaper();
     QString select_image(std::string dlg_caption = "Select Image", std::string default_filename = "/Select Image");
     
+    
+    
+
+
+// * TrayIcon relate members
+public slots: // TrayIcon slots
+    void iconActivated(QSystemTrayIcon::ActivationReason);
+    
+private:
+    void init_SysTrayIcon(QIcon* icon);
+    QMenu* createMenu();
+    
     template<class FUNC>
     void menu_add_action(QMenu* menu, const std::wstring& action_name, FUNC action_func);
     QMenu* menu_add_menu(QMenu* parent_menu, const std::wstring& child_menu_name, QMenu* child_menu = nullptr);
     
-    
 private:
     QSystemTrayIcon* m_TrayIcon;
     QMenu* m_TrayIconMenu;
-    WallpaperUpdater* m_Wallpaper_Updater;
-    
-    ConfigManager m_Config;
-    
-    // config status
-    bool m_ControlChanged;
-    
-    // Wallpaper Path
-    QString m_DefaultWallpaper;
-    QString m_LandscapeWallpaper;
-    QString m_PortraitWallpaper;
+
+
+
 };
