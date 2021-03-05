@@ -24,10 +24,10 @@ MainWindow::MainWindow(QWidget *parent)
     
     // setup UI
     setupUi(this);
-    // this->setFixedSize(420,430);
     setFixedSize(420,430);
     // setup "General" tab
     mainwindowTab->setTabText(0, "General");
+    mainwindowTab->setCurrentIndex(0);
     connect(defaultBrowseBnt, &QPushButton::clicked, this, &MainWindow::select_default_wallpaper);
     connect(landscapeBrowseBnt, &QPushButton::clicked, this, &MainWindow::select_landscape_wallpaper);
     connect(portraitBrowseBnt, &QPushButton::clicked, this, &MainWindow::select_portrait_wallpaper);
