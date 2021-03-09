@@ -48,7 +48,6 @@ set(UTIL
     ../utilities/GlobTools.cpp
 )
 set(UI
-    # ${CMAKE_CURRENT_SOURCE_DIR}/ui/mainwindow.ui
     ./ui/mainwindow.ui
 )
 
