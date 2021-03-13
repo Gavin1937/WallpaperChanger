@@ -36,6 +36,12 @@ void MainWindow::onTab0_TextEditChanged()
 {
     m_ControlChanged = true;
 }
+void MainWindow::onBrowseCacheBntPressed()
+{
+    p_CacheBrowserDlg = new CacheBrowserDlg(this);
+    p_CacheBrowserDlg->exec();
+    delete p_CacheBrowserDlg;
+}
 
 
 // private:
@@ -60,6 +66,9 @@ void MainWindow::WallpaperTab_makeConnections()
     connect(defaultTextEdit, &QLineEdit::textChanged, this, &MainWindow::onTab0_TextEditChanged);
     connect(landscapeTextEdit, &QLineEdit::textChanged, this, &MainWindow::onTab0_TextEditChanged);
     connect(portraitTextEdit, &QLineEdit::textChanged, this, &MainWindow::onTab0_TextEditChanged);
+    connect(defaultCacheBnt, &QPushButton::clicked, this, &MainWindow::onBrowseCacheBntPressed);
+    connect(landscapeCacheBnt, &QPushButton::clicked, this, &MainWindow::onBrowseCacheBntPressed);
+    connect(portraitCacheBnt, &QPushButton::clicked, this, &MainWindow::onBrowseCacheBntPressed);
     // universal buttons (OK, Cancel, Apply)
     connect(tab0OK, &QPushButton::clicked, this, &MainWindow::onOKPressed);
     connect(tab0Cancel, &QPushButton::clicked, this, &MainWindow::onCancelPressed);

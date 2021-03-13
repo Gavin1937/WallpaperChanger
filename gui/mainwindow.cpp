@@ -20,6 +20,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_DefaultWallpaper(""),
     m_LandscapeWallpaper(""),
     m_PortraitWallpaper(""),
+    // p_CacheBrowserDlg(new CacheBrowserDlg(this)),
+    p_CacheBrowserDlg(nullptr),
 // SettingTab relate
     m_DropDownState(DropDownState::Seconds),
     m_WallpaperUpdateInterval(0)

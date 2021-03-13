@@ -29,10 +29,12 @@ set(SRC
     mainwindow_WallpaperTab.cpp
     mainwindow_SettingTab.cpp
     timer.cpp
+    CacheBrowserDlg.cpp
 )
 set(HEADER
     mainwindow.h
     timer.h
+    CacheBrowserDlg.h
     resources.h
 )
 set(RES
@@ -49,6 +51,7 @@ set(UTIL
 )
 set(UI
     ./ui/mainwindow.ui
+    ./ui/cachebrowserdlg.ui
 )
 
 # wrap qt .ui file

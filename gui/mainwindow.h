@@ -32,6 +32,9 @@
 
 // others
 #include "timer.h"
+#include "CacheBrowserDlg.h"
+
+// utilities
 #include "../utilities/CacheRW.h"
 #include "../utilities/ConfigManager.h"
 #include "../utilities/GlobTools.h"
@@ -119,6 +122,7 @@ public:
     
 public slots: // Wallpaper Tab slots
     void onTab0_TextEditChanged();
+    void onBrowseCacheBntPressed();
     
 private: // helper functions
     void init_WallpaperTab();
@@ -145,6 +149,8 @@ private:
     QString m_DefaultWallpaper;
     QString m_LandscapeWallpaper;
     QString m_PortraitWallpaper;
+    // CacheBrowserDlg
+    CacheBrowserDlg *p_CacheBrowserDlg;
 
 
 
