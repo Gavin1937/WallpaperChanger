@@ -51,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
     
     // setup UI
     setupUi(this);
-    setFixedSize(420,430);
+    setFixedSize(420,510);
     mainwindowTab->setCurrentIndex(0);
     // init "Wallpaper" tab (index: 0)
     init_WallpaperTab();

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>455</width>
-    <height>443</height>
+    <width>424</width>
+    <height>517</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,13 +20,13 @@
       <x>10</x>
       <y>10</y>
       <width>400</width>
-      <height>400</height>
+      <height>480</height>
      </rect>
     </property>
     <property name="currentIndex">
      <number>0</number>
     </property>
-    <widget class="QWidget" name="tab">
+    <widget class="QWidget" name="WallpaperTab">
      <attribute name="title">
       <string>Tab 1</string>
      </attribute>
@@ -35,33 +35,33 @@
        <rect>
         <x>20</x>
         <y>50</y>
-        <width>61</width>
+        <width>161</width>
         <height>31</height>
        </rect>
       </property>
       <property name="text">
-       <string>Browse</string>
+       <string>Browse From Computer</string>
       </property>
      </widget>
      <widget class="QLabel" name="label">
       <property name="geometry">
        <rect>
-        <x>20</x>
+        <x>10</x>
         <y>20</y>
         <width>131</width>
         <height>20</height>
        </rect>
       </property>
       <property name="text">
-       <string>Default Wallpaper</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Default Wallpaper&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="defaultTextEdit">
       <property name="geometry">
        <rect>
-        <x>90</x>
-        <y>50</y>
-        <width>291</width>
+        <x>70</x>
+        <y>90</y>
+        <width>311</width>
         <height>31</height>
        </rect>
       </property>
@@ -69,9 +69,9 @@
      <widget class="QLineEdit" name="landscapeTextEdit">
       <property name="geometry">
        <rect>
-        <x>90</x>
-        <y>140</y>
-        <width>291</width>
+        <x>70</x>
+        <y>220</y>
+        <width>311</width>
         <height>31</height>
        </rect>
       </property>
@@ -79,35 +79,35 @@
      <widget class="QLabel" name="label_2">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>110</y>
+        <x>10</x>
+        <y>150</y>
         <width>131</width>
         <height>20</height>
        </rect>
       </property>
       <property name="text">
-       <string>Landscape Wallpaper</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Landscape Wallpaper&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
      <widget class="QPushButton" name="landscapeBrowseBnt">
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>140</y>
-        <width>61</width>
+        <y>180</y>
+        <width>161</width>
         <height>31</height>
        </rect>
       </property>
       <property name="text">
-       <string>Browse</string>
+       <string>Browse From Computer</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="portraitTextEdit">
       <property name="geometry">
        <rect>
-        <x>90</x>
-        <y>230</y>
-        <width>291</width>
+        <x>70</x>
+        <y>350</y>
+        <width>311</width>
         <height>31</height>
        </rect>
       </property>
@@ -116,33 +116,33 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>230</y>
-        <width>61</width>
+        <y>310</y>
+        <width>161</width>
         <height>31</height>
        </rect>
       </property>
       <property name="text">
-       <string>Browse</string>
+       <string>Browse From Computer</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_3">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>200</y>
+        <x>10</x>
+        <y>280</y>
         <width>131</width>
         <height>20</height>
        </rect>
       </property>
       <property name="text">
-       <string>Portrait Wallpaper</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Portrait Wallpaper&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
      <widget class="QPushButton" name="tab0OK">
       <property name="geometry">
        <rect>
         <x>150</x>
-        <y>330</y>
+        <y>400</y>
         <width>71</width>
         <height>31</height>
        </rect>
@@ -155,7 +155,7 @@
       <property name="geometry">
        <rect>
         <x>230</x>
-        <y>330</y>
+        <y>400</y>
         <width>71</width>
         <height>31</height>
        </rect>
@@ -168,7 +168,7 @@
       <property name="geometry">
        <rect>
         <x>310</x>
-        <y>330</y>
+        <y>400</y>
         <width>71</width>
         <height>31</height>
        </rect>
@@ -181,7 +181,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>90</y>
+        <y>130</y>
         <width>371</width>
         <height>16</height>
        </rect>
@@ -194,7 +194,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>180</y>
+        <y>260</y>
         <width>371</width>
         <height>16</height>
        </rect>
@@ -203,8 +203,86 @@
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
+     <widget class="QPushButton" name="landscapeCacheBnt">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>180</y>
+        <width>161</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Browse From Cached File</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_5">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>220</y>
+        <width>51</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>File Path</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_6">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>90</y>
+        <width>51</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>File Path</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_7">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>350</y>
+        <width>51</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>File Path</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="defaultCacheBnt">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>50</y>
+        <width>161</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Browse From Cached File</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="portraitCacheBnt">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>310</y>
+        <width>161</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Browse From Cached File</string>
+      </property>
+     </widget>
     </widget>
-    <widget class="QWidget" name="tab_2">
+    <widget class="QWidget" name="SettingsTab">
      <attribute name="title">
       <string>Page</string>
      </attribute>
@@ -283,7 +361,7 @@
       <property name="geometry">
        <rect>
         <x>310</x>
-        <y>330</y>
+        <y>400</y>
         <width>71</width>
         <height>31</height>
        </rect>
@@ -296,7 +374,7 @@
       <property name="geometry">
        <rect>
         <x>150</x>
-        <y>330</y>
+        <y>400</y>
         <width>71</width>
         <height>31</height>
        </rect>
@@ -309,7 +387,7 @@
       <property name="geometry">
        <rect>
         <x>230</x>
-        <y>330</y>
+        <y>400</y>
         <width>71</width>
         <height>31</height>
        </rect>
