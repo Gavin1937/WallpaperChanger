@@ -34,8 +34,10 @@
     After running for a long time, gui will take less memory,
     but will crash when update_wallpaper. And later, it will continue
     crashing when program start This may due to uncleared ./core_cache file
-
+    
     K. [gui] Will potentially crash somehow
+             Cannot display gui correctly, after a long time of running
+          	 And will crash
 
 # **Identified**
 
@@ -43,7 +45,7 @@
     This only happens when rapidly calling update_wallpaper().
     Windows will temporarily cache something to program's running memory
     Those cached memory will be automatically remove later.
-
+    
     H. [gui] use a lot of memory after open file selecting dialog.
     Windows will automatically cache after 1st time open a file
     selecting dialog for faster opening later.
