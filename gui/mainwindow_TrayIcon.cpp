@@ -23,15 +23,15 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason_)
 void MainWindow::init_SysTrayIcon(QIcon* icon)
 {
     // set icon for SysTrayIcon
-    m_TrayIcon->setIcon(*icon);
+    p_TrayIcon->setIcon(*icon);
     // Tray icon menu
-    m_TrayIconMenu = createMenu();
-    m_TrayIcon->setContextMenu(m_TrayIconMenu);
+    p_TrayIconMenu = createMenu();
+    p_TrayIcon->setContextMenu(p_TrayIconMenu);
     // Displaying the tray icon
-    m_TrayIcon->show();
+    p_TrayIcon->show();
     
     // connect SystemTrayIcon with activation handler
-    connect(m_TrayIcon, &QSystemTrayIcon::activated, this, &MainWindow::iconActivated);
+    connect(p_TrayIcon, &QSystemTrayIcon::activated, this, &MainWindow::iconActivated);
 }
 QMenu* MainWindow::createMenu()
 {

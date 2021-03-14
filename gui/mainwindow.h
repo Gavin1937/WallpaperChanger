@@ -54,6 +54,8 @@ class MainWindow : public QMainWindow, public Ui_MainWindow
 public:
     // constructor
     MainWindow(QWidget *parent = 0);
+    // destructor
+    ~MainWindow();
     
     void write_default_config();
     void update_wallpapers();
@@ -83,7 +85,7 @@ private: // helper functions
     void paste_default_wallpaper_to_themes();
     
 private:
-    WallpaperUpdater* m_Wallpaper_Updater;
+    WallpaperUpdater* p_Wallpaper_Updater;
     ConfigManager m_Config;
     ProgramCloseMode m_ProgramCloseMode; 
     // control status
@@ -106,8 +108,8 @@ private: // helper functions
     QMenu* menu_add_menu(QMenu* parent_menu, const std::wstring& child_menu_name, QMenu* child_menu = nullptr);
     
 private:
-    QSystemTrayIcon* m_TrayIcon;
-    QMenu* m_TrayIconMenu;
+    QSystemTrayIcon* p_TrayIcon;
+    QMenu* p_TrayIconMenu;
 
 
 

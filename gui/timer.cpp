@@ -53,7 +53,7 @@ void WallpaperUpdater::update_wallpapers()
     theme_dir.mkdir(QString::fromWCharArray(L"CachedFiles"));
     
     // update landscape wallpaper
-    QObject *parent1 = new QObject(this);
+    QObject parent1;
     QString program1 = QString::fromWCharArray(loc_config.get(L"program", L"core_program").c_str());
     QStringList arguments1;
     arguments1
@@ -61,11 +61,11 @@ void WallpaperUpdater::update_wallpapers()
             << QString::fromWCharArray(loc_config.get(L"wallpaper", L"landscape_wallpaper_id").c_str())
             << QString::fromWCharArray(L"LANDSCAPE")
     ;
-    QProcess *myProcess1 = new QProcess(parent1);
-    myProcess1->start(program1, arguments1);
+    QProcess myProcess1(&parent1);
+    myProcess1.start(program1, arguments1);
     
     // update portrait wallpaper
-    QObject* parent2 = new QObject(this);
+    QObject parent2;
     QString program2 = QString::fromWCharArray(loc_config.get(L"program", L"core_program").c_str());
     QStringList arguments2;
     arguments2
@@ -73,8 +73,8 @@ void WallpaperUpdater::update_wallpapers()
             << QString::fromWCharArray(loc_config.get(L"wallpaper", L"portrait_wallpaper_id").c_str())
             << QString::fromWCharArray(L"PORTRAIT")
     ;
-    QProcess *myProcess2 = new QProcess(parent2);
-    myProcess2->start(program2, arguments2);
+    QProcess myProcess2(&parent2);
+    myProcess2.start(program2, arguments2);
 }
 
 

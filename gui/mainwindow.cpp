@@ -9,12 +9,12 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), m_Config(),
-    m_Wallpaper_Updater(nullptr),
+    p_Wallpaper_Updater(nullptr),
     m_ProgramCloseMode(ProgramCloseMode::UNKNOWN),
     m_ControlChanged(false),
 // SysTrayIcon relate
-    m_TrayIcon(new QSystemTrayIcon(this)),
-    m_TrayIconMenu(nullptr),
+    p_TrayIcon(new QSystemTrayIcon(this)),
+    p_TrayIconMenu(nullptr),
 // WallpaperTab relate
     m_LastSelectPath(""),
     m_DefaultWallpaper(""),
@@ -59,7 +59,12 @@ MainWindow::MainWindow(QWidget *parent)
     init_SettingTab();
     
     // init timer
-    m_Wallpaper_Updater = new WallpaperUpdater(this);
+    p_Wallpaper_Updater = new WallpaperUpdater();
+}
+MainWindow::~MainWindow()
+{
+    // deallocate memories
+    delete p_Wallpaper_Updater;
 }
 
 void MainWindow::write_default_config()
