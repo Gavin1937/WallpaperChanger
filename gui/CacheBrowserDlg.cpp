@@ -19,6 +19,7 @@ CacheBrowserDlg::CacheBrowserDlg(QWidget* parent)
     Bnt_AddFromComputer->setIcon(QIcon(":res/green_plus.png"));
     Bnt_AddFromCache->setIcon(QIcon(":res/orange_plus.png"));
     Bnt_RemoveCache->setIcon(QIcon(":res/red_minus.png"));
+    Bnt_EditCache->setIcon(QIcon(":res/lightblue_edit.png"));
     Bnt_CacheInfo->setIcon(QIcon(":res/blue_question.png"));
     
     // resetDlgSize();

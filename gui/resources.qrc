@@ -4,6 +4,7 @@
         <file>res/green_plus.png</file>
         <file>res/orange_plus.png</file>
         <file>res/red_minus.png</file>
+        <file>res/lightblue_edit.png</file>
         <file>res/blue_question.png</file>
     </qresource>
 </RCC>

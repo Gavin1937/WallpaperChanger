@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>WallpaperChanger</string>
+   <string>WallpaperChanger - Cached Wallpaper Browser</string>
   </property>
   <widget class="QWidget" name="centralWidget" native="true">
    <property name="geometry">
@@ -206,7 +206,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>110</y>
+      <y>140</y>
       <width>21</width>
       <height>22</height>
      </rect>
@@ -223,6 +223,29 @@
     <property name="icon">
      <iconset>
       <normaloff>../res/blue_question.png</normaloff>../res/blue_question.png</iconset>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Bnt_EditCache">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>110</y>
+      <width>21</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Edit Selected Wallpaper</string>
+    </property>
+    <property name="whatsThis">
+     <string/>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../res/lightblue_edit.png</normaloff>../res/lightblue_edit.png</iconset>
     </property>
    </widget>
   </widget>
