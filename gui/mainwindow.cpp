@@ -59,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent)
     init_SettingTab();
     
     // init timer
-    m_Wallpaper_Updater = new WallpaperUpdater();
+    m_Wallpaper_Updater = new WallpaperUpdater(this);
 }
 
 void MainWindow::write_default_config()
@@ -301,7 +301,6 @@ std::wstring MainWindow::get_default_wallpaper_src()
             << QString::fromStdWString(default_wallpaper_id)
     ;
     QProcess myProcess(&parent);
-    // QProcess *myProcess = new QProcess(this);
     myProcess.start(program, arguments);
     // get wallpaper ID from ./core_cache
     while (!myProcess.waitForFinished())

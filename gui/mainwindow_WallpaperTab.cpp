@@ -70,7 +70,6 @@ void MainWindow::save_WallpaperTab()
     if (!landscapeTextEdit->text().isEmpty() && // text edit has value
         m_Config.get(L"wallpaper", L"landscape_wallpaper_id").empty()) // config file dont have value
     {
-        // QDir tempdir(landscapeTextEdit->text());
         if (GlobTools::is_filedir_existW(landscapeTextEdit->text().toStdWString())) {
             m_LandscapeWallpaper = landscapeTextEdit->text();
             add_landscape_wallpaper();
@@ -86,7 +85,6 @@ void MainWindow::save_WallpaperTab()
     if (!portraitTextEdit->text().isEmpty() && // text edit has value
         m_Config.get(L"wallpaper", L"portrait_wallpaper_id").empty()) // config file dont have value
     {
-        // QDir tempdir(portraitTextEdit->text());
         if (GlobTools::is_filedir_existW(portraitTextEdit->text().toStdWString())) {
             m_PortraitWallpaper = portraitTextEdit->text();
             add_portrait_wallpaper();
@@ -102,7 +100,6 @@ void MainWindow::save_WallpaperTab()
     if (!defaultTextEdit->text().isEmpty() && // text edit has value
         m_Config.get(L"wallpaper", L"default_wallpaper_id").empty()) // config file dont have value
     {
-        // QDir tempdir(defaultTextEdit->text());
         if (GlobTools::is_filedir_existW(defaultTextEdit->text().toStdWString())) {
             m_DefaultWallpaper = defaultTextEdit->text();
             add_default_wallpaper();
@@ -249,7 +246,6 @@ QString MainWindow::select_image(std::string dlg_caption, std::string default_fi
     else
         dir = QString(default_filename.c_str());
 	QString output = QFileDialog::getOpenFileName(this, tr(dlg_caption.data()),
-                                                    // tr(default_filename.data()),
                                                     dir,
                                                     tr("All Images (*.png *.jpg *.jpeg *.bmp)\n"
                                                         "JPEG/JPG (*.jpg *.jpeg)\n"
@@ -283,7 +279,6 @@ QString MainWindow::get_wallpaper_src(const QString& wallpaper_id)
             << wallpaper_id
     ;
     QProcess myProcess(&parent);
-    // QProcess *myProcess = new QProcess(this);
     myProcess.start(program, arguments);
     // get wallpaper ID from ./core_cache
     while (!myProcess.waitForFinished())

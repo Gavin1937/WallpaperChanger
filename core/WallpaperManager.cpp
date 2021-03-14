@@ -156,10 +156,8 @@ void WallpaperManager::append_WallpaperList(const std::wstring& src_path)
 void WallpaperManager::remove_WallpaperList(const WallpaperInfo& info)
 {
     int index = find_wallpaperIndex_via_wallInfo(info);
-    if (index != -1) { // found Wallpaper
-        // auto it = remove(m_CachedWallpaperInfo.begin(), m_CachedWallpaperInfo.end(), m_CachedWallpaperInfo.begin()+index);
+    if (index != -1) // found Wallpaper
         auto it = m_CachedWallpaperInfo.erase(m_CachedWallpaperInfo.begin()+index);
-    }
     // update WallpaperList
     update_WallpaperList();
 }

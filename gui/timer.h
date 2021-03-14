@@ -7,7 +7,6 @@
 #include <QTimer>
 #include <QDir>
 #include <QEvent>
-// #include <QCoreApplication>
 #include <QApplication>
 
 // Windows API
