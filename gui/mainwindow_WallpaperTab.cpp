@@ -38,7 +38,7 @@ void MainWindow::onTab0_TextEditChanged()
 }
 void MainWindow::onBrowseCacheBntPressed()
 {
-    p_CacheBrowserDlg = new CacheBrowserDlg(this);
+    p_CacheBrowserDlg = new CacheBrowserDlg(&m_Config, this);
     p_CacheBrowserDlg->exec();
     delete p_CacheBrowserDlg;
 }
@@ -76,54 +76,69 @@ void MainWindow::WallpaperTab_makeConnections()
 }
 void MainWindow::save_WallpaperTab()
 {
-    if (!landscapeTextEdit->text().isEmpty() && // text edit has value
-        m_Config.get(L"wallpaper", L"landscape_wallpaper_id").empty()) // config file dont have value
-    {
-        if (GlobTools::is_filedir_existW(landscapeTextEdit->text().toStdWString())) {
-            m_LandscapeWallpaper = landscapeTextEdit->text();
-            add_landscape_wallpaper();
-        }
-        else {
-            MessageBoxW(0, 
-                (L"Entered File Path:\n"+
-                landscapeTextEdit->text().toStdWString()+
-                L"\nDoes Not Exist.").c_str(), 
-                L"Exception", 0);
-        }
-    }
-    if (!portraitTextEdit->text().isEmpty() && // text edit has value
-        m_Config.get(L"wallpaper", L"portrait_wallpaper_id").empty()) // config file dont have value
-    {
-        if (GlobTools::is_filedir_existW(portraitTextEdit->text().toStdWString())) {
-            m_PortraitWallpaper = portraitTextEdit->text();
-            add_portrait_wallpaper();
-        }
-        else {
-            MessageBoxW(0, 
-                (L"Entered File Path:\n"+
-                portraitTextEdit->text().toStdWString()+
-                L"\nDoes Not Exist.").c_str(), 
-                L"Exception", 0);
+    if (!landscapeTextEdit->text().isEmpty()) { // text edit has value
+        QString temp_str;
+        if (!is_cached_file(landscapeTextEdit->text(), temp_str))
+        {
+            if (GlobTools::is_filedir_existW(landscapeTextEdit->text().toStdWString())) {
+                m_LandscapeWallpaper = landscapeTextEdit->text();
+                add_landscape_wallpaper();
+            }
+            else {
+                MessageBoxW(0, 
+                    (L"Entered File Path:\n"+
+                    landscapeTextEdit->text().toStdWString()+
+                    L"\nDoes Not Exist.").c_str(), 
+                    L"Exception", 0);
+            }
+        } else if (!temp_str.isEmpty()) { // is cached file
+            m_LandscapeWallpaper = temp_str;
+            m_Config.set(L"wallpaper", L"landscape_wallpaper_id", m_LandscapeWallpaper.toStdWString());
         }
     }
-    if (!defaultTextEdit->text().isEmpty() && // text edit has value
-        m_Config.get(L"wallpaper", L"default_wallpaper_id").empty()) // config file dont have value
-    {
-        if (GlobTools::is_filedir_existW(defaultTextEdit->text().toStdWString())) {
-            m_DefaultWallpaper = defaultTextEdit->text();
-            add_default_wallpaper();
+    if (!portraitTextEdit->text().isEmpty()) { // text edit has value
+        QString temp_str;
+        if (!is_cached_file(portraitTextEdit->text(), temp_str))
+        {
+            if (GlobTools::is_filedir_existW(portraitTextEdit->text().toStdWString())) {
+                m_PortraitWallpaper = portraitTextEdit->text();
+                add_portrait_wallpaper();
+            }
+            else {
+                MessageBoxW(0, 
+                    (L"Entered File Path:\n"+
+                    portraitTextEdit->text().toStdWString()+
+                    L"\nDoes Not Exist.").c_str(), 
+                    L"Exception", 0);
+            }
+        } else if (!temp_str.isEmpty()) { // is cached file
+            m_PortraitWallpaper = temp_str;
+            m_Config.set(L"wallpaper", L"portrait_wallpaper_id", m_PortraitWallpaper.toStdWString());
         }
-        else {
-            MessageBoxW(0, 
-                (L"Entered File Path:\n"+
-                defaultTextEdit->text().toStdWString()+
-                L"\nDoes Not Exist.").c_str(), 
-                L"Exception", 0);
-        }
-        try {
-            set_default_wallpaper();
-        } catch(std::exception& err) {
-            MessageBoxA(0, err.what(), "Exception", 0);
+    }
+    if (!defaultTextEdit->text().isEmpty()) { // text edit has value
+        QString temp_str;
+        if (!is_cached_file(defaultTextEdit->text(), temp_str))
+        {
+            if (GlobTools::is_filedir_existW(defaultTextEdit->text().toStdWString())) {
+                m_DefaultWallpaper = defaultTextEdit->text();
+                add_default_wallpaper();
+            }
+            else {
+                MessageBoxW(0, 
+                    (L"Entered File Path:\n"+
+                    defaultTextEdit->text().toStdWString()+
+                    L"\nDoes Not Exist.").c_str(), 
+                    L"Exception", 0);
+            }
+            try {
+                set_default_wallpaper();
+            } catch(std::exception& err) {
+                MessageBoxA(0, err.what(), "Exception", 0);
+            }
+        } else if (!temp_str.isEmpty()) { // is cached file
+            m_DefaultWallpaper = temp_str;
+            m_Config.set(L"wallpaper", L"default_wallpaper_id", m_DefaultWallpaper.toStdWString());
         }
     }
 }
@@ -274,6 +289,30 @@ QString MainWindow::select_image(std::string dlg_caption, std::string default_fi
     m_LastSelectPath.resize(m_LastSelectPath.length() - shrink_size);
     // output
     return output;
+}
+bool MainWindow::is_cached_file(const QString& file_path, QString& wallpaperID_output)
+{
+    if (!GlobTools::is_filedir_existA(GlobTools::getCurrExePathA()+"Wallpapers\\WallpaperList")) {
+        wallpaperID_output = QString();
+        return false; // ./Wallpapers/WallpaperList does not exist
+    }
+    GlobTools::utf8_ifstream WallpaperList(GlobTools::getCurrExePathA()+"Wallpapers\\WallpaperList");
+    std::string buff;
+    std::string buff2;
+    getline(WallpaperList, buff); // skip 1st line
+    while (getline(WallpaperList, buff)) {
+        size_t pos1 = buff.find('\"')+1;
+        size_t pos2 = buff.find('\"', pos1);
+        buff2.assign(buff.begin()+pos1, buff.begin()+pos2);
+        if (buff2 == file_path.toStdString()) {
+            pos1 = pos2+3;
+            pos2 = pos1+6;
+            wallpaperID_output = QString(std::string(buff.begin()+pos1, buff.begin()+pos2).c_str());
+            return true;
+        }
+    }
+    wallpaperID_output = QString();
+    return false;
 }
 
 // helper function

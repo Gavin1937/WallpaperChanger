@@ -6,5 +6,6 @@
         <file>res/red_minus.png</file>
         <file>res/lightblue_edit.png</file>
         <file>res/blue_question.png</file>
+        <file>res/missing_wallpaper.png</file>
     </qresource>
 </RCC>

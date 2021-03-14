@@ -138,6 +138,7 @@ private: // helper functions
     void add_portrait_wallpaper();
     void select_portrait_wallpaper();
     QString select_image(std::string dlg_caption = "Select Image", std::string default_filename = "/Select Image");
+    bool is_cached_file(const QString& file_path, QString& wallpaperID_output);
     
     // helper function
     QString get_wallpaper_src(const QString& wallpaper_id);
