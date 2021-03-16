@@ -35,6 +35,7 @@ set(HEADER
     mainwindow.h
     timer.h
     CacheBrowserDlg.h
+    Qt_CustomEventID.h
     resources.h
 )
 set(RES

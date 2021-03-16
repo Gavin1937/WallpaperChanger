@@ -67,6 +67,8 @@ MainWindow::~MainWindow()
 {
     // deallocate memories
     delete p_Wallpaper_Updater;
+    if (p_CacheBrowserDlg != nullptr)
+        delete p_CacheBrowserDlg;
 }
 
 void MainWindow::write_default_config()
@@ -223,11 +225,29 @@ void MainWindow::closeEvent(QCloseEvent* event)
     }
 }
 
-// handle screen resize event
+// custom event
 void MainWindow::customEvent(QEvent* e)
+{
+    if (ScreenModeChangeEvent* SMC_event = dynamic_cast<ScreenModeChangeEvent*>(e))
+        screenModeChangeEvent(SMC_event);
+    else if (AddFileFromComputerEvent* AFFC1_event = dynamic_cast<AddFileFromComputerEvent*>(e))
+        addFileFromComputerEvent(AFFC1_event);
+    else if (AddFileFromCacheEvent* AFFC2_event = dynamic_cast<AddFileFromCacheEvent*>(e))
+        addFileFromCacheEvent(AFFC2_event);
+    else if (RemoveCacheEvent* RC_event = dynamic_cast<RemoveCacheEvent*>(e))
+        removeCacheEvent(RC_event);
+    else if (EditCacheEvent* EC_event = dynamic_cast<EditCacheEvent*>(e))
+        editCacheEvent(EC_event);
+    else if (CacheInfoEvent* CI_event = dynamic_cast<CacheInfoEvent*>(e))
+        cacheInfoEvent(CI_event);
+}
+
+// handle screen resize event
+void MainWindow::screenModeChangeEvent(ScreenModeChangeEvent* e)
 {
     update_wallpapers();
 }
+
 
 // private:
 

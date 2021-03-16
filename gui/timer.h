@@ -13,6 +13,7 @@
 #include <Windows.h>
 
 // other
+#include "Qt_CustomEventID.h"
 #include "../utilities/ConfigManager.h"
 #include "../utilities/GlobTools.h"
 

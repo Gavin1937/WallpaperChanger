@@ -87,7 +87,7 @@ void WallpaperUpdater::update_wallpapers()
 // ====================== ScreenModeChangeEvent ======================
 
 ScreenModeChangeEvent::ScreenModeChangeEvent()
-    : QEvent(QEvent::Type(QEvent::User+1))
+    : QEvent(QEvent::Type(QEvent::User+SCREEN_MODE_CHANGE_EVENT))
 {}
 
 

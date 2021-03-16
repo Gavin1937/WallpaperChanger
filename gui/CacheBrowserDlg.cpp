@@ -8,6 +8,7 @@
 
 CacheBrowserDlg::CacheBrowserDlg(ConfigManager* parent_config, QWidget* parent)
     : QDialog(parent),
+    p_ParentObject(reinterpret_cast<QObject*>(parent)),
     p_SubMenu_AddFromCache(nullptr),
     p_DefaultListView(nullptr),
     p_LandscapeListView(nullptr),
@@ -36,6 +37,13 @@ CacheBrowserDlg::CacheBrowserDlg(ConfigManager* parent_config, QWidget* parent)
     Bnt_RemoveCache->setIcon(QIcon(":res/red_minus.png"));
     Bnt_EditCache->setIcon(QIcon(":res/lightblue_edit.png"));
     Bnt_CacheInfo->setIcon(QIcon(":res/blue_question.png"));
+    
+    // make connections
+    connect(Bnt_AddFromComputer, &QAbstractButton::released, this, &CacheBrowserDlg::onAddFromComputerPressed);
+    // connect(Bnt_AddFromCache, &QAbstractButton::released, this, &CacheBrowserDlg::onAddFromCachePressed);
+    connect(Bnt_RemoveCache, &QAbstractButton::released, this, &CacheBrowserDlg::onRemoveCachePressed);
+    connect(Bnt_EditCache, &QAbstractButton::released, this, &CacheBrowserDlg::onEditCachePressed);
+    connect(Bnt_CacheInfo, &QAbstractButton::released, this, &CacheBrowserDlg::onCacheInfoPressed);
 }
 CacheBrowserDlg::~CacheBrowserDlg()
 {
@@ -146,7 +154,83 @@ void CacheBrowserDlg::loadWallpapers()
                     QString(buff.c_str()));
             } // ignore current line if current id is Default, Landscape, or Portrait
         }
+    } else { // do not have /Wallpapers/ dir
+        // load "missing_wallpaper.png" to all
+        QStandardItemModel *missing_model = new QStandardItemModel(this);
+        missing_model->appendRow(
+            new QStandardItem(
+                QIcon(":res/missing_wallpaper.png"),
+                ""
+        ));
+        p_DefaultListView->setModel(missing_model);
+        p_LandscapeListView->setModel(missing_model);
+        p_PortraitListView->setModel(missing_model);
     }
+}
+// reload cached wallpapers
+void CacheBrowserDlg::reloadWallpapers()
+{
+    this->clear_loadedWallpaper();
+    this->loadWallpapers();
+}
+
+
+// public slots:
+
+// button handle slots
+void CacheBrowserDlg::onAddFromComputerPressed()
+{
+    QApplication::instance()->postEvent(
+        p_ParentObject,
+        new AddFileFromComputerEvent(this, getCurrItemSections())
+    );
+}
+void CacheBrowserDlg::onAddFromCachePressed()
+{
+    ItemSections to_item_section;
+    QApplication::instance()->postEvent(
+        p_ParentObject,
+        new AddFileFromCacheEvent(this, getCurrItemSections(), to_item_section)
+    );
+}
+void CacheBrowserDlg::onRemoveCachePressed()
+{
+    QString curr_item_id = getCurrSelectedItem()->text();
+    QApplication::instance()->postEvent(
+        p_ParentObject,
+        new RemoveCacheEvent(this, curr_item_id)
+    );
+}
+void CacheBrowserDlg::onEditCachePressed()
+{
+    QString curr_item_id = getCurrSelectedItem()->text();
+    QApplication::instance()->postEvent(
+        p_ParentObject,
+        new EditCacheEvent(this, curr_item_id)
+    );
+}
+void CacheBrowserDlg::onCacheInfoPressed()
+{
+    QString curr_item_id = getCurrSelectedItem()->text();
+    QApplication::instance()->postEvent(
+        p_ParentObject,
+        new CacheInfoEvent(this, curr_item_id)
+    );
+}
+
+
+// protected: // event handling functions
+
+// custom event handler
+void CacheBrowserDlg::customEvent(QEvent* event)
+{
+    if (ReloadWallpapersEvent* RW_event = dynamic_cast<ReloadWallpapersEvent*>(event))
+        reloadWallpapersEvent(RW_event);
+}
+
+void CacheBrowserDlg::reloadWallpapersEvent(ReloadWallpapersEvent* event)
+{
+    reloadWallpapers();
 }
 
 
@@ -166,7 +250,11 @@ void CacheBrowserDlg::load_singleWallpaper(
         QStandardItemModel *model = new QStandardItemModel(this);
         model->appendRow(
             new QStandardItem(
-                QIcon(QPixmap::fromImage(m_ImageReader.read())),
+                QIcon(QPixmap::fromImage(m_ImageReader.read().scaled(
+                    200, 200,
+                    Qt::KeepAspectRatio,
+                    Qt::SmoothTransformation))
+                ),
                 wallpaperId
         ));
         target_listView->setModel(model);
@@ -187,6 +275,7 @@ void CacheBrowserDlg::load_singleWallpaper(
         ));
         target_listView->setModel(missing_model);
     }
+    target_listView->setHasItemFlag(true);
 }
 void CacheBrowserDlg::load_multiWallpaper(
         QStandardItemModel* model,
@@ -201,8 +290,12 @@ void CacheBrowserDlg::load_multiWallpaper(
         m_ImageReader.setFileName(currWallpaperDir);
         model->appendRow(
             new QStandardItem(
-                QIcon(QPixmap::fromImage(m_ImageReader.read())),
-                wallpaperId
+                QIcon(QPixmap::fromImage(m_ImageReader.read().scaled(
+                    200, 200,
+                    Qt::KeepAspectRatio,
+                    Qt::SmoothTransformation))
+                ),
+            wallpaperId
         ));
     } else if (wallpaperId.isEmpty()) { // do not have wallpaper id, wallpaper exist
         model->appendRow(
@@ -217,8 +310,66 @@ void CacheBrowserDlg::load_multiWallpaper(
                 wallpaperId
         ));
     }
+    p_OthersListView->setHasItemFlag(true);
+}
+void CacheBrowserDlg::clear_loadedWallpaper()
+{
+    if (p_DefaultListView->hasItem()) {
+        reinterpret_cast<QStandardItemModel*>(p_DefaultListView->model())->clear();
+        p_DefaultListView->setHasItemFlag(false);
+    }
+    if (p_LandscapeListView->hasItem()) {
+        reinterpret_cast<QStandardItemModel*>(p_LandscapeListView->model())->clear();
+        p_LandscapeListView->setHasItemFlag(false);
+    }
+    if (p_PortraitListView->hasItem()) {
+        reinterpret_cast<QStandardItemModel*>(p_PortraitListView->model())->clear();
+        p_PortraitListView->setHasItemFlag(false);
+    }
+    m_SavedWallpapers.clear();
+    if (p_OthersListView->hasItem()) {
+        reinterpret_cast<QStandardItemModel*>(p_OthersListView->model())->clear();
+        p_OthersListView->setHasItemFlag(false);
+    }
 }
 
+const ItemSections CacheBrowserDlg::getCurrItemSections()
+{
+    // find current selected ListView
+    if (p_DefaultListView->hasSelection())
+        return ItemSections::DefaultWallpaper;
+    else if (p_LandscapeListView->hasSelection())
+        return ItemSections::LandscapeWallpaper;
+    else if (p_PortraitListView->hasSelection())
+        return ItemSections::PortraitWallpaper;
+    else if (p_OthersListView->hasSelection())
+        return ItemSections::OthersWallpaper;
+    return ItemSections::Unknown;
+}
+QStandardItem* CacheBrowserDlg::getCurrSelectedItem()
+{
+    // find current selected ListView
+    if (p_DefaultListView->hasSelection()) {
+        return reinterpret_cast<QStandardItemModel*>(p_DefaultListView->model())
+            ->item(0);
+    }
+    else if (p_LandscapeListView->hasSelection()) {
+        return reinterpret_cast<QStandardItemModel*>(p_LandscapeListView->model())
+            ->item(0);
+    }
+    else if (p_PortraitListView->hasSelection()) {
+        return reinterpret_cast<QStandardItemModel*>(p_PortraitListView->model())
+            ->item(0);
+    }
+    else if (p_OthersListView->hasSelection()) {
+        return reinterpret_cast<QStandardItemModel*>(p_OthersListView->model())
+            ->item(
+                p_OthersListView->selectionModel()->selectedRows().first().row(),
+                p_OthersListView->selectionModel()->selectedColumns().first().column()
+            );
+    }
+    return nullptr;
+}
 void CacheBrowserDlg::setup_Menu4AddFromCache()
 {
     p_SubMenu_AddFromCache = new QMenu(this);
@@ -243,7 +394,7 @@ void CacheBrowserDlg::setup_Menu4AddFromCache()
 // constructor
 ListView::ListView(QWidget* parent)
     : QListView(parent), m_Friend1(nullptr), m_Friend2(nullptr), m_Friend3(nullptr),
-    m_IsProgrammatically(false)
+    m_IsProgrammatically(false), m_HasItem(false)
 {}
 
 // set friend ListView
@@ -284,6 +435,19 @@ void ListView::selectionChanged(const QItemSelection &selected, const QItemSelec
     this->QListView::selectionChanged(selected, deselected);
 }
 
+const bool ListView::hasSelection()
+{
+    return !(this->QListView::selectedIndexes().empty());
+}
+void ListView::setHasItemFlag(const bool& flag)
+{
+    m_HasItem = flag;
+}
+const bool ListView::hasItem()
+{
+    return m_HasItem;
+}
+
 // overloading setModel(), add automatically setFlag() to it
 void ListView::setModel(QAbstractItemModel *model)
 {
@@ -293,3 +457,53 @@ void ListView::setModel(QAbstractItemModel *model)
 
 
 // ====================== ListView End ======================
+
+
+
+
+
+// ====================== Custom Events ======================
+
+ReloadWallpapersEvent::ReloadWallpapersEvent()
+    : QEvent(QEvent::Type(QEvent::User+RELOAD_WALLPAPERS_EVENT))
+{}
+AddFileFromComputerEvent::AddFileFromComputerEvent(
+    CacheBrowserDlg* eventSource,
+    const ItemSections& itemSection)
+    : QEvent(QEvent::Type(QEvent::User+ADD_FILE_FROM_COMPUTER_EVENT)),
+    p_EventSource(reinterpret_cast<QObject*>(eventSource)),
+    m_ItemSection(itemSection)
+{}
+AddFileFromCacheEvent::AddFileFromCacheEvent(
+    CacheBrowserDlg* eventSource, 
+    const ItemSections& curr_itemSection,
+    const ItemSections& to_itemSection)
+    : QEvent(QEvent::Type(QEvent::User+ADD_FILE_FROM_CACHE_EVENT)),
+    p_EventSource(reinterpret_cast<QObject*>(eventSource)),
+    m_CurrItemSection(curr_itemSection),
+    m_ToItemSection(to_itemSection)
+{}
+RemoveCacheEvent::RemoveCacheEvent(
+    CacheBrowserDlg* eventSource, 
+    const QString& itemID)
+    : QEvent(QEvent::Type(QEvent::User+REMOVE_CACHE_EVENT)),
+    p_EventSource(reinterpret_cast<QObject*>(eventSource)),
+    m_ItemID(itemID)
+{}
+EditCacheEvent::EditCacheEvent(
+    CacheBrowserDlg* eventSource, 
+    const QString& itemID)
+    : QEvent(QEvent::Type(QEvent::User+EDIT_CACHE_EVENT)),
+    p_EventSource(reinterpret_cast<QObject*>(eventSource)),
+    m_ItemID(itemID)
+{}
+CacheInfoEvent::CacheInfoEvent(
+    CacheBrowserDlg* eventSource, 
+    const QString& itemID)
+    : QEvent(QEvent::Type(QEvent::User+CACHE_INFO_EVENT)),
+    p_EventSource(reinterpret_cast<QObject*>(eventSource)),
+    m_ItemID(itemID)
+{}
+
+
+// ====================== Custom Events End ======================

@@ -75,8 +75,11 @@ protected: // protected event handlers
     // on program close
     virtual void closeEvent(QCloseEvent* event);
     
-    // handle screen resize event
+    // custom event
     void customEvent(QEvent* e);
+    
+    // handle screen resize event
+    void screenModeChangeEvent(ScreenModeChangeEvent* e);
     
 private: // helper functions
     
@@ -124,6 +127,14 @@ public slots: // Wallpaper Tab slots
     void onTab0_TextEditChanged();
     void onBrowseCacheBntPressed();
     
+protected: // event handling functions
+    // custom event handler
+    void addFileFromComputerEvent(AddFileFromComputerEvent* event);
+    void addFileFromCacheEvent(AddFileFromCacheEvent* event);
+    void removeCacheEvent(RemoveCacheEvent* event);
+    void editCacheEvent(EditCacheEvent* event);
+    void cacheInfoEvent(CacheInfoEvent* event);
+    
 private: // helper functions
     void init_WallpaperTab();
     void WallpaperTab_resetCtrls();
@@ -138,7 +149,9 @@ private: // helper functions
     void add_portrait_wallpaper();
     void select_portrait_wallpaper();
     QString select_image(std::string dlg_caption = "Select Image", std::string default_filename = "/Select Image");
+    void add_image_as_wallpaper(const QString& file_path);
     bool is_cached_file(const QString& file_path, QString& wallpaperID_output);
+    bool is_cached_file(const QString& file_path);
     
     // helper function
     QString get_wallpaper_src(const QString& wallpaper_id);

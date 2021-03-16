@@ -44,6 +44,53 @@ void MainWindow::onBrowseCacheBntPressed()
 }
 
 
+// protected: // event handling functions
+
+// custom event handler
+void MainWindow::addFileFromComputerEvent(AddFileFromComputerEvent* event)
+{
+    switch(event->m_ItemSection)
+    {
+    case ItemSections::DefaultWallpaper:
+        select_default_wallpaper();
+        add_default_wallpaper();
+        break;
+    case ItemSections::LandscapeWallpaper:
+        select_landscape_wallpaper();
+        add_landscape_wallpaper();
+        break;
+    case ItemSections::PortraitWallpaper:
+        select_portrait_wallpaper();
+        add_portrait_wallpaper();
+        break;
+    case ItemSections::OthersWallpaper: case ItemSections::Unknown:
+        add_image_as_wallpaper(select_image());
+        break;
+    }
+    QApplication::instance()->postEvent(
+        event->p_EventSource,
+        new ReloadWallpapersEvent()
+    );
+}
+void MainWindow::addFileFromCacheEvent(AddFileFromCacheEvent* event)
+{
+    
+}
+void MainWindow::removeCacheEvent(RemoveCacheEvent* event)
+{
+    
+}
+void MainWindow::editCacheEvent(EditCacheEvent* event)
+{
+    
+}
+void MainWindow::cacheInfoEvent(CacheInfoEvent* event)
+{
+    
+}
+
+
+
 // private:
 void MainWindow::init_WallpaperTab()
 {
@@ -146,8 +193,13 @@ void MainWindow::save_WallpaperTab()
 // adding wallpapers
 void MainWindow::add_default_wallpaper()
 {
+    QString temp_id;
     if (m_DefaultWallpaper.isEmpty())
         return;
+    else if (is_cached_file(m_DefaultWallpaper, temp_id)) {
+        m_Config.set(L"wallpaper", L"default_wallpaper_id", temp_id.toStdWString());
+        return;
+    }
     // cache wallpaper
     QObject parent;
     QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
@@ -184,8 +236,13 @@ void MainWindow::select_default_wallpaper()
 }
 void MainWindow::add_landscape_wallpaper()
 {
+    QString temp_id;
     if (m_LandscapeWallpaper.isEmpty())
         return;
+    else if (is_cached_file(m_LandscapeWallpaper, temp_id)) {
+        m_Config.set(L"wallpaper", L"landscape_wallpaper_id", temp_id.toStdWString());
+        return;
+    }
     // cache wallpaper
     QObject parent;
     QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
@@ -222,8 +279,13 @@ void MainWindow::select_landscape_wallpaper()
 }
 void MainWindow::add_portrait_wallpaper()
 {
+    QString temp_id;
     if (m_PortraitWallpaper.isEmpty())
         return;
+    else if (is_cached_file(m_PortraitWallpaper, temp_id)) {
+        m_Config.set(L"wallpaper", L"portrait_wallpaper_id", temp_id.toStdWString());
+        return;
+    }
     // cache wallpaper
     QObject parent;
     QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
@@ -290,28 +352,70 @@ QString MainWindow::select_image(std::string dlg_caption, std::string default_fi
     // output
     return output;
 }
+void MainWindow::add_image_as_wallpaper(const QString& file_path)
+{
+    if (file_path.isEmpty())
+        return;
+    else if (is_cached_file(file_path))
+        return;
+    // cache wallpaper
+    QObject parent;
+    QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
+    QStringList arguments;
+    arguments
+            << "--add"
+            << file_path
+    ;
+    QProcess myProcess(&parent);
+    myProcess.start(program, arguments);
+    // wait for core to finish
+    while (!myProcess.waitForFinished())
+        Sleep(500);
+    myProcess.close();
+}
 bool MainWindow::is_cached_file(const QString& file_path, QString& wallpaperID_output)
 {
     if (!GlobTools::is_filedir_existA(GlobTools::getCurrExePathA()+"Wallpapers\\WallpaperList")) {
         wallpaperID_output = QString();
         return false; // ./Wallpapers/WallpaperList does not exist
     }
-    GlobTools::utf8_ifstream WallpaperList(GlobTools::getCurrExePathA()+"Wallpapers\\WallpaperList");
-    std::string buff;
-    std::string buff2;
+    GlobTools::utf8_wifstream WallpaperList(GlobTools::getCurrExePathA()+"Wallpapers\\WallpaperList");
+    std::wstring buff;
+    std::wstring buff2;
     getline(WallpaperList, buff); // skip 1st line
     while (getline(WallpaperList, buff)) {
         size_t pos1 = buff.find('\"')+1;
         size_t pos2 = buff.find('\"', pos1);
         buff2.assign(buff.begin()+pos1, buff.begin()+pos2);
-        if (buff2 == file_path.toStdString()) {
+        if (buff2 == file_path.toStdWString()) {
             pos1 = pos2+3;
             pos2 = pos1+6;
-            wallpaperID_output = QString(std::string(buff.begin()+pos1, buff.begin()+pos2).c_str());
+            wallpaperID_output = QString::fromWCharArray(std::wstring(buff.begin()+pos1, buff.begin()+pos2).c_str());
             return true;
         }
     }
     wallpaperID_output = QString();
+    return false;
+}
+bool MainWindow::is_cached_file(const QString& file_path)
+{
+    if (!GlobTools::is_filedir_existA(GlobTools::getCurrExePathA()+"Wallpapers\\WallpaperList")) {
+        return false; // ./Wallpapers/WallpaperList does not exist
+    }
+    GlobTools::utf8_wifstream WallpaperList(GlobTools::getCurrExePathA()+"Wallpapers\\WallpaperList");
+    std::wstring buff;
+    std::wstring buff2;
+    getline(WallpaperList, buff); // skip 1st line
+    while (getline(WallpaperList, buff)) {
+        size_t pos1 = buff.find('\"')+1;
+        size_t pos2 = buff.find('\"', pos1);
+        buff2.assign(buff.begin()+pos1, buff.begin()+pos2);
+        if (buff2 == file_path.toStdWString()) {
+            pos1 = pos2+3;
+            pos2 = pos1+6;
+            return true;
+        }
+    }
     return false;
 }
 
