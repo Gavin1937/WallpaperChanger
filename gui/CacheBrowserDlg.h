@@ -14,6 +14,8 @@
 #include <QStandardItemModel>
 #include <QString>
 #include <QVector>
+#include <QMenu>
+#include <QToolButton>
 
 // ui
 #include "./ui/ui_cachebrowserdlg.h"
@@ -54,7 +56,11 @@ private: // helper functions
     void load_singleWallpaper(ListView *target_listView, const QString& WallpapersDir, const QString& wallpaperId);
     void load_multiWallpaper(QStandardItemModel* model, const QString& WallpapersDir, const QString& wallpaperId);
     
+    void setup_Menu4AddFromCache();
+    
 private:
+    // Menu for Bnt_AddFromCache
+    QMenu *p_SubMenu_AddFromCache;
     // ListView widgets
     ListView *p_DefaultListView;
     ListView *p_LandscapeListView;

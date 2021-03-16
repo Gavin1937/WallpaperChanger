@@ -8,6 +8,7 @@
 
 CacheBrowserDlg::CacheBrowserDlg(ConfigManager* parent_config, QWidget* parent)
     : QDialog(parent),
+    p_SubMenu_AddFromCache(nullptr),
     p_DefaultListView(nullptr),
     p_LandscapeListView(nullptr),
     p_PortraitListView(nullptr),
@@ -25,6 +26,9 @@ CacheBrowserDlg::CacheBrowserDlg(ConfigManager* parent_config, QWidget* parent)
     setup_ListView();
     // load cached wallpapers
     loadWallpapers();
+    
+    // setup Menu for Bnt_AddFromCache
+    setup_Menu4AddFromCache();
     
     // set function button icon
     Bnt_AddFromComputer->setIcon(QIcon(":res/green_plus.png"));
@@ -213,6 +217,16 @@ void CacheBrowserDlg::load_multiWallpaper(
                 wallpaperId
         ));
     }
+}
+
+void CacheBrowserDlg::setup_Menu4AddFromCache()
+{
+    p_SubMenu_AddFromCache = new QMenu(this);
+    p_SubMenu_AddFromCache->addAction("Default Wallpaper");
+    p_SubMenu_AddFromCache->addAction("Landscape Wallpaper");
+    p_SubMenu_AddFromCache->addAction("Portrait Wallpaper");
+    Bnt_AddFromCache->setPopupMode(QToolButton::InstantPopup);
+    Bnt_AddFromCache->setMenu(p_SubMenu_AddFromCache);
 }
 
 

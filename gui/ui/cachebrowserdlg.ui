@@ -143,7 +143,7 @@
      </rect>
     </property>
     <property name="toolTip">
-     <string>Add New Wallpaper From Computer</string>
+     <string>Add New Wallpaper From Computer To Current Widget</string>
     </property>
     <property name="whatsThis">
      <string/>
@@ -156,29 +156,6 @@
       <normaloff>../res/green_plus.png</normaloff>../res/green_plus.png</iconset>
     </property>
    </widget>
-   <widget class="QPushButton" name="Bnt_AddFromCache">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>50</y>
-      <width>21</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="toolTip">
-     <string>Add New Wallpaper From Cache</string>
-    </property>
-    <property name="whatsThis">
-     <string/>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>../res/orange_plus.png</normaloff>../res/orange_plus.png</iconset>
-    </property>
-   </widget>
    <widget class="QPushButton" name="Bnt_RemoveCache">
     <property name="geometry">
      <rect>
@@ -189,7 +166,7 @@
      </rect>
     </property>
     <property name="toolTip">
-     <string>Remove A Wallpaper</string>
+     <string>Remove Selected Wallpaper</string>
     </property>
     <property name="whatsThis">
      <string/>
@@ -212,7 +189,7 @@
      </rect>
     </property>
     <property name="toolTip">
-     <string>Wallpaper Information</string>
+     <string>Selected Wallpaper Information</string>
     </property>
     <property name="whatsThis">
      <string/>
@@ -246,6 +223,26 @@
     <property name="icon">
      <iconset>
       <normaloff>../res/lightblue_edit.png</normaloff>../res/lightblue_edit.png</iconset>
+    </property>
+   </widget>
+   <widget class="QToolButton" name="Bnt_AddFromCache">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>21</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Add Current Wallpaper To...</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../res/orange_plus.png</normaloff>../res/orange_plus.png</iconset>
     </property>
    </widget>
   </widget>
