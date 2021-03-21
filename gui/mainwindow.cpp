@@ -67,8 +67,6 @@ MainWindow::~MainWindow()
 {
     // deallocate memories
     delete p_Wallpaper_Updater;
-    if (p_CacheBrowserDlg != nullptr)
-        delete p_CacheBrowserDlg;
 }
 
 void MainWindow::write_default_config()
@@ -364,8 +362,8 @@ void MainWindow::paste_default_wallpaper_to_themes()
     
 	// read new added wallpaper from cache 
 	Cache_ReaderW cache(L"core_cache");
-	if (cache.isCacheExist()) {
-		if (cache.getData()->at(0) != default_wallpaper_id)
+	if (cache.isCacheExist() && cache.getData()->at(0) == L"1") {
+		if (cache.getData()->at(1) != default_wallpaper_id)
 			throw std::invalid_argument("Error occurs during replacing TranscodedWallpaper");
 	}
 	else {

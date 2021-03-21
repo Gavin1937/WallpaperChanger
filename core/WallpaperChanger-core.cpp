@@ -38,31 +38,40 @@ int WINAPI wWinMain(
             return 0;
         } else {
             if (arg.hasAdd() && arg.isAddValid()) {
-                wm.copy_wallpaper_2_cacheFolder(arg.getFilePath());
+                bool result = wm.copy_wallpaper_2_cacheFolder(arg.getFilePath());
                 
                 // output
-                auto new_wallpaper = wm.get_last_wallpaperInfo();
-                Cache_Writer cache(new_wallpaper.getNewFilename(), L"core_cache");
+                WallpaperInfo new_wallpaper = wm.get_last_wallpaperInfo();
+                std::wstring output_buff[2] = {
+                    std::to_wstring(result), 
+                    new_wallpaper.getNewFilename() 
+                };
+                Cache_Writer cache(output_buff, 2, L"core_cache");
             }
             if (arg.hasDel() && arg.isDelValid(wm.get_wallpaperInfo_data(), wm.get_wallpaperInfo_size())) {
-                auto wallpaper_to_del = wm.find_wallpaperInfo_via_new(arg.getFileName());
+                WallpaperInfo wallpaper_to_del = wm.find_wallpaperInfo_via_new(arg.getFileName());
                 std::wstring old_wallpaper_id = wallpaper_to_del.getNewFilename();
-                wm.remove_wallpaper(wallpaper_to_del);
+                bool result = wm.remove_wallpaper(wallpaper_to_del);
                 
                 // output
-                Cache_Writer cache(old_wallpaper_id, L"core_cache");
+                std::wstring output_buff[2] = {
+                    std::to_wstring(result),
+                    old_wallpaper_id
+                };
+                Cache_Writer cache(output_buff, 2, L"core_cache");
             }
             if (arg.hasFind() && arg.isFindValid()) {
                 // output
-                auto temp_obj = wm.find_wallpaperInfo_via_new(arg.getFileName());
-                if (temp_obj.isEmpty()) throw std::exception();
-                std::wstring msg[] = {
-                    (L"Source Path: " + temp_obj.getSrcPath()),
-                    (L"Original FileName: " + temp_obj.getOriFileName()),
-                    (L"NewFilename (FileID): " + temp_obj.getNewFilename()),
-                    (L"AddTime: " + std::to_wstring(temp_obj.getAddTime()))
-                };
-                Cache_Writer cache(msg, 4, L"core_cache");
+                WallpaperInfo temp_obj = wm.find_wallpaperInfo_via_new(arg.getFileName());
+                if (!temp_obj.isEmpty()) {
+                    std::wstring msg[] = {
+                        (L"Source Path: " + temp_obj.getSrcPath()),
+                        (L"Original FileName: " + temp_obj.getOriFileName()),
+                        (L"NewFilename (FileID): " + temp_obj.getNewFilename()),
+                        (L"AddTime: " + std::to_wstring(temp_obj.getAddTime()))
+                    };
+                    Cache_Writer cache(msg, 4, L"core_cache");
+                }
             }
             if (arg.hasPaste() && arg.isPasteValid(wm.get_wallpaperInfo_data(), wm.get_wallpaperInfo_size())) {
                 // get loc_file & dest_file_dir
@@ -85,14 +94,15 @@ int WINAPI wWinMain(
                     dest_file_name += L"_POS4.jpg";
                 }
                 // pasting file to Windows System Theme folder
-                wm.past_wallpaper_2_targetFolder(loc_file, dest_file_dir + dest_file_name);
+                bool result = wm.past_wallpaper_2_targetFolder(loc_file, dest_file_dir + dest_file_name);
                 
                 // output
                 std::wstring msg[] = {
+                    std::to_wstring(result),
                     loc_file.getNewFilename(),
                     dest_file_dir + dest_file_name
                 };
-                Cache_Writer cache(msg, 2, L"core_cache");
+                Cache_Writer cache(msg, 3, L"core_cache");
             }
         }
 	}

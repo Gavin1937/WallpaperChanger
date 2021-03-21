@@ -1,7 +1,9 @@
 #pragma once
 
 // Qt Libs
+#include <QAction>
 #include <QApplication>
+#include <QCloseEvent>
 #include <QDialog>
 #include <QDir>
 #include <QEvent>
@@ -10,6 +12,7 @@
 #include <QImageReader>
 #include <QListView>
 #include <QMenu>
+#include <QModelIndex>
 #include <QPixmap>
 #include <QResizeEvent>
 #include <QSize>
@@ -77,7 +80,11 @@ public:
 public slots:
     // button handle slots
     void onAddFromComputerPressed();
-    void onAddFromCachePressed();
+    // Handle QMenu Selection in p_SubMenu_AddFromCache
+    void onMenuSelectDefault();
+    void onMenuSelectLandscape();
+    void onMenuSelectPortrait();
+    // End Handle QMenu Selection in p_SubMenu_AddFromCache
     void onRemoveCachePressed();
     void onEditCachePressed();
     void onCacheInfoPressed();
@@ -93,8 +100,10 @@ private: // helper functions
     void load_multiWallpaper(QStandardItemModel* model, const QString& WallpapersDir, const QString& wallpaperId);
     void clear_loadedWallpaper();
     
+    // get ListView Item Selection Item
     const ItemSections getCurrItemSections();
     QStandardItem* getCurrSelectedItem();
+    ListView* getCurrSelectedListView();
     void setup_Menu4AddFromCache();
     
 private:
@@ -102,6 +111,12 @@ private:
     QObject *p_ParentObject;
     // Menu for Bnt_AddFromCache
     QMenu *p_SubMenu_AddFromCache;
+    // actions for p_SubMenu_AddFromCache
+    QAction *p_Act_AddToDefault;
+    QAction *p_Act_AddToLandscape;
+    QAction *p_Act_AddToPortrait;
+    // Store Current Selection from p_SubMenu_AddFromCache
+    ItemSections m_SelectedMenuItem;
     // ListView widgets
     ListView *p_DefaultListView;
     ListView *p_LandscapeListView;
@@ -111,6 +126,8 @@ private:
     ConfigManager* p_ParentConfig;
     // wallpaper id for default, landscape, & portrait
     QVector<std::string> m_SavedWallpapers;
+    // Temporary Buffer for removed Wallpaper ID
+    QVector<QString> m_RemovedWallpapers;
 };
 
 
@@ -138,6 +155,9 @@ public:
     // overloading setModel(), add automatically setFlag() to it
     virtual void setModel(QAbstractItemModel *model);
     
+    // unload selected icon in ListView
+    void unloadSelectedIcon();
+    
 protected:
     // handle selection change event
     virtual void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
@@ -156,7 +176,13 @@ private:
 class ReloadWallpapersEvent : public QEvent
 {
 public:
-    ReloadWallpapersEvent();
+    ReloadWallpapersEvent(
+        QString taskName = "none", 
+        void* return_data = nullptr
+    );
+    ~ReloadWallpapersEvent();
+    QString m_TaskName;
+    void *p_Data;
 };
 // sending
 class AddFileFromComputerEvent : public QEvent
@@ -169,9 +195,15 @@ public:
 class AddFileFromCacheEvent : public QEvent
 {
 public:
-    AddFileFromCacheEvent(CacheBrowserDlg* eventSource, const ItemSections& curr_itemSection, const ItemSections& to_itemSection);
+    AddFileFromCacheEvent(
+        CacheBrowserDlg* eventSource,
+        const ItemSections& curr_itemSection,
+        const QString& currItemID,
+        const ItemSections& to_itemSection
+    );
     QObject* p_EventSource;
     const ItemSections m_CurrItemSection;
+    QString m_CurrItemID;
     const ItemSections m_ToItemSection;
 };
 class RemoveCacheEvent : public QEvent

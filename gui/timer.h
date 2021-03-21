@@ -15,6 +15,7 @@
 // other
 #include "Qt_CustomEventID.h"
 #include "../utilities/ConfigManager.h"
+#include "../utilities/CacheRW.h"
 #include "../utilities/GlobTools.h"
 
 

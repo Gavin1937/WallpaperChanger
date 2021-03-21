@@ -142,14 +142,14 @@ private: // helper functions
     void save_WallpaperTab();
     
     // adding wallpapers
-    void add_default_wallpaper();
+    QString add_default_wallpaper();
     void select_default_wallpaper();
-    void add_landscape_wallpaper();
+    QString add_landscape_wallpaper();
     void select_landscape_wallpaper();
-    void add_portrait_wallpaper();
+    QString add_portrait_wallpaper();
     void select_portrait_wallpaper();
     QString select_image(std::string dlg_caption = "Select Image", std::string default_filename = "/Select Image");
-    void add_image_as_wallpaper(const QString& file_path);
+    QString add_image_as_wallpaper(const QString& file_path);
     bool is_cached_file(const QString& file_path, QString& wallpaperID_output);
     bool is_cached_file(const QString& file_path);
     
@@ -159,12 +159,14 @@ private: // helper functions
 private:
     // last select path
     QString m_LastSelectPath;
-    // Wallpaper Path
+    // Wallpaper Id
     QString m_DefaultWallpaper;
     QString m_LandscapeWallpaper;
     QString m_PortraitWallpaper;
     // CacheBrowserDlg
     CacheBrowserDlg *p_CacheBrowserDlg;
+    // Deletion Item Buffer for p_CacheBrowserDlg
+    QVector<QString> m_DeleteBuff;
 
 
 

@@ -75,6 +75,9 @@ void WallpaperUpdater::update_wallpapers()
     ;
     QProcess myProcess2(&parent2);
     myProcess2.start(program2, arguments2);
+    
+    // clean core_cache
+    CleanCache(L"core_cache");
 }
 
 
@@ -119,8 +122,10 @@ void ScreenMonitor::detect_screen_mode()
     m_ScreenMode = getScreenMode();
     
     // post ScreenMode Change Event
-    if (last_mode != m_ScreenMode) // screen mode changed, send update event
+    if (last_mode != m_ScreenMode) {// screen mode changed, send update event
         QApplication::instance()->postEvent(m_EventReceiver, new ScreenModeChangeEvent());
+        qApp->processEvents();
+    }
 }
 
 

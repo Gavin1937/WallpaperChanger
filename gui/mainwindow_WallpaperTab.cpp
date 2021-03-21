@@ -39,8 +39,30 @@ void MainWindow::onTab0_TextEditChanged()
 void MainWindow::onBrowseCacheBntPressed()
 {
     p_CacheBrowserDlg = new CacheBrowserDlg(&m_Config, this);
-    p_CacheBrowserDlg->exec();
-    delete p_CacheBrowserDlg;
+    int result = p_CacheBrowserDlg->exec();
+    
+    if (result == QDialog::Rejected && !m_DeleteBuff.isEmpty()) {
+        for (auto it : m_DeleteBuff) {
+            // delete cache file
+            QObject parent;
+            QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
+            QStringList arguments;
+            arguments
+                << "--del"
+                << it
+            ;
+            QProcess myProcess(&parent);
+            myProcess.start(program, arguments);
+            // wait for core to finish
+            while (!myProcess.waitForFinished())
+                Sleep(500);
+            myProcess.close();
+            
+            CleanCache(L"core_cache");
+        }
+        m_DeleteBuff.clear();
+    } 
+    WallpaperTab_resetCtrls();
 }
 
 
@@ -49,44 +71,165 @@ void MainWindow::onBrowseCacheBntPressed()
 // custom event handler
 void MainWindow::addFileFromComputerEvent(AddFileFromComputerEvent* event)
 {
+    QString new_wallpaper_id;
     switch(event->m_ItemSection)
     {
     case ItemSections::DefaultWallpaper:
         select_default_wallpaper();
-        add_default_wallpaper();
+        new_wallpaper_id = add_default_wallpaper();
         break;
     case ItemSections::LandscapeWallpaper:
         select_landscape_wallpaper();
-        add_landscape_wallpaper();
+        new_wallpaper_id = add_landscape_wallpaper();
         break;
     case ItemSections::PortraitWallpaper:
         select_portrait_wallpaper();
-        add_portrait_wallpaper();
+        new_wallpaper_id = add_portrait_wallpaper();
         break;
     case ItemSections::OthersWallpaper: case ItemSections::Unknown:
-        add_image_as_wallpaper(select_image());
+        new_wallpaper_id = add_image_as_wallpaper(select_image());
         break;
     }
+    // notify CacheBrowser to update
+    QApplication::instance()->postEvent(
+        event->p_EventSource,
+        new ReloadWallpapersEvent(
+            "AddFromComputer",
+            reinterpret_cast<void*>(new QString(new_wallpaper_id)))
+    );
+    qApp->processEvents();
+}
+void MainWindow::addFileFromCacheEvent(AddFileFromCacheEvent* event)
+{
+    std::wstring loc_opt_name = L"";
+    // clear current recorded wallpaper id if needed
+    switch (event->m_CurrItemSection)
+    {
+    case ItemSections::DefaultWallpaper:
+        loc_opt_name = L"default_wallpaper_id";
+        break;
+    case ItemSections::LandscapeWallpaper:
+        loc_opt_name = L"landscape_wallpaper_id";
+        break;
+    case ItemSections::PortraitWallpaper:
+        loc_opt_name = L"portrait_wallpaper_id";
+        break;
+        
+    default: // event->m_CurrItemSection == (ItemSections::Unkown || ItemSections::OthersWallpaper)
+        loc_opt_name = L"";
+        break;
+    }
+    if (!loc_opt_name.empty())
+        m_Config.set(L"wallpaper", loc_opt_name, L"");
+    
+    // set new wallpaper id to config.ini
+    switch(event->m_ToItemSection)
+    {
+    case ItemSections::DefaultWallpaper:
+        loc_opt_name = L"default_wallpaper_id";
+        break;
+    case ItemSections::LandscapeWallpaper:
+        loc_opt_name = L"landscape_wallpaper_id";
+        break;
+    case ItemSections::PortraitWallpaper:
+        loc_opt_name = L"portrait_wallpaper_id";
+        break;
+    
+    default: // event->m_ToItemSection == (ItemSections::Unkown || ItemSections::OthersWallpaper)
+        return;
+        break;
+    }
+    if (!loc_opt_name.empty())
+        m_Config.set(L"wallpaper", loc_opt_name, event->m_CurrItemID.toStdWString());
+    
+    // notify CacheBrowser to update
     QApplication::instance()->postEvent(
         event->p_EventSource,
         new ReloadWallpapersEvent()
     );
-}
-void MainWindow::addFileFromCacheEvent(AddFileFromCacheEvent* event)
-{
-    
+    qApp->processEvents();
 }
 void MainWindow::removeCacheEvent(RemoveCacheEvent* event)
 {
+    // validate id
+    if (event->m_ItemID.isEmpty())
+        return;
     
+    // remove cache id in config.ini if needed
+    std::wstring loc_opt_name = L"";
+    if (event->m_ItemID == 
+        QString::fromWCharArray(
+            m_Config.get(L"wallpaper", L"default_wallpaper_id").c_str()
+        ))
+        loc_opt_name = L"default_wallpaper_id";
+    else if (event->m_ItemID == 
+		QString::fromWCharArray(
+			m_Config.get(L"wallpaper", L"landscape_wallpaper_id").c_str()
+		))
+        loc_opt_name = L"landscape_wallpaper_id";
+    else if (event->m_ItemID == 
+		QString::fromWCharArray(
+			m_Config.get(L"wallpaper", L"portrait_wallpaper_id").c_str()
+		))
+        loc_opt_name = L"portrait_wallpaper_id";
+    if (!loc_opt_name.empty())
+        m_Config.set(L"wallpaper", loc_opt_name, L"");
+    
+    // update delete buffer
+    m_DeleteBuff.push_back(event->m_ItemID);
+    
+    // notify CacheBrowser to update
+    QApplication::instance()->postEvent(
+        event->p_EventSource,
+        new ReloadWallpapersEvent()
+    );
+    qApp->processEvents();
 }
 void MainWindow::editCacheEvent(EditCacheEvent* event)
 {
-    
+    // notify CacheBrowser to update
+    QApplication::instance()->postEvent(
+        event->p_EventSource,
+        new ReloadWallpapersEvent()
+    );
+    qApp->processEvents();
 }
 void MainWindow::cacheInfoEvent(CacheInfoEvent* event)
 {
+    // find cache file info
+    QObject parent;
+    QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
+    QStringList arguments;
+    arguments
+            << "--find"
+            << event->m_ItemID
+    ;
+    QProcess myProcess(&parent);
+    myProcess.start(program, arguments);
+    // wait for core to finish
+    while (!myProcess.waitForFinished())
+        Sleep(500);
+    myProcess.close();
     
+    // read from core_cache
+    Cache_ReaderW cache(L"core_cache");
+    
+    if (cache.isCacheExist()) {
+        // output file info to MsgBox
+        std::wstring buff;
+        for (auto it : *cache.getData())
+            buff += it + L'\n';
+        MessageBoxW(0, buff.c_str(), L"File Information", 0);
+    } else {
+        MessageBoxW(0, L"Cannot Read File Information", L"File Information", 0);
+    }
+    
+    // notify CacheBrowser to update
+    QApplication::instance()->postEvent(
+        event->p_EventSource,
+        new ReloadWallpapersEvent()
+    );
+    qApp->processEvents();
 }
 
 
@@ -101,6 +244,10 @@ void MainWindow::WallpaperTab_resetCtrls()
 {
     // setup "Wallpaper" tab
     mainwindowTab->setTabText(0, "Wallpaper");
+    // clear all TextEdit
+    defaultTextEdit->setText("");
+    landscapeTextEdit->setText("");
+    portraitTextEdit->setText("");
     // set TextEdit text
     is_all_wallpaper_set();
 }
@@ -191,14 +338,17 @@ void MainWindow::save_WallpaperTab()
 }
 
 // adding wallpapers
-void MainWindow::add_default_wallpaper()
+QString MainWindow::add_default_wallpaper()
 {
     QString temp_id;
     if (m_DefaultWallpaper.isEmpty())
-        return;
+        return "";
     else if (is_cached_file(m_DefaultWallpaper, temp_id)) {
         m_Config.set(L"wallpaper", L"default_wallpaper_id", temp_id.toStdWString());
-        return;
+        int ind = m_DeleteBuff.indexOf(temp_id);
+        if (ind != -1)
+            m_DeleteBuff.remove(ind);
+        return temp_id;
     }
     // cache wallpaper
     QObject parent;
@@ -217,14 +367,16 @@ void MainWindow::add_default_wallpaper()
     
     // read new added wallpaper from cache 
     Cache_ReaderW cache(L"core_cache");
-    if (cache.isCacheExist()) {
-        m_Config.set(L"wallpaper", L"default_wallpaper_id", cache.getData()->at(0));
+    if (cache.isCacheExist() && cache.getData()->at(0) == L"1") {
+        m_Config.set(L"wallpaper", L"default_wallpaper_id", cache.getData()->at(1));
     } else {
         MessageBoxW(0, L"No core_cache for Default", L"Info", 0);
     }
     
     // update control status 
     m_ControlChanged = true;
+    
+    return QString::fromWCharArray(cache.getData()->at(1).c_str());
 }
 void MainWindow::select_default_wallpaper()
 {
@@ -234,14 +386,17 @@ void MainWindow::select_default_wallpaper()
     // update control status 
     m_ControlChanged = true;
 }
-void MainWindow::add_landscape_wallpaper()
+QString MainWindow::add_landscape_wallpaper()
 {
     QString temp_id;
     if (m_LandscapeWallpaper.isEmpty())
-        return;
+        return "";
     else if (is_cached_file(m_LandscapeWallpaper, temp_id)) {
         m_Config.set(L"wallpaper", L"landscape_wallpaper_id", temp_id.toStdWString());
-        return;
+        int ind = m_DeleteBuff.indexOf(temp_id);
+        if (ind != -1)
+            m_DeleteBuff.remove(ind);
+        return temp_id;
     }
     // cache wallpaper
     QObject parent;
@@ -260,14 +415,16 @@ void MainWindow::add_landscape_wallpaper()
     
     // read new added wallpaper from cache 
     Cache_ReaderW cache(L"core_cache");
-    if (cache.isCacheExist()) {
-        m_Config.set(L"wallpaper", L"landscape_wallpaper_id", cache.getData()->at(0));
+    if (cache.isCacheExist() && cache.getData()->at(0) == L"1") {
+        m_Config.set(L"wallpaper", L"landscape_wallpaper_id", cache.getData()->at(1));
     } else {
         MessageBoxW(0, L"No core_cache for Landscape", L"Info", 0);
     }    
     
     // update control status 
     m_ControlChanged = true;
+    
+    return QString::fromWCharArray(cache.getData()->at(1).c_str());
 }
 void MainWindow::select_landscape_wallpaper()
 {
@@ -277,14 +434,17 @@ void MainWindow::select_landscape_wallpaper()
     // update control status 
     m_ControlChanged = true;
 }
-void MainWindow::add_portrait_wallpaper()
+QString MainWindow::add_portrait_wallpaper()
 {
     QString temp_id;
     if (m_PortraitWallpaper.isEmpty())
-        return;
+        return "";
     else if (is_cached_file(m_PortraitWallpaper, temp_id)) {
         m_Config.set(L"wallpaper", L"portrait_wallpaper_id", temp_id.toStdWString());
-        return;
+        int ind = m_DeleteBuff.indexOf(temp_id);
+        if (ind != -1)
+            m_DeleteBuff.remove(ind);
+        return temp_id;
     }
     // cache wallpaper
     QObject parent;
@@ -303,14 +463,16 @@ void MainWindow::add_portrait_wallpaper()
     
     // read new added wallpaper from cache 
     Cache_ReaderW cache(L"core_cache");
-    if (cache.isCacheExist()) {
-        m_Config.set(L"wallpaper", L"portrait_wallpaper_id", cache.getData()->at(0));
+    if (cache.isCacheExist() && cache.getData()->at(0) == L"1") {
+        m_Config.set(L"wallpaper", L"portrait_wallpaper_id", cache.getData()->at(1));
     } else {
         MessageBoxW(0, L"No core_cache for Portrait", L"Info", 0);
     }
     
     // update control status 
     m_ControlChanged = true;
+    
+    return QString::fromWCharArray(cache.getData()->at(1).c_str());
 }
 void MainWindow::select_portrait_wallpaper()
 {
@@ -352,12 +514,17 @@ QString MainWindow::select_image(std::string dlg_caption, std::string default_fi
     // output
     return output;
 }
-void MainWindow::add_image_as_wallpaper(const QString& file_path)
+QString MainWindow::add_image_as_wallpaper(const QString& file_path)
 {
+    QString temp_id;
     if (file_path.isEmpty())
-        return;
-    else if (is_cached_file(file_path))
-        return;
+        return "";
+    else if (is_cached_file(file_path, temp_id)) {
+        int ind = m_DeleteBuff.indexOf(temp_id);
+        if (ind != -1)
+            m_DeleteBuff.remove(ind);
+        return temp_id;
+    }
     // cache wallpaper
     QObject parent;
     QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
@@ -372,6 +539,9 @@ void MainWindow::add_image_as_wallpaper(const QString& file_path)
     while (!myProcess.waitForFinished())
         Sleep(500);
     myProcess.close();
+    // clear core_cache & return
+    Cache_ReaderW cache(L"core_cache");
+    return QString::fromWCharArray(cache.getData()->at(1).c_str());
 }
 bool MainWindow::is_cached_file(const QString& file_path, QString& wallpaperID_output)
 {
@@ -432,7 +602,7 @@ QString MainWindow::get_wallpaper_src(const QString& wallpaper_id)
     ;
     QProcess myProcess(&parent);
     myProcess.start(program, arguments);
-    // get wallpaper ID from ./core_cache
+    // get wallpaper ID from core_cache
     while (!myProcess.waitForFinished())
         Sleep(500);
     myProcess.close();
