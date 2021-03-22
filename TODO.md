@@ -22,13 +22,12 @@
       * - [x] del.
       * - [x] find
     
-    * - [ ] image cropping & rotation add to core (w/ QImage lib)
-    
     * - [x] cached wallpaper display in a separate dlg (w/ QImage lib)
     
-    * - [ ] simple image editing QDialog
-    
     * - [ ] smart ListView reloading in CacheBrowserDlg, only reload ListViews that need to reload
+    
+    * - [ ] simple image editing QDialog
+      * - [ ] image cropping & rotation add to mainwindow (w/ QImage, QTransformation)
     
     * - [ ] use pipe for communication between gui & core?
 
