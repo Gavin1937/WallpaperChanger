@@ -109,3 +109,10 @@ CachedImage_${V}_${H}_POS${M}
   * This value will store as seconds in config.ini
   * Menu Option **Update Wallpaper** will do the same update immediately
 * **Hide Program When Closed**: Toggle what will "X" on the upper-right corner does
+
+
+## Resources Used
+
+* Program Icon is come from [凪白みと's Artwork](https://www.pixiv.net/artworks/70352399)
+* **This Icon Is Not For Commercial Use**
+

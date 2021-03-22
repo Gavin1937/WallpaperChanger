@@ -1,5 +1,11 @@
 # **Changelog**
 
+<details open>
+<summary style="font-size:25px">
+  <b>Recent Versions</b>
+</summary>
+
+
 ## Alpha Phase - Now
 
 * Add **WallpaperChanger-core** for basic Wallpaper Managing operations
@@ -17,3 +23,16 @@
       * **Remove cache**
       * **Cache Info**
   * Add **Settings Tab** for basic setting configuration
+
+
+</details>
+
+
+
+<details>
+<summary style="font-size:25px">
+  <b>Past Versions</b>
+</summary>
+
+
+</details>
