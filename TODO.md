@@ -17,15 +17,16 @@
 
  * - [ ] add features of core to gui menu (add, del, find, help....)
         
-   * - [ ] use a tab dialog to show user about missing configs & help them to complete config
-      * - [ ] add (In Progress)
-      * - [ ] del.
-      * - [ ] find
-      * - [ ] help
+   * - [x] use a tab dialog to show user about missing configs & help them to complete config
+      * - [x] add (In Progress)
+      * - [x] del.
+      * - [x] find
     
     * - [ ] image cropping & rotation add to core (w/ QImage lib)
     
-    * - [ ] cached wallpaper display in a separate dlg (w/ QImage lib)
+    * - [x] cached wallpaper display in a separate dlg (w/ QImage lib)
+    
+    * - [ ] simple image editing QDialog
 
 
 # **BUG**

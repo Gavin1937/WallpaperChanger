@@ -9,4 +9,11 @@
   * help MessageBox
 * Add **WallpaperChanger-gui** for System TrayIcon and basic setting gui w/ Qt
   * Add **Wallpaper Tab** for adding new wallpapers
+    * Add **CacheBrowserDlg** under **WallpaperTab**
+    * Implement following features for **CacheBrowserDlg**
+      * view all cached Wallpapers
+      * **Add from computer**
+      * **Add from cache**
+      * **Remove cache**
+      * **Cache Info**
   * Add **Settings Tab** for basic setting configuration

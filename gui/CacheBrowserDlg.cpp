@@ -300,6 +300,8 @@ void CacheBrowserDlg::customEvent(QEvent* event)
 
 void CacheBrowserDlg::reloadWallpapersEvent(ReloadWallpapersEvent* event)
 {
+    // remove ID in CacheBrowserDlg::m_RemovedWallpapers buffer 
+    // if we add the same wallpaper back
     if (event->p_Data != nullptr) {
         QString temp = *(reinterpret_cast<QString*>(event->p_Data));
         if (event->m_TaskName == "AddFromComputer") {
@@ -577,7 +579,7 @@ void ListView::unloadSelectedIcon()
 // ====================== Custom Events ======================
 
 ReloadWallpapersEvent::ReloadWallpapersEvent(QString taskName, void* return_data)
-    : QEvent(QEvent::Type(QEvent::User+RELOAD_WALLPAPERS_EVENT)),
+    : QEvent(RELOAD_WALLPAPERS_EVENT_TYPE),
     m_TaskName(taskName),
     p_Data(return_data)
 {}
@@ -589,7 +591,7 @@ ReloadWallpapersEvent::~ReloadWallpapersEvent()
 AddFileFromComputerEvent::AddFileFromComputerEvent(
     CacheBrowserDlg* eventSource,
     const ItemSections& itemSection)
-    : QEvent(QEvent::Type(QEvent::User+ADD_FILE_FROM_COMPUTER_EVENT)),
+    : QEvent(ADD_FILE_FROM_COMPUTER_EVENT_TYPE),
     p_EventSource(reinterpret_cast<QObject*>(eventSource)),
     m_ItemSection(itemSection)
 {}
@@ -598,7 +600,7 @@ AddFileFromCacheEvent::AddFileFromCacheEvent(
         const ItemSections& curr_itemSection,
         const QString& currItemID,
         const ItemSections& to_itemSection)
-    : QEvent(QEvent::Type(QEvent::User+ADD_FILE_FROM_CACHE_EVENT)),
+    : QEvent(ADD_FILE_FROM_CACHE_EVENT_TYPE),
     p_EventSource(reinterpret_cast<QObject*>(eventSource)),
     m_CurrItemSection(curr_itemSection),
     m_CurrItemID(currItemID),
@@ -607,21 +609,21 @@ AddFileFromCacheEvent::AddFileFromCacheEvent(
 RemoveCacheEvent::RemoveCacheEvent(
     CacheBrowserDlg* eventSource, 
     const QString& itemID)
-    : QEvent(QEvent::Type(QEvent::User+REMOVE_CACHE_EVENT)),
+    : QEvent(REMOVE_CACHE_EVENT_TYPE),
     p_EventSource(reinterpret_cast<QObject*>(eventSource)),
     m_ItemID(itemID)
 {}
 EditCacheEvent::EditCacheEvent(
     CacheBrowserDlg* eventSource, 
     const QString& itemID)
-    : QEvent(QEvent::Type(QEvent::User+EDIT_CACHE_EVENT)),
+    : QEvent(EDIT_CACHE_EVENT_TYPE),
     p_EventSource(reinterpret_cast<QObject*>(eventSource)),
     m_ItemID(itemID)
 {}
 CacheInfoEvent::CacheInfoEvent(
     CacheBrowserDlg* eventSource, 
     const QString& itemID)
-    : QEvent(QEvent::Type(QEvent::User+CACHE_INFO_EVENT)),
+    : QEvent(CACHE_INFO_EVENT_TYPE),
     p_EventSource(reinterpret_cast<QObject*>(eventSource)),
     m_ItemID(itemID)
 {}

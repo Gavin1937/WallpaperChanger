@@ -175,6 +175,12 @@ void MainWindow::removeCacheEvent(RemoveCacheEvent* event)
     if (!loc_opt_name.empty())
         m_Config.set(L"wallpaper", loc_opt_name, L"");
     
+    // We cannot delete cache file while CacheBrowserDlg
+    // is using them. So we need to store WallpaperIDs that
+    // need to be delete and delete them after CacheBrowserDlg
+    // has finish exec(). See MainWindow::onBrowseCacheBntPressed()
+    // for reference
+    // 
     // update delete buffer
     m_DeleteBuff.push_back(event->m_ItemID);
     
@@ -187,6 +193,9 @@ void MainWindow::removeCacheEvent(RemoveCacheEvent* event)
 }
 void MainWindow::editCacheEvent(EditCacheEvent* event)
 {
+    // launch image editor
+    // ! ...
+    
     // notify CacheBrowser to update
     QApplication::instance()->postEvent(
         event->p_EventSource,

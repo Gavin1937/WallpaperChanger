@@ -80,7 +80,7 @@ CachedImage_${V}_${H}_POS${M}
 
 * A **Windows** Tablet or Laptop with screen rotation enabled
 * **C++17** and above
-* **Qt 5** and above
+* **Qt 6**
 * **CMake 3.18** and above
 
 
@@ -90,11 +90,11 @@ CachedImage_${V}_${H}_POS${M}
 ```
     Commands for Reference:
     
-    ~> $ mkdir build 
+    ~ $ mkdir build 
     
-    ~> $ cd build 
+    ~ $ cd build 
     
-    ~/build> $ cmake .. 
+    ~/build $ cmake .. 
 ```
 * After Installation, run **WallpaperChanger-gui**
 * If you are **missing DLLs**, you can try to download them from: [https://www.dll-files.com/](https://www.dll-files.com/) 
