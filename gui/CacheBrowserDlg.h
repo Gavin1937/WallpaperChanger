@@ -104,6 +104,7 @@ private: // helper functions
     const ItemSections getCurrItemSections();
     QStandardItem* getCurrSelectedItem();
     ListView* getCurrSelectedListView();
+    QString getCurrSelectedItemID();
     void setup_Menu4AddFromCache();
     
 private:

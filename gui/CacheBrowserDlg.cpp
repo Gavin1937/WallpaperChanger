@@ -216,7 +216,7 @@ void CacheBrowserDlg::onMenuSelectDefault()
 		p_ParentObject,
 		new AddFileFromCacheEvent(this, 
             getCurrItemSections(), 
-            getCurrSelectedItem()->text(), 
+            getCurrSelectedItemID(), 
             m_SelectedMenuItem)
 	);
 	qApp->processEvents();
@@ -228,7 +228,7 @@ void CacheBrowserDlg::onMenuSelectLandscape()
 		p_ParentObject,
 		new AddFileFromCacheEvent(this, 
             getCurrItemSections(), 
-            getCurrSelectedItem()->text(), 
+            getCurrSelectedItemID(), 
             m_SelectedMenuItem)
 	);
 	qApp->processEvents();
@@ -240,7 +240,7 @@ void CacheBrowserDlg::onMenuSelectPortrait()
 		p_ParentObject,
 		new AddFileFromCacheEvent(this, 
             getCurrItemSections(), 
-            getCurrSelectedItem()->text(), 
+            getCurrSelectedItemID(), 
             m_SelectedMenuItem)
 	);
 	qApp->processEvents();
@@ -249,7 +249,7 @@ void CacheBrowserDlg::onMenuSelectPortrait()
 void CacheBrowserDlg::onRemoveCachePressed()
 {
     // record item id
-    QString curr_item_id = getCurrSelectedItem()->text();
+    QString curr_item_id = getCurrSelectedItemID();
     ListView *curr_listview = getCurrSelectedListView();
     m_RemovedWallpapers.push_back(curr_item_id);
     
@@ -271,7 +271,7 @@ void CacheBrowserDlg::onRemoveCachePressed()
 }
 void CacheBrowserDlg::onEditCachePressed()
 {
-    QString curr_item_id = getCurrSelectedItem()->text();
+    QString curr_item_id = getCurrSelectedItemID();
     QApplication::instance()->postEvent(
         p_ParentObject,
         new EditCacheEvent(this, curr_item_id)
@@ -280,7 +280,7 @@ void CacheBrowserDlg::onEditCachePressed()
 }
 void CacheBrowserDlg::onCacheInfoPressed()
 {
-    QString curr_item_id = getCurrSelectedItem()->text();
+    QString curr_item_id = getCurrSelectedItemID();
     QApplication::instance()->postEvent(
         p_ParentObject,
         new CacheInfoEvent(this, curr_item_id)
@@ -429,26 +429,39 @@ const ItemSections CacheBrowserDlg::getCurrItemSections()
 QStandardItem* CacheBrowserDlg::getCurrSelectedItem()
 {
     // find current selected ListView
+    QStandardItemModel* loc_model = nullptr;
+    QModelIndex loc_ind;
+    QStandardItem* loc_item = nullptr;
     if (p_DefaultListView->hasSelection()) {
-        return reinterpret_cast<QStandardItemModel*>(p_DefaultListView->model())
-            ->item(0);
+        loc_model = reinterpret_cast<QStandardItemModel*>(p_DefaultListView->model());
+        if (loc_model == nullptr)
+            return nullptr;
+        loc_item = loc_model->item(0);
     }
     else if (p_LandscapeListView->hasSelection()) {
-        return reinterpret_cast<QStandardItemModel*>(p_LandscapeListView->model())
-            ->item(0);
+        loc_model = reinterpret_cast<QStandardItemModel*>(p_LandscapeListView->model());
+        if (loc_model == nullptr)
+            return nullptr;
+		loc_item = loc_model->item(0);
     }
     else if (p_PortraitListView->hasSelection()) {
-        return reinterpret_cast<QStandardItemModel*>(p_PortraitListView->model())
-            ->item(0);
+        loc_model = reinterpret_cast<QStandardItemModel*>(p_PortraitListView->model());
+        if (loc_model == nullptr)
+            return nullptr;
+		loc_item = loc_model->item(0);
     }
     else if (p_OthersListView->hasSelection()) {
-        return reinterpret_cast<QStandardItemModel*>(p_OthersListView->model())
-            ->item(
-                p_OthersListView->selectionModel()->selectedRows().first().row(),
-                p_OthersListView->selectionModel()->selectedColumns().first().column()
-            );
+        loc_model = reinterpret_cast<QStandardItemModel*>(p_OthersListView->model());
+        if (loc_model == nullptr)
+            return nullptr;
+        loc_ind = p_OthersListView->selectionModel()->currentIndex();
+        loc_item = loc_model->itemFromIndex(loc_ind);
     }
-    return nullptr;
+    // output
+    if (loc_item != nullptr)
+        return loc_item;
+    else
+        return nullptr;
 }
 ListView* CacheBrowserDlg::getCurrSelectedListView()
 {
@@ -462,6 +475,13 @@ ListView* CacheBrowserDlg::getCurrSelectedListView()
     else if (p_OthersListView->hasSelection())
         return p_OthersListView;
     return nullptr;
+}
+QString CacheBrowserDlg::getCurrSelectedItemID()
+{
+    QStandardItem* loc_item = getCurrSelectedItem();
+    if (loc_item != nullptr)
+        return loc_item->text();
+    else return QString();
 }
 void CacheBrowserDlg::setup_Menu4AddFromCache()
 {

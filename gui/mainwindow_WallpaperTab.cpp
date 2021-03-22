@@ -101,46 +101,61 @@ void MainWindow::addFileFromComputerEvent(AddFileFromComputerEvent* event)
 }
 void MainWindow::addFileFromCacheEvent(AddFileFromCacheEvent* event)
 {
-    std::wstring loc_opt_name = L"";
+    // validation
+    if (event->m_CurrItemID.isEmpty())
+        return;
+    
     // clear current recorded wallpaper id if needed
+    std::wstring loc_opt_name_old = L"";
+	std::wstring old_wall_id = L"";
     switch (event->m_CurrItemSection)
     {
     case ItemSections::DefaultWallpaper:
-        loc_opt_name = L"default_wallpaper_id";
+        loc_opt_name_old = L"default_wallpaper_id";
         break;
     case ItemSections::LandscapeWallpaper:
-        loc_opt_name = L"landscape_wallpaper_id";
+        loc_opt_name_old = L"landscape_wallpaper_id";
         break;
     case ItemSections::PortraitWallpaper:
-        loc_opt_name = L"portrait_wallpaper_id";
+        loc_opt_name_old = L"portrait_wallpaper_id";
         break;
         
     default: // event->m_CurrItemSection == (ItemSections::Unkown || ItemSections::OthersWallpaper)
-        loc_opt_name = L"";
+        loc_opt_name_old = L"";
         break;
     }
-    if (!loc_opt_name.empty())
-        m_Config.set(L"wallpaper", loc_opt_name, L"");
+    if (!loc_opt_name_old.empty()) {
+        old_wall_id = m_Config.get(L"wallpaper", loc_opt_name_old);
+        m_Config.set(L"wallpaper", loc_opt_name_old, L"");
+    }
     
     // set new wallpaper id to config.ini
+    std::wstring loc_opt_name_new = L"";
+    std::wstring new_wall_id = L"";
     switch(event->m_ToItemSection)
     {
     case ItemSections::DefaultWallpaper:
-        loc_opt_name = L"default_wallpaper_id";
+        loc_opt_name_new = L"default_wallpaper_id";
         break;
     case ItemSections::LandscapeWallpaper:
-        loc_opt_name = L"landscape_wallpaper_id";
+        loc_opt_name_new = L"landscape_wallpaper_id";
         break;
     case ItemSections::PortraitWallpaper:
-        loc_opt_name = L"portrait_wallpaper_id";
+        loc_opt_name_new = L"portrait_wallpaper_id";
         break;
     
     default: // event->m_ToItemSection == (ItemSections::Unkown || ItemSections::OthersWallpaper)
         return;
         break;
     }
-    if (!loc_opt_name.empty())
-        m_Config.set(L"wallpaper", loc_opt_name, event->m_CurrItemID.toStdWString());
+    if (!loc_opt_name_new.empty()) {
+        new_wall_id = m_Config.get(L"wallpaper", loc_opt_name_new);
+        m_Config.set(L"wallpaper", loc_opt_name_new, event->m_CurrItemID.toStdWString());
+    }
+    
+    // swap 2 wallpapers on Default, Landscape, or Portrait if possible
+    if (!old_wall_id.empty() && !new_wall_id.empty())
+        m_Config.set(L"wallpaper", loc_opt_name_old, new_wall_id);
     
     // notify CacheBrowser to update
     QApplication::instance()->postEvent(
