@@ -15,7 +15,7 @@
 
 </span>
 
- * - [ ] add features of core to gui menu (add, del, find, help....)
+ * - [X] add features of core to gui menu (add, del, find, help....)
         
    * - [x] use a tab dialog to show user about missing configs & help them to complete config
       * - [x] add (In Progress)
@@ -24,15 +24,16 @@
     
     * - [x] cached wallpaper display in a separate dlg (w/ QImage lib)
     
-    * - [ ] smart ListView reloading in CacheBrowserDlg, only reload ListViews that need to reload
-    
     * - [X] simple image editing QDialog
       * - [X] image cropping & rotation add to mainwindow (w/ QImage, QTransformation)
-    
-    
-    * - [ ] use pipe for communication between gui & core?
 
- * - [ ] improve gui
+ * - [ ] optimize program
+
+   * - [ ] Improve UI Layout
+   * - [ ] Improve UI hotkeys & shortcuts
+    
+   * - [ ] smart ListView reloading in CacheBrowserDlg, only reload ListViews that need to reload
+   * - [ ] use pipe for communication between gui & core?
 
 
 # **BUG**

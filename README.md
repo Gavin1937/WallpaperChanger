@@ -115,5 +115,5 @@ CachedImage_${V}_${H}_POS${M}
 
 * Program Icon and Application Icon are come from [凪白みと's Artwork](https://www.pixiv.net/artworks/70352399)
 * All Icons in ImageEditor are come from [www.flaticon.com](www.flaticon.com)
-* **This Icon Is Not For Commercial Use**
+* **All Icons Are Not For Commercial Use**
 
