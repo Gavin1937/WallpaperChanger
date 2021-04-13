@@ -2,11 +2,69 @@
 
 
 namespace {
-    std::vector<std::wstring> SupportedImageFileExtension = {
+    const std::vector<std::wstring> SupportedImageFileExtension = {
         L"bmp",
         L"jpg", L"jpeg",
         L"png"
     };
+    const char JPG_FILE_HEADER[] = {
+        static_cast<char>(0xff),
+        static_cast<char>(0xd8),
+        static_cast<char>(0xff)
+    };
+    const char PNG_FILE_HEADER[] = {
+        static_cast<char>(0x89),
+        static_cast<char>(0x50),
+        static_cast<char>(0x4e),
+        static_cast<char>(0x47)
+    };
+    const char BMP_FILE_HEADER[] = {
+        static_cast<char>(0x42),
+        static_cast<char>(0x4d)
+    };
+    
+    const bool isSupportedImageFile(const std::string& file_path)
+    {
+        // read 30 bytes from file
+        char buff[30];
+        GlobTools::utf8_ifstream input(file_path.c_str(), std::ios::binary);
+        if (!input.fail())
+            input.read(buff, 30);
+        else return false;
+        
+        // compare file header with supported file headers
+        for (int i = 0; i < 25; ++i) {
+            if (memcmp(JPG_FILE_HEADER, buff + i, 3) == 0) // has jpg file header
+                return true;
+            else if (memcmp(PNG_FILE_HEADER, buff + i, 4) == 0) // has png file header
+                return true;
+            else if (memcmp(BMP_FILE_HEADER, buff + i, 2) == 0) // has bmp file header
+                return true;
+        }
+        // cannot find any known file header, not support
+        return false;
+    }
+    const bool isSupportedImageFile(const std::wstring& file_path)
+    {
+		// read 30 bytes from file
+		char buff[30];
+		GlobTools::utf8_ifstream input(file_path.c_str(), std::ios::binary);
+		if (!input.fail())
+			input.read(buff, 30);
+		else return false;
+        
+		// compare file header with supported file headers
+		for (int i = 0; i < 25; ++i) {
+			if (memcmp(JPG_FILE_HEADER, buff + i, 3) == 0) // has jpg file header
+				return true;
+			else if (memcmp(PNG_FILE_HEADER, buff + i, 4) == 0) // has png file header
+				return true;
+			else if (memcmp(BMP_FILE_HEADER, buff + i, 2) == 0) // has bmp file header
+				return true;
+		}
+		// cannot find any known file header, not support
+		return false;
+    }
 };
 
 
@@ -298,20 +356,12 @@ WallpaperInfo::WallpaperInfo(const std::wstring& src_path, const std::wstring& n
         return;
     } else {
         // checking whether src_path is a supported file
-        bool whether_support = false;
-        std::wstring temp_src_path(src_path);
-        std::wstring curr_fileExtension;
-        reverse(temp_src_path.begin(), temp_src_path.end());
-        curr_fileExtension.assign(temp_src_path.begin(), temp_src_path.begin()+temp_src_path.find(L'.'));
-        reverse(curr_fileExtension.begin(), curr_fileExtension.end());
-        for (auto it : SupportedImageFileExtension) {
-            if (it == curr_fileExtension) {
-                whether_support = true;
-                break;
-            }
-        }
+        bool whether_support = isSupportedImageFile(src_path);
         
-        if (whether_support) { // support file, assign m_OriFileName & m_AddTime
+        // support file, assign m_OriFileName & m_AddTime
+        if (whether_support) {
+            std::wstring temp_src_path(src_path);
+            reverse(temp_src_path.begin(), temp_src_path.end());
             m_OriFileName.assign(temp_src_path.begin(), temp_src_path.begin()+temp_src_path.find(L'\\'));
             reverse(m_OriFileName.begin(), m_OriFileName.end());
             if (m_AddTime == 0)
