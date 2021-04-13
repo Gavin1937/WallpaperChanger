@@ -30,11 +30,15 @@ set(SRC
     mainwindow_SettingTab.cpp
     timer.cpp
     CacheBrowserDlg.cpp
+    ImageEditor.cpp
+    ImageEditorDlg.cpp
 )
 set(HEADER
     mainwindow.h
     timer.h
     CacheBrowserDlg.h
+    ImageEditor.h
+    ImageEditorDlg.h
     Qt_CustomEventID.h
     resources.h
 )

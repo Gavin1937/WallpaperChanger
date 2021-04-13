@@ -40,11 +40,11 @@ CacheBrowserDlg::CacheBrowserDlg(ConfigManager* parent_config, QWidget* parent)
     setup_Menu4AddFromCache();
     
     // set function button icon
-    Bnt_AddFromComputer->setIcon(QIcon(":res/green_plus.png"));
-    Bnt_AddFromCache->setIcon(QIcon(":res/orange_plus.png"));
-    Bnt_RemoveCache->setIcon(QIcon(":res/red_minus.png"));
-    Bnt_EditCache->setIcon(QIcon(":res/lightblue_edit.png"));
-    Bnt_CacheInfo->setIcon(QIcon(":res/blue_question.png"));
+    Bnt_AddFromComputer->setIcon(QIcon(":res/CacheBrowserDlg/green_plus.png"));
+    Bnt_AddFromCache->setIcon(QIcon(":res/CacheBrowserDlg/orange_plus.png"));
+    Bnt_RemoveCache->setIcon(QIcon(":res/CacheBrowserDlg/red_minus.png"));
+    Bnt_EditCache->setIcon(QIcon(":res/CacheBrowserDlg/lightblue_edit.png"));
+    Bnt_CacheInfo->setIcon(QIcon(":res/CacheBrowserDlg/blue_question.png"));
     
     // make connections
     connect(Bnt_AddFromComputer, &QAbstractButton::released, this, &CacheBrowserDlg::onAddFromComputerPressed);
@@ -181,7 +181,7 @@ void CacheBrowserDlg::loadWallpapers()
         QStandardItemModel *missing_model = new QStandardItemModel(this);
         missing_model->appendRow(
             new QStandardItem(
-                QIcon(":res/missing_wallpaper.png"),
+                QIcon(":res/CacheBrowserDlg/missing_wallpaper.png"),
                 ""
         ));
         p_DefaultListView->setModel(missing_model);
@@ -342,7 +342,7 @@ void CacheBrowserDlg::load_singleWallpaper(
         QStandardItemModel *missing_model = new QStandardItemModel(this);
         missing_model->appendRow(
             new QStandardItem(
-                QIcon(":res/missing_wallpaper.png"),
+                QIcon(":res/CacheBrowserDlg/missing_wallpaper.png"),
                 ""
         ));
         target_listView->setModel(missing_model);
@@ -350,7 +350,7 @@ void CacheBrowserDlg::load_singleWallpaper(
         QStandardItemModel *missing_model = new QStandardItemModel(this);
         missing_model->appendRow(
             new QStandardItem(
-                QIcon(":res/missing_wallpaper.png"),
+                QIcon(":res/CacheBrowserDlg/missing_wallpaper.png"),
                 wallpaperId
         ));
         target_listView->setModel(missing_model);
@@ -379,13 +379,13 @@ void CacheBrowserDlg::load_multiWallpaper(
     } else if (wallpaperId.isEmpty()) { // do not have wallpaper id, wallpaper exist
         model->appendRow(
             new QStandardItem(
-                QIcon(":res/missing_wallpaper.png"),
+                QIcon(":res/CacheBrowserDlg/missing_wallpaper.png"),
                 "Unknown File"
         ));
     } else { // wallpaper does not exist, have wallpaper id
         model->appendRow(
             new QStandardItem(
-                QIcon(":res/missing_wallpaper.png"),
+                QIcon(":res/CacheBrowserDlg/missing_wallpaper.png"),
                 wallpaperId
         ));
     }
