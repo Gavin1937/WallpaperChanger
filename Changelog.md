@@ -2,7 +2,7 @@
 
 <details open>
 <summary style="font-size:25px">
-  <b>Recent Versions</b>
+  <b>Recent Changes</b>
 </summary>
 
 
@@ -22,6 +22,7 @@
       * **Add from cache**
       * **Remove cache**
       * **Cache Info**
+    * Add **ImageEditor** for simple image editing in **CacheBrowserDlg**
   * Add **Settings Tab** for basic setting configuration
 
 
@@ -31,7 +32,7 @@
 
 <details>
 <summary style="font-size:25px">
-  <b>Past Versions</b>
+  <b>Other Changes</b>
 </summary>
 
 

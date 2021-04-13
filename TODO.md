@@ -26,10 +26,13 @@
     
     * - [ ] smart ListView reloading in CacheBrowserDlg, only reload ListViews that need to reload
     
-    * - [ ] simple image editing QDialog
-      * - [ ] image cropping & rotation add to mainwindow (w/ QImage, QTransformation)
+    * - [X] simple image editing QDialog
+      * - [X] image cropping & rotation add to mainwindow (w/ QImage, QTransformation)
+    
     
     * - [ ] use pipe for communication between gui & core?
+
+ * - [ ] improve gui
 
 
 # **BUG**
