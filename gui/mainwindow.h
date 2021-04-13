@@ -33,6 +33,7 @@
 // others
 #include "timer.h"
 #include "CacheBrowserDlg.h"
+#include "ImageEditorDlg.h"
 
 // utilities
 #include "../utilities/CacheRW.h"
@@ -167,6 +168,8 @@ private:
     CacheBrowserDlg *p_CacheBrowserDlg;
     // Deletion Item Buffer for p_CacheBrowserDlg
     QVector<QString> m_DeleteBuff;
+    // ImageEditorDlg
+    ImageEditorDlg *p_ImageEditorDlg;
 
 
 

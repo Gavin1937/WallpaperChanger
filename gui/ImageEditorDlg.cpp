@@ -1,9 +1,9 @@
 
 #include "ImageEditorDlg.h"
 
-#include <QVBoxLayout>
 #include <QImage>
 #include <QKeySequence>
+#include <QVBoxLayout>
 
 
 ImageEditorDlg::ImageEditorDlg(

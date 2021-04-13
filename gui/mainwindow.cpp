@@ -20,8 +20,9 @@ MainWindow::MainWindow(QWidget *parent)
     m_DefaultWallpaper(""),
     m_LandscapeWallpaper(""),
     m_PortraitWallpaper(""),
-    // p_CacheBrowserDlg(new CacheBrowserDlg(this)),
     p_CacheBrowserDlg(nullptr),
+    m_DeleteBuff(QVector<QString>()),
+    p_ImageEditorDlg(nullptr),
 // SettingTab relate
     m_DropDownState(DropDownState::Seconds),
     m_WallpaperUpdateInterval(0)

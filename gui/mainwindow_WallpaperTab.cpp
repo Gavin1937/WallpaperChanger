@@ -208,8 +208,55 @@ void MainWindow::removeCacheEvent(RemoveCacheEvent* event)
 }
 void MainWindow::editCacheEvent(EditCacheEvent* event)
 {
-    // launch image editor
-    // ! ...
+    // clean possible output wallpaper before enter function
+    CleanCache(L"cropped_img.BMP");
+    
+    // declare buffers
+    QString exe_path = QString::fromWCharArray(GlobTools::getCurrExePathW().c_str());
+    QString file_path = exe_path + "Wallpapers\\" + event->m_ItemID;
+    
+    // launch ImageEditorDlg
+    p_ImageEditorDlg = new ImageEditorDlg("ImageEditor", this);
+    p_ImageEditorDlg->openImage(file_path);
+    p_ImageEditorDlg->setClosePath(exe_path + "cropped_img.BMP");
+    int result = p_ImageEditorDlg->exec();
+    
+    // after dlg closed
+    if (result == QDialog::Rejected) {
+        // add output file to Others
+        add_image_as_wallpaper(exe_path + "cropped_img.BMP");
+        // rm output file
+        CleanCache(L"cropped_img.BMP");
+        // modify newly added img profile
+        GlobTools::utf8_wifstream WallpaperList_in(
+            (exe_path + "Wallpapers\\WallpaperList").toStdWString()
+        );
+        // continue if able to read from WallpaperList
+        if (!WallpaperList_in.fail()) {
+            std::vector<std::wstring> temp_container;
+            std::wstring buff;
+            // store all data from ./Wallpapers/WallpaperList to temp_container
+            while (std::getline(WallpaperList_in, buff)) {
+                temp_container.push_back(buff);
+                buff.clear();
+            }
+            WallpaperList_in.close();
+            // modify last line of temp_container
+            // make the 1st section (src_path) to be file_path
+            buff = *(temp_container.end()-1);
+            size_t pos1 = buff.find(L'\"') + 1;
+            size_t pos2 = buff.find(L'\"', pos1) - 1;
+            buff.replace(pos1, pos2, file_path.toStdWString());
+            *(temp_container.end()-1) = buff;
+            // write modified WallpaperList back to file
+            GlobTools::utf8_wofstream WallpaperList_out(
+                (exe_path + "Wallpapers\\WallpaperList").toStdWString()
+            );
+            for (auto it : temp_container)
+                WallpaperList_out << it << "\n";
+            WallpaperList_out.close();
+        }
+    }
     
     // notify CacheBrowser to update
     QApplication::instance()->postEvent(

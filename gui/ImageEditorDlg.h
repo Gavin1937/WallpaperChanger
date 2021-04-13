@@ -1,17 +1,19 @@
+
 #pragma once
 
-#include "ImageEditor.h"
-
-#include <QDialog>
-#include <QGridLayout>
-#include <QPushButton>
+// Qt Libs
 #include <QCheckBox>
 #include <QCloseEvent>
-#include <QPaintEvent>
 #include <QContextMenuEvent>
+#include <QDialog>
+#include <QGridLayout>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QPaintEvent>
+#include <QPushButton>
 
+// Dependency
+#include "ImageEditor.h"
 
 // class declaration
 class ImageEditorDlg;

@@ -4,13 +4,13 @@
 
 // Qt Lib
 #include <QApplication>
-#include <QWidget>
 #include <QDialog>
 #include <QImage>
 #include <QImageReader>
-#include <QPaintEvent>
 #include <QMouseEvent>
+#include <QPaintEvent>
 #include <QRect>
+#include <QWidget>
 
 // C++ STL
 #include <cmath>
