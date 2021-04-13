@@ -349,7 +349,7 @@ ImageEditor::ImageEditor(QWidget* parent)
     // image buffers
     m_SrcImagePath(""),
     p_ImageReader(nullptr),
-    m_ImageScale(QSize()),
+    m_ImageScale(QSize(0, 0)),
     m_CurrImage(QImage()),
     m_PrevImage(QImage()),
     m_ScaledImage(QImage()),
@@ -364,7 +364,8 @@ ImageEditor::ImageEditor(QWidget* parent)
     m_LastPositionType(PositionType::Unknown_Outside),
     // other widget
     m_CroppingRectColor(QColor(Qt::magenta)),
-    m_WidgetBackgroundColor(QColor(Qt::gray))
+    m_WidgetBackgroundColor(QColor(Qt::gray)),
+    m_IsFirstTimePainting(true)
 {
     this->setMinimumSize(QSize(300, 300));
     // allow widget to receive QMouseEvent
@@ -680,8 +681,7 @@ void ImageEditor::paintEvent(QPaintEvent* event)
     painter.fillRect(this->rect(), m_WidgetBackgroundColor);
     
     // init variables when 1st time draw dlg
-    static bool first_time = true;
-    if (first_time) {
+    if (m_IsFirstTimePainting) {
         // update m_ImageScale to real widget size
         m_ImageScale = QSize(
             this->rect().width(),
@@ -698,7 +698,7 @@ void ImageEditor::paintEvent(QPaintEvent* event)
         m_CursorPosition.updateCroppingRect(m_ImageRect.Scaled());
         
         // only run this section once
-        first_time = false;
+        m_IsFirstTimePainting = false;
     }
     
     // draw m_ScaledImage on center of widget base on widget rect

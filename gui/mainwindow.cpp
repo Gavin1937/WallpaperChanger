@@ -44,10 +44,11 @@ MainWindow::MainWindow(QWidget *parent)
     }
     
     // check whether to update wallpapers
-    bool is_land_port_wallpaper_empty = 
+    bool has_all_three_wallpaper_set = 
         m_Config.get(L"wallpaper", L"landscape_wallpaper_id").empty() ||
-        m_Config.get(L"wallpaper", L"portrait_wallpaper_id").empty();
-    if (!is_land_port_wallpaper_empty) { // no empty wallpaper, have both landscape & portrait
+        m_Config.get(L"wallpaper", L"portrait_wallpaper_id").empty() ||
+        m_Config.get(L"wallpaper", L"default_wallpaper_id").empty();
+    if (!has_all_three_wallpaper_set) { // no empty wallpaper, have all landscape, portrait, & default
         // set default wappaper and update wallpaper
         set_default_wallpaper();
     }

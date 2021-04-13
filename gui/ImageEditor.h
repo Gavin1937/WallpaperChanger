@@ -306,4 +306,6 @@ private:
     // other widget proportires
     QColor m_CroppingRectColor;
     QColor m_WidgetBackgroundColor;
+    // whether is 1st time enter paintEvent()
+    bool m_IsFirstTimePainting;
 };
