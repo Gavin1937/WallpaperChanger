@@ -3,6 +3,7 @@
 // Qt Libs
 #include <QAction>
 #include <QApplication>
+#include <QContextMenuEvent>
 #include <QCloseEvent>
 #include <QDialog>
 #include <QDir>
@@ -13,6 +14,7 @@
 #include <QListView>
 #include <QMenu>
 #include <QModelIndex>
+#include <QMouseEvent>
 #include <QPixmap>
 #include <QResizeEvent>
 #include <QSize>
@@ -42,6 +44,7 @@ class ListView;
 // custom events
 // receiving
 class ReloadWallpapersEvent;
+class ListViewFeedbackEvent; // received feedback from ListView
 // sending
 class AddFileFromComputerEvent;
 class AddFileFromCacheEvent;
@@ -94,6 +97,7 @@ protected: // event handling functions
     void customEvent(QEvent* event);
     
     void reloadWallpapersEvent(ReloadWallpapersEvent* event);
+    void listViewFeedbackEvent(ListViewFeedbackEvent* event);
     
 private: // helper functions
     void load_singleWallpaper(ListView *target_listView, const QString& WallpapersDir, const QString& wallpaperId);
@@ -160,8 +164,18 @@ public:
     void unloadSelectedIcon();
     
 protected:
+    // re-implement events
+    
+    // right-mouse click open menu
+    virtual void contextMenuEvent(QContextMenuEvent *event);
+    
+    // custom events
+    
     // handle selection change event
     virtual void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+    
+    // handle double click to edit or open new file
+    virtual void mouseDoubleClickEvent(QMouseEvent* event);
     
 private:
     ListView* m_Friend1;
@@ -182,6 +196,20 @@ public:
         void* return_data = nullptr
     );
     ~ReloadWallpapersEvent();
+    QString m_TaskName;
+    void *p_Data;
+};
+// received feedback from ListView
+class ListViewFeedbackEvent : public QEvent
+{
+public:
+    ListViewFeedbackEvent(
+        ListView* event_parent,
+        QString taskName = "none", 
+        void* return_data = nullptr
+    );
+    ~ListViewFeedbackEvent();
+    ListView* p_EventParent;
     QString m_TaskName;
     void *p_Data;
 };

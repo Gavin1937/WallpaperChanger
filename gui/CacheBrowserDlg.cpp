@@ -302,6 +302,8 @@ void CacheBrowserDlg::customEvent(QEvent* event)
 {
     if (ReloadWallpapersEvent* RW_event = dynamic_cast<ReloadWallpapersEvent*>(event))
         reloadWallpapersEvent(RW_event);
+    if (ListViewFeedbackEvent* LVF_event = dynamic_cast<ListViewFeedbackEvent*>(event))
+        listViewFeedbackEvent(LVF_event);
 }
 
 void CacheBrowserDlg::reloadWallpapersEvent(ReloadWallpapersEvent* event)
@@ -317,6 +319,13 @@ void CacheBrowserDlg::reloadWallpapersEvent(ReloadWallpapersEvent* event)
         }
     }
     reloadWallpapers();
+}
+void CacheBrowserDlg::listViewFeedbackEvent(ListViewFeedbackEvent* event)
+{
+    if (event->m_TaskName == "onAddFromComputerPressed")
+        onAddFromComputerPressed();
+    else if (event->m_TaskName == "onEditCachePressed")
+        onEditCachePressed();
 }
 
 
@@ -553,6 +562,75 @@ void ListView::setFlag(const bool& flag)
 
 // protected:
 
+// re-implement events
+
+// right-mouse click open menu
+void ListView::contextMenuEvent(QContextMenuEvent *event)
+{
+    // create menu & actions
+    QMenu menu(this);
+    
+    QAction add_computer("Add New Wallpaper From Computer");
+    // sub menu for adding cache
+    QMenu add_cache(&menu);
+    QAction add_cache_def("Default Section");
+    QAction add_cache_lan("Landscape Section");
+    QAction add_cache_por("Portrait Section");
+    // end of sub menu
+    QAction remove_cache("Remove Wallpaper");
+    QAction edit_cache("Edit Wallpaper");
+    QAction cache_info("Wallpaper Information");
+    
+    
+    // make connection
+    connect(&add_computer, &QAction::triggered,
+        reinterpret_cast<CacheBrowserDlg*>(this->parentWidget()),
+        &CacheBrowserDlg::onAddFromComputerPressed);
+    
+    // connection for actions in sub menu
+    connect(&add_cache_def, &QAction::triggered,
+        reinterpret_cast<CacheBrowserDlg*>(this->parentWidget()),
+        &CacheBrowserDlg::onMenuSelectDefault);
+    connect(&add_cache_lan, &QAction::triggered,
+        reinterpret_cast<CacheBrowserDlg*>(this->parentWidget()),
+        &CacheBrowserDlg::onMenuSelectLandscape);
+    connect(&add_cache_por, &QAction::triggered,
+        reinterpret_cast<CacheBrowserDlg*>(this->parentWidget()),
+        &CacheBrowserDlg::onMenuSelectPortrait);
+    // end connection for actions in sub menu
+    
+    connect(&remove_cache, &QAction::triggered,
+        reinterpret_cast<CacheBrowserDlg*>(this->parentWidget()),
+        &CacheBrowserDlg::onRemoveCachePressed);
+    connect(&edit_cache, &QAction::triggered,
+        reinterpret_cast<CacheBrowserDlg*>(this->parentWidget()),
+        &CacheBrowserDlg::onEditCachePressed);
+    connect(&cache_info, &QAction::triggered,
+        reinterpret_cast<CacheBrowserDlg*>(this->parentWidget()),
+        &CacheBrowserDlg::onCacheInfoPressed);
+    
+    
+    // add actions & menu
+    menu.addAction(&add_computer);
+    // adding actions for sub menu
+    add_cache.addAction(&add_cache_def);
+    add_cache.addAction(&add_cache_lan);
+    add_cache.addAction(&add_cache_por);
+    add_cache.setTitle("Add Wallpaper To...");
+    menu.addMenu(&add_cache);
+    // end adding actions for sub menu
+    menu.addAction(&remove_cache);
+    menu.addAction(&edit_cache);
+    menu.addAction(&cache_info);
+    
+    
+    // draw menu
+    menu.exec(QCursor::pos());
+    menu.clear();
+}
+
+// custom events
+
 // handle selection change event
 void ListView::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
 {
@@ -564,6 +642,51 @@ void ListView::selectionChanged(const QItemSelection &selected, const QItemSelec
     m_IsProgrammatically = false;
     this->QListView::selectionChanged(selected, deselected);
 }
+
+// handle double click to edit or open new file
+void ListView::mouseDoubleClickEvent(QMouseEvent* event)
+{
+    this->QListView::mouseDoubleClickEvent(event);
+    
+    QStandardItemModel* loc_model = nullptr;
+    QStandardItem* loc_item = nullptr;
+    QString loc_id;
+    
+    // get selected id
+    loc_model = reinterpret_cast<QStandardItemModel*>(this->model());
+    // handle double click in different situation
+    if (loc_model != nullptr) {
+        loc_item = loc_model->item(0);
+        if (loc_item != nullptr) {
+            loc_id = loc_item->text();
+            // if has a non-empty loc_id
+            // post event to trigger onAddFromComputerPressed in CacheBrowserDlg
+            if (loc_id.isEmpty()) {
+                QApplication::instance()->postEvent(
+                    this->parentWidget(),
+                    new ListViewFeedbackEvent(
+                        this,
+                        "onAddFromComputerPressed"
+                    )
+                );
+            }
+            // otherwise
+            // post event to trigger onEditCachePressed in CacheBrowserDlg
+            else {
+                QApplication::instance()->postEvent(
+                    this->parentWidget(),
+                    new ListViewFeedbackEvent(
+                        this,
+                        "onEditCachePressed",
+                        reinterpret_cast<void*>(new QString(loc_id))
+                    )
+                );
+            }
+            qApp->processEvents();
+        }
+    }
+}
+
 
 const bool ListView::hasSelection()
 {
@@ -610,6 +733,18 @@ ReloadWallpapersEvent::ReloadWallpapersEvent(QString taskName, void* return_data
     p_Data(return_data)
 {}
 ReloadWallpapersEvent::~ReloadWallpapersEvent()
+{
+    if (p_Data != nullptr)
+        delete p_Data;
+}
+// received feedback from ListView
+ListViewFeedbackEvent::ListViewFeedbackEvent(ListView* event_parent, QString taskName, void* return_data)
+    : QEvent(LISTVIEW_FEEDBACK_EVENT_TYPE),
+    p_EventParent(event_parent),
+    m_TaskName(taskName),
+    p_Data(return_data)
+{}
+ListViewFeedbackEvent::~ListViewFeedbackEvent()
 {
     if (p_Data != nullptr)
         delete p_Data;

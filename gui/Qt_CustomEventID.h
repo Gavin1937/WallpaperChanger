@@ -11,3 +11,6 @@
 #define REMOVE_CACHE_EVENT_TYPE                   QEvent::Type(QEvent::User+5)
 #define EDIT_CACHE_EVENT_TYPE                     QEvent::Type(QEvent::User+6)
 #define CACHE_INFO_EVENT_TYPE                     QEvent::Type(QEvent::User+7)
+
+// custom event for ListView
+#define LISTVIEW_FEEDBACK_EVENT_TYPE              QEvent::Type(QEvent::User+8)
