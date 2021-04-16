@@ -38,6 +38,9 @@
 
 # **BUG**
 
+    L. [gui] CacheBrowserDlg will crash when trying to remove a cached wallpaper
+             while there is already many cached wallpaper in it.
+    
     J. Unsure issue: [gui] will crash after running for a long time.
     After running for a long time, gui will take less memory,
     but will crash when update_wallpaper. And later, it will continue

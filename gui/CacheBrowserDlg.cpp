@@ -252,22 +252,19 @@ void CacheBrowserDlg::onRemoveCachePressed()
     QString curr_item_id = getCurrSelectedItemID();
     if (curr_item_id.isEmpty())
         return;
+    ItemSections curr_item_sec = getCurrItemSections();
+    if (curr_item_sec == ItemSections::Unknown)
+        return;
     ListView *curr_listview = getCurrSelectedListView();
     m_RemovedWallpapers.push_back(curr_item_id);
     
     // unload selected item
     curr_listview->unloadSelectedIcon();
     
-    // update dlg
-    reloadWallpapers();
-    this->repaint();
-    this->update();
-	qApp->processEvents();
-    
     // ask mainwindow to delete cache file after exit dlg 
     QApplication::instance()->postEvent(
         p_ParentObject,
-        new RemoveCacheEvent(this, curr_item_id)
+        new RemoveCacheEvent(this, curr_item_id, curr_item_sec)
     );
     qApp->processEvents();
 }
@@ -312,19 +309,21 @@ void CacheBrowserDlg::reloadWallpapersEvent(ReloadWallpapersEvent* event)
     // if we add the same wallpaper back
     if (event->p_Data != nullptr) {
         QString temp = *(reinterpret_cast<QString*>(event->p_Data));
-        if (event->m_TaskName == "AddFromComputer") {
+        if (event->m_TaskType == ReloadWallpaperTasks::AddFromComputer || 
+            event->m_TaskType == ReloadWallpaperTasks::RemoveFromCache_NoFileDeletion)
+        {
             int ind = m_RemovedWallpapers.indexOf(temp);
             if (ind != -1)
                 m_RemovedWallpapers.remove(ind);
-        }
+        } 
     }
     reloadWallpapers();
 }
 void CacheBrowserDlg::listViewFeedbackEvent(ListViewFeedbackEvent* event)
 {
-    if (event->m_TaskName == "onAddFromComputerPressed")
+    if (event->m_TaskType == ListViewFeedbackTasks::onAddFromComputerPressed)
         onAddFromComputerPressed();
-    else if (event->m_TaskName == "onEditCachePressed")
+    else if (event->m_TaskType == ListViewFeedbackTasks::onEditCachePressed)
         onEditCachePressed();
 }
 
@@ -666,7 +665,7 @@ void ListView::mouseDoubleClickEvent(QMouseEvent* event)
                     this->parentWidget(),
                     new ListViewFeedbackEvent(
                         this,
-                        "onAddFromComputerPressed"
+                        ListViewFeedbackTasks::onAddFromComputerPressed
                     )
                 );
             }
@@ -677,7 +676,7 @@ void ListView::mouseDoubleClickEvent(QMouseEvent* event)
                     this->parentWidget(),
                     new ListViewFeedbackEvent(
                         this,
-                        "onEditCachePressed",
+                        ListViewFeedbackTasks::onEditCachePressed,
                         reinterpret_cast<void*>(new QString(loc_id))
                     )
                 );
@@ -727,9 +726,11 @@ void ListView::unloadSelectedIcon()
 
 // ====================== Custom Events ======================
 
-ReloadWallpapersEvent::ReloadWallpapersEvent(QString taskName, void* return_data)
+ReloadWallpapersEvent::ReloadWallpapersEvent(
+    ReloadWallpaperTasks task_type,
+    void* return_data)
     : QEvent(RELOAD_WALLPAPERS_EVENT_TYPE),
-    m_TaskName(taskName),
+    m_TaskType(task_type),
     p_Data(return_data)
 {}
 ReloadWallpapersEvent::~ReloadWallpapersEvent()
@@ -738,10 +739,13 @@ ReloadWallpapersEvent::~ReloadWallpapersEvent()
         delete p_Data;
 }
 // received feedback from ListView
-ListViewFeedbackEvent::ListViewFeedbackEvent(ListView* event_parent, QString taskName, void* return_data)
+ListViewFeedbackEvent::ListViewFeedbackEvent(
+    ListView* event_parent,
+    ListViewFeedbackTasks task_type,
+    void* return_data)
     : QEvent(LISTVIEW_FEEDBACK_EVENT_TYPE),
     p_EventParent(event_parent),
-    m_TaskName(taskName),
+    m_TaskType(task_type),
     p_Data(return_data)
 {}
 ListViewFeedbackEvent::~ListViewFeedbackEvent()
@@ -769,10 +773,12 @@ AddFileFromCacheEvent::AddFileFromCacheEvent(
 {}
 RemoveCacheEvent::RemoveCacheEvent(
     CacheBrowserDlg* eventSource, 
-    const QString& itemID)
+    const QString& itemID,
+    const ItemSections curr_itemSection)
     : QEvent(REMOVE_CACHE_EVENT_TYPE),
     p_EventSource(reinterpret_cast<QObject*>(eventSource)),
-    m_ItemID(itemID)
+    m_ItemID(itemID),
+    m_CurrItemSection(curr_itemSection)
 {}
 EditCacheEvent::EditCacheEvent(
     CacheBrowserDlg* eventSource, 

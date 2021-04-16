@@ -60,6 +60,24 @@ enum class ItemSections {
     PortraitWallpaper,
     OthersWallpaper
 };
+// different task type for ReloadWallpaperEvent
+enum class ReloadWallpaperTasks {
+    // base type
+    Unknown = 0,
+    // adding wallpaper from computer
+    AddFromComputer,
+    // removing cached wallpaper, but did not delete any file cause its duplicated
+    RemoveFromCache_NoFileDeletion
+};
+// different task type of ListViewFeedbacks
+enum class ListViewFeedbackTasks {
+    // base type
+    Unknown = 0,
+    // trigger onAddFromComputerPressed() 
+    onAddFromComputerPressed,
+    // trigger onEditCachePressed()
+    onEditCachePressed
+};
 
 
 // Dialog for Browsing Cached Wallpapers under ${PROGRAM_ROOT}/Wallpapers/
@@ -192,11 +210,11 @@ class ReloadWallpapersEvent : public QEvent
 {
 public:
     ReloadWallpapersEvent(
-        QString taskName = "none", 
+        ReloadWallpaperTasks task_type = ReloadWallpaperTasks::Unknown, 
         void* return_data = nullptr
     );
     ~ReloadWallpapersEvent();
-    QString m_TaskName;
+    ReloadWallpaperTasks m_TaskType;
     void *p_Data;
 };
 // received feedback from ListView
@@ -205,12 +223,12 @@ class ListViewFeedbackEvent : public QEvent
 public:
     ListViewFeedbackEvent(
         ListView* event_parent,
-        QString taskName = "none", 
+        ListViewFeedbackTasks task_type = ListViewFeedbackTasks::Unknown, 
         void* return_data = nullptr
     );
     ~ListViewFeedbackEvent();
     ListView* p_EventParent;
-    QString m_TaskName;
+    ListViewFeedbackTasks m_TaskType;
     void *p_Data;
 };
 // sending
@@ -238,9 +256,13 @@ public:
 class RemoveCacheEvent : public QEvent
 {
 public:
-    RemoveCacheEvent(CacheBrowserDlg* eventSource, const QString& itemID);
+    RemoveCacheEvent(
+        CacheBrowserDlg* eventSource,
+        const QString& itemIDm,
+        const ItemSections curr_itemSection);
     QObject* p_EventSource;
     const QString m_ItemID;
+    const ItemSections m_CurrItemSection;
 };
 class EditCacheEvent : public QEvent
 {

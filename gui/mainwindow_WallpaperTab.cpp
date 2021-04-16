@@ -9,24 +9,24 @@
 // public:
 bool MainWindow::is_all_wallpaper_set()
 {
-    QString defaultWal, landscapeWal, portraitWal;
-    
     // set wallpaper path & loop condition
-    defaultWal = QString::fromWCharArray(m_Config.get(L"wallpaper", L"default_wallpaper_id").c_str());
-    landscapeWal = QString::fromWCharArray(m_Config.get(L"wallpaper", L"landscape_wallpaper_id").c_str());
-    portraitWal = QString::fromWCharArray(m_Config.get(L"wallpaper", L"portrait_wallpaper_id").c_str());
+    m_DefaultWallpaper = QString::fromWCharArray(m_Config.get(L"wallpaper", L"default_wallpaper_id").c_str());
+    m_LandscapeWallpaper = QString::fromWCharArray(m_Config.get(L"wallpaper", L"landscape_wallpaper_id").c_str());
+    m_PortraitWallpaper = QString::fromWCharArray(m_Config.get(L"wallpaper", L"portrait_wallpaper_id").c_str());
+    
     // set App dlg text edit
-    if (!defaultWal.isEmpty())
-        defaultTextEdit->setText(get_wallpaper_src(defaultWal));
-    if (!landscapeWal.isEmpty())
-        landscapeTextEdit->setText(get_wallpaper_src(landscapeWal));
-    if (!portraitWal.isEmpty())
-        portraitTextEdit->setText(get_wallpaper_src(portraitWal));
+    if (!m_DefaultWallpaper.isEmpty())
+        defaultTextEdit->setText(get_wallpaper_src(m_DefaultWallpaper));
+    if (!m_LandscapeWallpaper.isEmpty())
+        landscapeTextEdit->setText(get_wallpaper_src(m_DefaultWallpaper));
+    if (!m_PortraitWallpaper.isEmpty())
+        portraitTextEdit->setText(get_wallpaper_src(m_DefaultWallpaper));
+    
     // return
     return ( 
-        !defaultWal.isEmpty() &&
-        !landscapeWal.isEmpty() &&
-        !portraitWal.isEmpty()
+        !m_DefaultWallpaper.isEmpty() &&
+        !m_LandscapeWallpaper.isEmpty() &&
+        !m_PortraitWallpaper.isEmpty()
     );
 }
 
@@ -43,22 +43,25 @@ void MainWindow::onBrowseCacheBntPressed()
     
     if (result == QDialog::Rejected && !m_DeleteBuff.isEmpty()) {
         for (auto it : m_DeleteBuff) {
-            // delete cache file
-            QObject parent;
-            QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
-            QStringList arguments;
-            arguments
-                << "--del"
-                << it
-            ;
-            QProcess myProcess(&parent);
-            myProcess.start(program, arguments);
-            // wait for core to finish
-            while (!myProcess.waitForFinished())
-                Sleep(500);
-            myProcess.close();
-            
-            CleanCache(L"core_cache");
+            // skip already deleted cache file
+            if (!get_wallpaper_src(it).isEmpty()) {
+                // delete cache file
+                QObject parent;
+                QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
+                QStringList arguments;
+                arguments
+                    << "--del"
+                    << it
+                ;
+                QProcess myProcess(&parent);
+                myProcess.start(program, arguments);
+                // wait for core to finish
+                while (!myProcess.waitForFinished())
+                    Sleep(500);
+                myProcess.close();
+                
+                CleanCache(L"core_cache");
+            }
         }
         m_DeleteBuff.clear();
     } 
@@ -94,7 +97,7 @@ void MainWindow::addFileFromComputerEvent(AddFileFromComputerEvent* event)
     QApplication::instance()->postEvent(
         event->p_EventSource,
         new ReloadWallpapersEvent(
-            "AddFromComputer",
+            ReloadWallpaperTasks::AddFromComputer,
             reinterpret_cast<void*>(new QString(new_wallpaper_id)))
     );
     qApp->processEvents();
@@ -166,29 +169,35 @@ void MainWindow::addFileFromCacheEvent(AddFileFromCacheEvent* event)
 }
 void MainWindow::removeCacheEvent(RemoveCacheEvent* event)
 {
-    // validate id
-    if (event->m_ItemID.isEmpty())
+    // validate id or unknown ItemSection
+    if (event->m_ItemID.isEmpty() || 
+        event->m_CurrItemSection == ItemSections::Unknown)
         return;
     
-    // remove cache id in config.ini if needed
-    std::wstring loc_opt_name = L"";
-    if (event->m_ItemID == 
-        QString::fromWCharArray(
-            m_Config.get(L"wallpaper", L"default_wallpaper_id").c_str()
-        ))
-        loc_opt_name = L"default_wallpaper_id";
-    else if (event->m_ItemID == 
-		QString::fromWCharArray(
-			m_Config.get(L"wallpaper", L"landscape_wallpaper_id").c_str()
-		))
-        loc_opt_name = L"landscape_wallpaper_id";
-    else if (event->m_ItemID == 
-		QString::fromWCharArray(
-			m_Config.get(L"wallpaper", L"portrait_wallpaper_id").c_str()
-		))
-        loc_opt_name = L"portrait_wallpaper_id";
-    if (!loc_opt_name.empty())
-        m_Config.set(L"wallpaper", loc_opt_name, L"");
+    // cache id duplication in config.ini
+    int counter = 0;
+    std::wstring item_id = event->m_ItemID.toStdWString();
+    if (item_id == m_Config.get(L"wallpaper", L"default_wallpaper_id"))
+        counter++;
+    if (item_id == m_Config.get(L"wallpaper", L"landscape_wallpaper_id"))
+        counter++;
+    if (item_id == m_Config.get(L"wallpaper", L"portrait_wallpaper_id"))
+        counter++;
+    
+    // remove cache id in config.ini
+    // Unknown and OthersWallpaper would not be process
+    switch (event->m_CurrItemSection)
+    {
+    case ItemSections::DefaultWallpaper:
+        m_Config.set(L"wallpaper", L"default_wallpaper_id", L"");
+        break;
+    case ItemSections::LandscapeWallpaper:
+        m_Config.set(L"wallpaper", L"landscape_wallpaper_id", L"");
+        break;
+    case ItemSections::PortraitWallpaper:
+        m_Config.set(L"wallpaper", L"portrait_wallpaper_id", L"");
+        break;
+    }
     
     // We cannot delete cache file while CacheBrowserDlg
     // is using them. So we need to store WallpaperIDs that
@@ -196,13 +205,26 @@ void MainWindow::removeCacheEvent(RemoveCacheEvent* event)
     // has finish exec(). See MainWindow::onBrowseCacheBntPressed()
     // for reference
     // 
-    // update delete buffer
-    m_DeleteBuff.push_back(event->m_ItemID);
+    // update delete buffer only after
+    // there are no duplication in 3 recorded
+    // wallpaper_id in config
+    ReloadWallpapersEvent *output_event = nullptr;
+    if (counter == 1) { // no duplication, remove cached wallpaper file
+        m_DeleteBuff.push_back(event->m_ItemID);
+        output_event = new ReloadWallpapersEvent();
+    }
+    else if (counter > 1) { // manually reset ctrls if no it will be remove 
+        WallpaperTab_resetCtrls();
+        output_event = new ReloadWallpapersEvent(
+            ReloadWallpaperTasks::RemoveFromCache_NoFileDeletion,
+            reinterpret_cast<void*>(new QString(event->m_ItemID))
+        );
+    }
     
     // notify CacheBrowser to update
     QApplication::instance()->postEvent(
         event->p_EventSource,
-        new ReloadWallpapersEvent()
+        output_event
     );
     qApp->processEvents();
 }
