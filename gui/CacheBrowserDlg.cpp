@@ -250,6 +250,8 @@ void CacheBrowserDlg::onRemoveCachePressed()
 {
     // record item id
     QString curr_item_id = getCurrSelectedItemID();
+    if (curr_item_id.isEmpty())
+        return;
     ListView *curr_listview = getCurrSelectedListView();
     m_RemovedWallpapers.push_back(curr_item_id);
     
@@ -272,6 +274,8 @@ void CacheBrowserDlg::onRemoveCachePressed()
 void CacheBrowserDlg::onEditCachePressed()
 {
     QString curr_item_id = getCurrSelectedItemID();
+    if (curr_item_id.isEmpty())
+        return;
     QApplication::instance()->postEvent(
         p_ParentObject,
         new EditCacheEvent(this, curr_item_id)
@@ -281,6 +285,8 @@ void CacheBrowserDlg::onEditCachePressed()
 void CacheBrowserDlg::onCacheInfoPressed()
 {
     QString curr_item_id = getCurrSelectedItemID();
+    if (curr_item_id.isEmpty())
+        return;
     QApplication::instance()->postEvent(
         p_ParentObject,
         new CacheInfoEvent(this, curr_item_id)
