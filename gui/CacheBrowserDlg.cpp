@@ -294,6 +294,25 @@ void CacheBrowserDlg::onCacheInfoPressed()
 
 // protected: // event handling functions
 
+// re-implement events
+void CacheBrowserDlg::keyPressEvent(QKeyEvent* event)
+{
+    if (getCurrSelectedItem() != nullptr) {
+        // Ctrl + D shortcut or Del key, representing onRemoveCachePressed()
+        bool Ctrl_Mod = event->modifiers() == Qt::ControlModifier;
+        bool Alt_Mod = event->modifiers() == Qt::AltModifier;
+        if (event->matches(QKeySequence::Delete) || // Del key
+            (Ctrl_Mod && event->key() == Qt::Key_D)) // Ctrl + D
+            onRemoveCachePressed();
+        else if (Alt_Mod && event->key() == Qt::Key_1) // Alt + Key_1, onMenuSelectDefault()
+            onMenuSelectDefault();
+        else if (Alt_Mod && event->key() == Qt::Key_2) // Alt + Key_2, onMenuSelectLandscape()
+            onMenuSelectLandscape();
+        else if (Alt_Mod && event->key() == Qt::Key_3) // Alt + Key_3, onMenuSelectPortrait()
+            onMenuSelectPortrait();
+    }
+}
+
 // custom event handler
 void CacheBrowserDlg::customEvent(QEvent* event)
 {
@@ -472,10 +491,7 @@ QStandardItem* CacheBrowserDlg::getCurrSelectedItem()
         loc_item = loc_model->itemFromIndex(loc_ind);
     }
     // output
-    if (loc_item != nullptr)
-        return loc_item;
-    else
-        return nullptr;
+    return loc_item;
 }
 ListView* CacheBrowserDlg::getCurrSelectedListView()
 {
@@ -533,7 +549,10 @@ void CacheBrowserDlg::setup_Menu4AddFromCache()
 ListView::ListView(QWidget* parent)
     : QListView(parent), m_Friend1(nullptr), m_Friend2(nullptr), m_Friend3(nullptr),
     m_IsProgrammatically(false), m_HasItem(false)
-{}
+{
+    // allow widget to receive QKeyEvent
+    this->setFocusPolicy(Qt::StrongFocus);
+}
 
 // set friend ListView
 void ListView::setFriends(ListView* friend1, ListView* friend2, ListView* friend3)

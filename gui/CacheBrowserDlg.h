@@ -8,13 +8,13 @@
 #include <QDialog>
 #include <QDir>
 #include <QEvent>
-#include <QEvent>
 #include <QIcon>
 #include <QImageReader>
 #include <QListView>
 #include <QMenu>
 #include <QModelIndex>
 #include <QMouseEvent>
+#include <QKeyEvent>
 #include <QPixmap>
 #include <QResizeEvent>
 #include <QSize>
@@ -111,11 +111,16 @@ public slots:
     void onCacheInfoPressed();
     
 protected: // event handling functions
-    // custom event handler
-    void customEvent(QEvent* event);
+    // re-implement events
     
-    void reloadWallpapersEvent(ReloadWallpapersEvent* event);
-    void listViewFeedbackEvent(ListViewFeedbackEvent* event);
+    // handle keyboard shortcuts for CacheBrowserDlg
+    virtual void keyPressEvent(QKeyEvent* event);
+    
+    // custom event handler
+    virtual void customEvent(QEvent* event);
+    
+    virtual void reloadWallpapersEvent(ReloadWallpapersEvent* event);
+    virtual void listViewFeedbackEvent(ListViewFeedbackEvent* event);
     
 private: // helper functions
     void load_singleWallpaper(ListView *target_listView, const QString& WallpapersDir, const QString& wallpaperId);

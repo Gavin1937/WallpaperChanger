@@ -77,10 +77,10 @@ protected: // protected event handlers
     virtual void closeEvent(QCloseEvent* event);
     
     // custom event
-    void customEvent(QEvent* e);
+    virtual void customEvent(QEvent* e);
     
     // handle screen resize event
-    void screenModeChangeEvent(ScreenModeChangeEvent* e);
+    virtual void screenModeChangeEvent(ScreenModeChangeEvent* e);
     
 private: // helper functions
     
@@ -130,11 +130,11 @@ public slots: // Wallpaper Tab slots
     
 protected: // event handling functions
     // custom event handler
-    void addFileFromComputerEvent(AddFileFromComputerEvent* event);
-    void addFileFromCacheEvent(AddFileFromCacheEvent* event);
-    void removeCacheEvent(RemoveCacheEvent* event);
-    void editCacheEvent(EditCacheEvent* event);
-    void cacheInfoEvent(CacheInfoEvent* event);
+    virtual void addFileFromComputerEvent(AddFileFromComputerEvent* event);
+    virtual void addFileFromCacheEvent(AddFileFromCacheEvent* event);
+    virtual void removeCacheEvent(RemoveCacheEvent* event);
+    virtual void editCacheEvent(EditCacheEvent* event);
+    virtual void cacheInfoEvent(CacheInfoEvent* event);
     
 private: // helper functions
     void init_WallpaperTab();
