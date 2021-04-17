@@ -23,8 +23,6 @@ int WINAPI wWinMain(
 {
     // clear potentially left over ./core_cache file
     CleanCache(L"core_cache");
-    // clear potentially left over ./cropped_img.BMP
-    CleanCache(L"cropped_img.BMP");
     
     // init argc & argv
     int argc = 0;
@@ -113,18 +111,8 @@ int WINAPI wWinMain(
         }
 	}
 	catch (std::exception& err) {
-        // clear potentially left over ./core_cache file
-        CleanCache(L"core_cache");
-        // clear potentially left over ./cropped_img.BMP
-        CleanCache(L"cropped_img.BMP");
-        
 		return -1;
 	}
-    
-    // clear potentially left over ./core_cache file
-    CleanCache(L"core_cache");
-    // clear potentially left over ./cropped_img.BMP
-    CleanCache(L"cropped_img.BMP");
     
     return 0;
 }

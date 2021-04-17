@@ -18,9 +18,9 @@ bool MainWindow::is_all_wallpaper_set()
     if (!m_DefaultWallpaper.isEmpty())
         defaultTextEdit->setText(get_wallpaper_src(m_DefaultWallpaper));
     if (!m_LandscapeWallpaper.isEmpty())
-        landscapeTextEdit->setText(get_wallpaper_src(m_DefaultWallpaper));
+        landscapeTextEdit->setText(get_wallpaper_src(m_LandscapeWallpaper));
     if (!m_PortraitWallpaper.isEmpty())
-        portraitTextEdit->setText(get_wallpaper_src(m_DefaultWallpaper));
+        portraitTextEdit->setText(get_wallpaper_src(m_PortraitWallpaper));
     
     // return
     return ( 
