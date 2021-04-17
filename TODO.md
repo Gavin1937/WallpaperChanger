@@ -30,7 +30,10 @@
  * - [ ] optimize program
 
    * - [ ] Improve UI Layout
-   * - [ ] Improve UI hotkeys & shortcuts
+   * - [X] Improve UI hotkeys & shortcuts
+    
+   * - [ ] Add crash relaunch
+   * - [ ] Add auto launch at startup
     
    * - [ ] smart ListView reloading in CacheBrowserDlg, only reload ListViews that need to reload
    * - [ ] use pipe for communication between gui & core?
