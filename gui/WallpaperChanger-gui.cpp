@@ -25,6 +25,8 @@ int APIENTRY WinMain(
 {
     // clear potentially left over ./core_cache file
     CleanCache(L"core_cache");
+    // clear potentially left over ./cropped_img.BMP
+    CleanCache(L"cropped_img.BMP");
     
     // init .qrc resources file
     Q_INIT_RESOURCE(resources);

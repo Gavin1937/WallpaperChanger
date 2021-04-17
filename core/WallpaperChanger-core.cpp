@@ -21,6 +21,12 @@ int WINAPI wWinMain(
     PWSTR pCmdLine,
     int nCmdShow)
 {
+    // clear potentially left over ./core_cache file
+    CleanCache(L"core_cache");
+    // clear potentially left over ./cropped_img.BMP
+    CleanCache(L"cropped_img.BMP");
+    
+    // init argc & argv
     int argc = 0;
     wchar_t** argv = (wchar_t**)CommandLineToArgvW(GetCommandLineW(), &argc);
     try {
