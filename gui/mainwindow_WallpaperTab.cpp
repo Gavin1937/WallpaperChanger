@@ -186,6 +186,7 @@ void MainWindow::removeCacheEvent(RemoveCacheEvent* event)
     
     // remove cache id in config.ini
     // Unknown and OthersWallpaper would not be process
+    bool is_OthersWallpaper = false;
     switch (event->m_CurrItemSection)
     {
     case ItemSections::DefaultWallpaper:
@@ -196,6 +197,9 @@ void MainWindow::removeCacheEvent(RemoveCacheEvent* event)
         break;
     case ItemSections::PortraitWallpaper:
         m_Config.set(L"wallpaper", L"portrait_wallpaper_id", L"");
+        break;
+    case ItemSections::OthersWallpaper:
+        is_OthersWallpaper = true;
         break;
     }
     
@@ -209,7 +213,8 @@ void MainWindow::removeCacheEvent(RemoveCacheEvent* event)
     // there are no duplication in 3 recorded
     // wallpaper_id in config
     ReloadWallpapersEvent *output_event = nullptr;
-    if (counter == 1) { // no duplication, remove cached wallpaper file
+    // no duplication or is OthersWallpaper, remove cached wallpaper file
+    if (counter == 1 || is_OthersWallpaper) {
         m_DeleteBuff.push_back(event->m_ItemID);
         output_event = new ReloadWallpapersEvent();
     }
