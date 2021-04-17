@@ -262,6 +262,7 @@ void MainWindow::editCacheEvent(EditCacheEvent* event)
         if (!WallpaperList_in.fail()) {
             std::vector<std::wstring> temp_container;
             std::wstring buff;
+            std::wstring buff2;
             // store all data from ./Wallpapers/WallpaperList to temp_container
             while (std::getline(WallpaperList_in, buff)) {
                 temp_container.push_back(buff);
@@ -269,11 +270,16 @@ void MainWindow::editCacheEvent(EditCacheEvent* event)
             }
             WallpaperList_in.close();
             // modify last line of temp_container
-            // make the 1st section (src_path) to be file_path
+            // make the 1st section (src_path) to be new modified file's id
             buff = *(temp_container.end()-1);
             size_t pos1 = buff.find(L'\"') + 1;
             size_t pos2 = buff.find(L'\"', pos1) - 1;
-            buff.replace(pos1, pos2, file_path.toStdWString());
+            // get file's new id as its new filename
+            size_t pos3 = pos2 + 4;
+            size_t pos4 = buff.find(L'\"', pos3);
+            buff2.assign(buff.begin()+pos3, buff.begin()+pos4);
+            buff2 = (exe_path + "Wallpapers\\").toStdWString() + buff2;
+            buff.replace(pos1, pos2, buff2);
             *(temp_container.end()-1) = buff;
             // write modified WallpaperList back to file
             GlobTools::utf8_wofstream WallpaperList_out(
@@ -639,7 +645,9 @@ QString MainWindow::add_image_as_wallpaper(const QString& file_path)
     myProcess.close();
     // clear core_cache & return
     Cache_ReaderW cache(L"core_cache");
-    return QString::fromWCharArray(cache.getData()->at(1).c_str());
+    if (cache.isCacheExist())
+        return QString::fromWCharArray(cache.getData()->at(1).c_str());
+    else return QString();
 }
 bool MainWindow::is_cached_file(const QString& file_path, QString& wallpaperID_output)
 {
