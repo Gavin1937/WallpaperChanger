@@ -49,10 +49,13 @@ int APIENTRY WinMain(
     // start ScreenMonitor
     ScreenMonitor sm(&w);
     
+    // execute QApplication
+    int qapp_result = a.exec();
+    
     // clear potentially left over ./core_cache file
     CleanCache(L"core_cache");
+    // clear potentially left over ./cropped_img.BMP
+    CleanCache(L"cropped_img.BMP");
     
-    
-    // execute QApplication
-    return a.exec();
+    return qapp_result;
 }
