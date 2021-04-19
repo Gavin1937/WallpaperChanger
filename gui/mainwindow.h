@@ -21,38 +21,53 @@
 #include "./ui/ui_mainwindow.h"
 
 // C++ STL
+#include <algorithm>
+#include <ctime>
+#include <fstream>
 #include <stdexcept>
 #include <string>
-#include <algorithm>
 
 // Windows API
-#include <windows.h>
-#include <shtypes.h>
 #include <Shlobj.h>
+#include <shtypes.h>
+#include <windows.h>
 
 // others
-#include "timer.h"
 #include "CacheBrowserDlg.h"
 #include "ImageEditorDlg.h"
+#include "timer.h"
 
 // utilities
+#include "../utilities/AppLaunchHandler.h"
 #include "../utilities/CacheRW.h"
 #include "../utilities/ConfigManager.h"
 #include "../utilities/GlobTools.h"
 
-// structs & enums
+// class declaration
+class MainWindow;
+
+// structs, enums, & global variable
 enum class ProgramCloseMode {
     UNKNOWN = 0, EXIT, HIDE
 };
 enum class DropDownState {
     Seconds = 0, Minutes, Hours, Days, Weeks
 };
+namespace {
+    static bool pub_WhetherRestartAfterCrash = false;
+};
+
+// public Recovery Function
+DWORD WINAPI RecoveryFunc(PVOID param);
 
 
 class MainWindow : public QMainWindow, public Ui_MainWindow
 {
     Q_OBJECT
 
+// * friend Functions
+public:
+    friend DWORD WINAPI RecoveryFunc(PVOID param);
 
 // * mainwindow primary members
 public:
@@ -177,7 +192,9 @@ private:
 public slots: // Setting Tab slots
     void onTab1_TextEditChanged();
     void onTab1_DropDownChanged();
-    void onTab1_ChkBoxStatusChanged();
+    void onTab1_ChkBoxStatusChanged_HideWhenClosed();
+    void onTab1_ChkBoxStatusChanged_LaunchAtStartup();
+    void onTab1_ChkBoxStatusChanged_RestartAfterCrash();
     
 private: // helper functions
     void init_SettingTab();

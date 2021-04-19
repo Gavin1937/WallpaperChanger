@@ -55,10 +55,38 @@ void MainWindow::onTab1_DropDownChanged()
         break;
     }
 }
-void MainWindow::onTab1_ChkBoxStatusChanged()
+void MainWindow::onTab1_ChkBoxStatusChanged_HideWhenClosed()
 {
     m_ControlChanged = true;
 }
+void MainWindow::onTab1_ChkBoxStatusChanged_LaunchAtStartup()
+{
+    // LaunchAtStartup is Enable
+    if (tab1ChkBox_LaunchAtStartup->isChecked()) {
+        m_Config.set(L"system", L"launch_at_startup", L"true");
+        setupAppStartupW(true, L"WallpaperChanger", m_Config.get(L"program", L"gui_program"));
+    }
+    // LaunchAtStartup is Disable
+    else {
+        m_Config.set(L"system", L"launch_at_startup", L"false");
+        setupAppStartupW(false, L"WallpaperChanger", m_Config.get(L"program", L"gui_program"));
+    }
+}
+void MainWindow::onTab1_ChkBoxStatusChanged_RestartAfterCrash()
+{
+    // RestartAfterCrash Enable
+    if (tab1ChkBox_RestartAfterCrash->isChecked()) {
+        ::pub_WhetherRestartAfterCrash = true;
+        m_Config.set(L"system", L"restart_after_crash", L"true");
+        setupAppRestartRecover(RecoveryFunc, nullptr);
+    }
+    // RestartAfterCrash Disable
+    else {
+        ::pub_WhetherRestartAfterCrash = false;
+        m_Config.set(L"system", L"restart_after_crash", L"false");
+    }
+}
+
 
 
 // private:
@@ -71,17 +99,34 @@ void MainWindow::SettingTab_resetCtrls()
 {
     // setup "Setting" tab
     mainwindowTab->setTabText(1, "Setting");
+    
     // initialize m_ProgramCloseMode base on config file
-    // And set tab1ChkBox
+    // And set tab1ChkBox_HideWhenClosed
     if (m_Config.getBool(L"program", L"hide_when_closed") == true) {
-        tab1ChkBox->setCheckState(Qt::Checked);
+        tab1ChkBox_HideWhenClosed->setCheckState(Qt::Checked);
         m_ProgramCloseMode = ProgramCloseMode::HIDE;
     } else {
-        tab1ChkBox->setCheckState(Qt::Unchecked);
+        tab1ChkBox_HideWhenClosed->setCheckState(Qt::Unchecked);
         m_ProgramCloseMode = ProgramCloseMode::EXIT;
     }
+    
+    // initialize RestartAfterCrash base on config file
+    if (m_Config.getBool(L"system", L"restart_after_crash") == true)
+        tab1ChkBox_RestartAfterCrash->setCheckState(Qt::Checked);
+    else
+        tab1ChkBox_RestartAfterCrash->setCheckState(Qt::Unchecked);
+    onTab1_ChkBoxStatusChanged_RestartAfterCrash();
+    
+    // initialize LaunchAtStartup base on config file
+    if (m_Config.getBool(L"system", L"launch_at_startup") == true)
+        tab1ChkBox_LaunchAtStartup->setCheckState(Qt::Checked);
+    else
+        tab1ChkBox_LaunchAtStartup->setCheckState(Qt::Unchecked);
+    onTab1_ChkBoxStatusChanged_LaunchAtStartup();
+    
     // initialize m_WallpaperUpdateInterval base on config file
     m_WallpaperUpdateInterval = m_Config.getInt(L"program", L"wallpaper_update_time");
+    
     // And set WUI_Edit & WUI_DropDown
     WUI_Edit->setText(QString::number(m_WallpaperUpdateInterval));
     WUI_DropDown->setCurrentIndex(0);
@@ -91,8 +136,10 @@ void MainWindow::SettingTab_makeConnections()
     // connect controls to functions
     connect(WUI_Edit, &QLineEdit::textEdited, this, &MainWindow::onTab1_TextEditChanged);
     connect(WUI_DropDown, &QComboBox::currentIndexChanged, this, &MainWindow::onTab1_DropDownChanged);
-    // connect(tab1ChkBox, &QCheckBox::toggled, this, &MainWindow::onTab1_ChkBoxStatusChanged);
-    connect(tab1ChkBox, &QCheckBox::stateChanged, this, &MainWindow::onTab1_ChkBoxStatusChanged);
+    connect(tab1ChkBox_HideWhenClosed, &QCheckBox::stateChanged, this, &MainWindow::onTab1_ChkBoxStatusChanged_HideWhenClosed);
+    connect(tab1ChkBox_LaunchAtStartup, &QCheckBox::stateChanged, this, &MainWindow::onTab1_ChkBoxStatusChanged_LaunchAtStartup);
+    connect(tab1ChkBox_RestartAfterCrash, &QCheckBox::stateChanged, this, &MainWindow::onTab1_ChkBoxStatusChanged_RestartAfterCrash);
+    connect(tab1Bnt_LaunchCacheBrowser, &QPushButton::clicked, this, &MainWindow::onBrowseCacheBntPressed);
     // universal buttons (OK, Cancel, Apply)
     connect(tab1OK, &QPushButton::clicked, this, &MainWindow::onOKPressed);
     connect(tab1Cancel, &QPushButton::clicked, this, &MainWindow::onCancelPressed);
@@ -102,7 +149,7 @@ void MainWindow::save_SettingTab()
 {
     if (m_ControlChanged) {
         // save ProgramCloseMode
-        if (tab1ChkBox->isChecked()) {
+        if (tab1ChkBox_HideWhenClosed->isChecked()) {
             m_ProgramCloseMode = ProgramCloseMode::HIDE;
             m_Config.set(L"program", L"hide_when_closed", L"true");
         } else {

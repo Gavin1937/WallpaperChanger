@@ -53,6 +53,8 @@ set(UTIL
     ../utilities/ConfigManager.cpp
     ../utilities/GlobTools.h
     ../utilities/GlobTools.cpp
+    ../utilities/AppLaunchHandler.h
+    ../utilities/AppLaunchHandler.cpp
 )
 set(UI
     ./ui/mainwindow.ui

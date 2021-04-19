@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="WallpaperTab">
      <attribute name="title">
@@ -334,7 +334,7 @@
        <string>Wallpaper Update Interval</string>
       </property>
      </widget>
-     <widget class="QCheckBox" name="tab1ChkBox">
+     <widget class="QCheckBox" name="tab1ChkBox_HideWhenClosed">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -407,6 +407,64 @@
       </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="tab1ChkBox_LaunchAtStartup">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>160</y>
+        <width>191</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Program will modify your Registry in order to launch at Windows startup.</string>
+      </property>
+      <property name="text">
+       <string>Launch Program At Startup</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="tab1ChkBox_RestartAfterCrash">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>200</y>
+        <width>191</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Disabling will be apply on next time when program launches.</string>
+      </property>
+      <property name="text">
+       <string>Restart Program After Crash</string>
+      </property>
+     </widget>
+     <widget class="Line" name="line_4">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>230</y>
+        <width>371</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="tab1Bnt_LaunchCacheBrowser">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>250</y>
+        <width>151</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Launch CacheBrowser</string>
       </property>
      </widget>
     </widget>

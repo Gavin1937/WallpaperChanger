@@ -3,6 +3,53 @@
 #include "mainwindow.h"
 
 
+// ====================== Public Function ======================
+
+// public Recovery Function
+DWORD WINAPI RecoveryFunc(PVOID param)
+{
+    HRESULT hres = S_OK;
+    BOOL userCanceled = FALSE;
+    std::ofstream out;
+    time_t rawtime = 0;
+    std::string msg;
+    
+    // Notify Windows for RecoveryFunc
+    hres = ApplicationRecoveryInProgress(&userCanceled);
+    if (FAILED(hres) || userCanceled)
+        goto cleanup;
+    
+    // log current time
+    rawtime = time(0);
+    msg = asctime(localtime(&rawtime));
+    msg = "Crash At: " + msg;
+    out.open("CRASHLOG.log", std::ios::app);
+    if (out.fail())
+        goto cleanup;
+    out << msg;
+    
+    // Register for Application Restart if needed
+    if (pub_WhetherRestartAfterCrash) {
+        hres = RegisterApplicationRestart(0, RESTART_NO_PATCH | RESTART_NO_REBOOT);
+        if (FAILED(hres))
+            goto cleanup;
+    }
+    
+    // cleanup
+    goto cleanup;
+cleanup:
+    out.close();
+    ApplicationRecoveryFinished((userCanceled) ? FALSE: TRUE);
+    return 0;
+}
+
+
+// ====================== Public Function End ======================
+
+
+
+
+
 // ====================== MainWindow ======================
 
 // public
@@ -75,6 +122,8 @@ void MainWindow::write_default_config()
 {
     // system
     m_Config.add(L"system", L"windows_theme_dir", get_windows_sys_theme_dir());
+    m_Config.add(L"system", L"launch_at_startup", L"false");
+    m_Config.add(L"system", L"restart_after_crash", L"false");
     auto res = get_physical_screen_res();
     m_Config.add(L"system", L"horz_res", std::to_wstring(res.first));
     m_Config.add(L"system", L"vert_res", std::to_wstring(res.second));
