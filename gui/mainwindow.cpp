@@ -220,10 +220,14 @@ void MainWindow::onOKPressed()
         m_ControlChanged = false;
     }
     // quit
-    if (is_all_wallpaper_set())
+    if (is_all_wallpaper_set() && !m_ControlChanged)
         this->hide();
     else {
-        MessageBoxW(0, L"Please fill in all Wallpapers", L"Warning", 0);
+        std::wstring msg(
+            L"There are uncompleted Wallpaper Information or unsaved changes.\n"
+            L"Please fill in all the Wallpaper Information and save changes with \"OK\" or \"Apply\"."
+        );
+        MessageBoxW(0, msg.c_str(), L"Warning", 0);
         return;
     }
 }
@@ -231,10 +235,14 @@ void MainWindow::onOKPressed()
 void MainWindow::onCancelPressed()
 {
     // quit
-    if (is_all_wallpaper_set())
+    if (is_all_wallpaper_set() && !m_ControlChanged)
         this->hide();
     else {
-        MessageBoxW(0, L"Please fill in all Wallpapers", L"Warning", 0);
+        std::wstring msg(
+            L"There are uncompleted Wallpaper Information or unsaved changes.\n"
+            L"Please fill in all the Wallpaper Information and save changes with \"OK\" or \"Apply\"."
+        );
+        MessageBoxW(0, msg.c_str(), L"Warning", 0);
         return;
     }
 }
@@ -255,9 +263,13 @@ void MainWindow::onApplyPressed()
 // on program close
 void MainWindow::closeEvent(QCloseEvent* event)
 {
-    m_ControlChanged = false;
-    if (!is_all_wallpaper_set()) { // handle unfinished wallpaper path info
-        MessageBoxW(0, L"Please fill in all Wallpapers", L"Warning", 0);
+    // handle unfinished wallpaper path info or unsaved changes
+    if (!is_all_wallpaper_set() || m_ControlChanged) {
+        std::wstring msg(
+            L"There are uncompleted Wallpaper Information or unsaved changes.\n"
+            L"Please fill in all the Wallpaper Information and save changes with \"OK\" or \"Apply\"."
+        );
+        MessageBoxW(0, msg.c_str(), L"Warning", 0);
         event->ignore();
         return;
     } else {

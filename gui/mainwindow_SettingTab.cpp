@@ -71,6 +71,7 @@ void MainWindow::onTab1_ChkBoxStatusChanged_LaunchAtStartup()
         m_Config.set(L"system", L"launch_at_startup", L"false");
         setupAppStartupW(false, L"WallpaperChanger", m_Config.get(L"program", L"gui_program"));
     }
+    m_ControlChanged = true;
 }
 void MainWindow::onTab1_ChkBoxStatusChanged_RestartAfterCrash()
 {
@@ -85,6 +86,7 @@ void MainWindow::onTab1_ChkBoxStatusChanged_RestartAfterCrash()
         ::pub_WhetherRestartAfterCrash = false;
         m_Config.set(L"system", L"restart_after_crash", L"false");
     }
+    m_ControlChanged = true;
 }
 
 
