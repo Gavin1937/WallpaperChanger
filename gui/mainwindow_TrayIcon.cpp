@@ -27,6 +27,10 @@ void MainWindow::init_SysTrayIcon(QIcon* icon)
     // Tray icon menu
     p_TrayIconMenu = createMenu();
     p_TrayIcon->setContextMenu(p_TrayIconMenu);
+    QString tool_tip_msg =
+        "WallpaperChanger\nv" + QString::number(PROGRAM_VERSION)
+    ;
+    p_TrayIcon->setToolTip(tool_tip_msg);
     // Displaying the tray icon
     p_TrayIcon->show();
     
