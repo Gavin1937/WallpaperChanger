@@ -99,6 +99,9 @@ void MainWindow::init_SettingTab()
 }
 void MainWindow::SettingTab_resetCtrls()
 {
+    // keep m_ControlChanged not be modify by setText()
+    bool stat_buff = m_ControlChanged;
+    
     // setup "Setting" tab
     mainwindowTab->setTabText(1, "Setting");
     
@@ -117,14 +120,37 @@ void MainWindow::SettingTab_resetCtrls()
         tab1ChkBox_RestartAfterCrash->setCheckState(Qt::Checked);
     else
         tab1ChkBox_RestartAfterCrash->setCheckState(Qt::Unchecked);
-    onTab1_ChkBoxStatusChanged_RestartAfterCrash();
+    {
+        // RestartAfterCrash Enable
+        if (tab1ChkBox_RestartAfterCrash->isChecked()) {
+            ::pub_WhetherRestartAfterCrash = true;
+            m_Config.set(L"system", L"restart_after_crash", L"true");
+            setupAppRestartRecover(RecoveryFunc, nullptr);
+        }
+        // RestartAfterCrash Disable
+        else {
+            ::pub_WhetherRestartAfterCrash = false;
+            m_Config.set(L"system", L"restart_after_crash", L"false");
+        }
+    }
     
     // initialize LaunchAtStartup base on config file
     if (m_Config.getBool(L"system", L"launch_at_startup") == true)
         tab1ChkBox_LaunchAtStartup->setCheckState(Qt::Checked);
     else
         tab1ChkBox_LaunchAtStartup->setCheckState(Qt::Unchecked);
-    onTab1_ChkBoxStatusChanged_LaunchAtStartup();
+    {
+        // LaunchAtStartup is Enable
+        if (tab1ChkBox_LaunchAtStartup->isChecked()) {
+            m_Config.set(L"system", L"launch_at_startup", L"true");
+            setupAppStartupW(true, L"WallpaperChanger", m_Config.get(L"program", L"gui_program"));
+        }
+        // LaunchAtStartup is Disable
+        else {
+            m_Config.set(L"system", L"launch_at_startup", L"false");
+            setupAppStartupW(false, L"WallpaperChanger", m_Config.get(L"program", L"gui_program"));
+        }
+    }
     
     // initialize m_WallpaperUpdateInterval base on config file
     m_WallpaperUpdateInterval = m_Config.getInt(L"program", L"wallpaper_update_time");
@@ -132,6 +158,8 @@ void MainWindow::SettingTab_resetCtrls()
     // And set WUI_Edit & WUI_DropDown
     WUI_Edit->setText(QString::number(m_WallpaperUpdateInterval));
     WUI_DropDown->setCurrentIndex(0);
+    
+    m_ControlChanged = stat_buff;
 }
 void MainWindow::SettingTab_makeConnections()
 {

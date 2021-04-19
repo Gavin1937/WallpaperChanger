@@ -346,6 +346,9 @@ void MainWindow::init_WallpaperTab()
 }
 void MainWindow::WallpaperTab_resetCtrls()
 {
+    // keep m_ControlChanged not be modify by setText()
+    bool stat_buff = m_ControlChanged;
+    
     // setup "Wallpaper" tab
     mainwindowTab->setTabText(0, "Wallpaper");
     // clear all TextEdit
@@ -354,6 +357,8 @@ void MainWindow::WallpaperTab_resetCtrls()
     portraitTextEdit->setText("");
     // set TextEdit text
     is_all_wallpaper_set();
+    
+    m_ControlChanged = stat_buff;
 }
 void MainWindow::WallpaperTab_makeConnections()
 {
