@@ -43,6 +43,7 @@
 #include "../utilities/ConfigManager.h"
 #include "../utilities/GlobTools.h"
 
+
 // class declaration
 class MainWindow;
 
@@ -65,9 +66,6 @@ class MainWindow : public QMainWindow, public Ui_MainWindow
 {
     Q_OBJECT
 
-// * friend Functions
-public:
-    friend DWORD WINAPI RecoveryFunc(PVOID param);
 
 // * mainwindow primary members
 public:

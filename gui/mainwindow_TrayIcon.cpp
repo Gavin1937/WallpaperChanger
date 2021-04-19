@@ -41,10 +41,10 @@ QMenu* MainWindow::createMenu()
     menu_add_action(main_menu, L"Update Wallpapers", &MainWindow::update_wallpapers);
     
     // Set Wallpapers
-    menu_add_action(main_menu, L"Set Wallpapers", &MainWindow::open_tab0);
+    menu_add_action(main_menu, L"Wallpaper Settings", &MainWindow::open_tab0);
     
     // Settings
-    menu_add_action(main_menu, L"Settings", &MainWindow::open_tab1);
+    menu_add_action(main_menu, L"Program Settings", &MainWindow::open_tab1);
     
     // Quit
     menu_add_action(main_menu, L"Quit", &QCoreApplication::quit);

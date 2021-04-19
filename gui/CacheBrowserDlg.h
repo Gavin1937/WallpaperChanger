@@ -4,7 +4,6 @@
 #include <QAction>
 #include <QApplication>
 #include <QContextMenuEvent>
-#include <QCloseEvent>
 #include <QDialog>
 #include <QDir>
 #include <QEvent>
