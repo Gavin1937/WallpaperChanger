@@ -46,6 +46,9 @@ QMenu* MainWindow::createMenu()
     // Settings
     menu_add_action(main_menu, L"Program Settings", &MainWindow::open_tab1);
     
+    // About
+    menu_add_action(main_menu, L"About Program", &MainWindow::AboutProgramDlg);
+    
     // Quit
     menu_add_action(main_menu, L"Quit", &QCoreApplication::quit);
     

@@ -208,6 +208,7 @@ void MainWindow::MyShow()
     this->show();
 }
 
+
 // public slots: handle bnt OK, Cancel, & Apply through whole program
 
 // save all setting & quit App dlg
@@ -255,6 +256,18 @@ void MainWindow::onApplyPressed()
         save_SettingTab();
         m_ControlChanged = false;
     }
+}
+// Launch About Program Dialog
+void MainWindow::AboutProgramDlg()
+{
+    QString msg = 
+        "Program Version: " + QString::number(PROGRAM_VERSION) + "<br>" +
+        QString("Program Author: Gavin1937<br>") +
+        QString("Github: ") + 
+        QString("<a href=\"https://github.com/Gavin1937/WallpaperChanger\">https://github.com/Gavin1937/WallpaperChanger</a><br>")
+    ;
+    QApplication::setQuitOnLastWindowClosed(false);
+    QMessageBox::about(this, "About WallpaperChanger", msg);
 }
 
 

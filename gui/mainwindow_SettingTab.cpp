@@ -170,6 +170,7 @@ void MainWindow::SettingTab_makeConnections()
     connect(tab1ChkBox_LaunchAtStartup, &QCheckBox::stateChanged, this, &MainWindow::onTab1_ChkBoxStatusChanged_LaunchAtStartup);
     connect(tab1ChkBox_RestartAfterCrash, &QCheckBox::stateChanged, this, &MainWindow::onTab1_ChkBoxStatusChanged_RestartAfterCrash);
     connect(tab1Bnt_LaunchCacheBrowser, &QPushButton::clicked, this, &MainWindow::onBrowseCacheBntPressed);
+    connect(Bnt_AboutProgram, &QPushButton::clicked, this, &MainWindow::AboutProgramDlg);
     // universal buttons (OK, Cancel, Apply)
     connect(tab1OK, &QPushButton::clicked, this, &MainWindow::onOKPressed);
     connect(tab1Cancel, &QPushButton::clicked, this, &MainWindow::onCancelPressed);

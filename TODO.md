@@ -27,13 +27,15 @@
     * - [X] simple image editing QDialog
       * - [X] image cropping & rotation add to mainwindow (w/ QImage, QTransformation)
 
- * - [ ] optimize program
-
-   * - [ ] Improve UI Layout
+ * - [X] optimize program UI & relaunch & launch at startup
+    
+   * - [X] Improve UI Layout
    * - [X] Improve UI hotkeys & shortcuts
     
-   * - [ ] Add crash relaunch
-   * - [ ] Add auto launch at startup
+   * - [X] Add crash relaunch
+   * - [X] Add auto launch at startup
+    
+ * - [ ] optimize program
     
    * - [ ] smart ListView reloading in CacheBrowserDlg, only reload ListViews that need to reload
    * - [ ] use pipe for communication between gui & core?

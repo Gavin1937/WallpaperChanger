@@ -6,8 +6,9 @@
 </summary>
 
 
-## Alpha Phase - Now
+## Verion: 0.1 - Finished at April 18, 2021
 
+* Allow Program to Change Windows Wallpaper
 * Add **WallpaperChanger-core** for basic Wallpaper Managing operations
   * add new wallpaper
   * delete old wallpaper
@@ -22,8 +23,15 @@
       * **Add from cache**
       * **Remove cache**
       * **Cache Info**
+      * **Keyboard Shortcuts**
     * Add **ImageEditor** for simple image editing in **CacheBrowserDlg**
+      * **Cut**
+      * **Rotate**
+      * **Keyboard Shortcuts**
   * Add **Settings Tab** for basic setting configuration
+  * Add **Launch Program At Startup**
+  * Add **Restart Program After Crash**
+  * Add **About Dialog**
 
 
 </details>
@@ -32,7 +40,7 @@
 
 <details>
 <summary style="font-size:25px">
-  <b>Other Changes</b>
+  <b>Older Changes</b>
 </summary>
 
 

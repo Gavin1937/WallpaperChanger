@@ -11,6 +11,7 @@
 #include <QIcon>
 #include <QMainWindow>
 #include <QMenu>
+#include <QMessageBox>
 #include <QProcess>
 #include <QSettings>
 #include <QString>
@@ -35,6 +36,7 @@
 // others
 #include "CacheBrowserDlg.h"
 #include "ImageEditorDlg.h"
+#include "ProgramVersion.h"
 #include "timer.h"
 
 // utilities
@@ -84,6 +86,8 @@ public slots: // handle universal buttons (OK, Cancel, Apply)
     void onOKPressed();
     void onCancelPressed();
     void onApplyPressed();
+    // Launch About Program Dialog
+    void AboutProgramDlg();
     
 protected: // protected event handlers
     // on program close

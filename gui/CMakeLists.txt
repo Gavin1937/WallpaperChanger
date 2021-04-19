@@ -40,6 +40,7 @@ set(HEADER
     ImageEditor.h
     ImageEditorDlg.h
     Qt_CustomEventID.h
+    ProgramVersion.h
     resources.h
 )
 set(RES

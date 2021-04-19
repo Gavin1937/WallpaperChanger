@@ -70,9 +70,9 @@ CachedImage_${V}_${H}_POS${M}
 ```
 * * All the files in this directory is auto generate generate from **./TranscodedWallpaper**
 * This program currently **Only designed for Fill Mode**
-* Program will automatically replace **./TranscodedWallpaper** with a **Default Wallpaper** that choosed by user
-* If Windows is in **Extended Mode**: Program will let Windows to generate wallpapers for all the displays from **Default Wallpaper** choosed by user
-* If Windows is in **Other Modes**: Program will replace files under **CachedImage/** with **Landscape Wallpaper** and **Portrait Wallpaper** that choosed by user
+* Program will automatically replace **./TranscodedWallpaper** with a **Default Wallpaper** that chose by user
+* If Windows is in **Extended Mode**: Program will let Windows to generate wallpapers for all the displays from **Default Wallpaper** chose by user
+* If Windows is in **Other Modes**: Program will replace files under **CachedImage/** with **Landscape Wallpaper** and **Portrait Wallpaper** that chose by user
   * Windows will use replaced wallpapers in CachedImage/ as your wallpapers without any problems
 
 
@@ -100,15 +100,29 @@ CachedImage_${V}_${H}_POS${M}
 * If you are **missing DLLs**, you can try to download them from: [https://www.dll-files.com/](https://www.dll-files.com/) 
 
 
-## Further Explanation On GUI
+## Tips About GUI
 
-* **Default Walpaper**: Wallpaper that choose by user and use to set as Windows system wallpaper
+* **Default Wallpaper**: Wallpaper that choose by user and use to set as Windows system wallpaper
 * **Landscape Wallpaper**: Wallpaper that choose by user and will display on landscape orientation in **Single Screen Modes**
 * **Portrait Wallpaper**: Wallpaper that choose by user and will display on portrait orientation in **Single Screen Modes**
 * **Wallpaper Update Interval**: How long to update (replace) **./TranscodedWallpaper** and files under **./CachedImage/**
   * This value will store as seconds in config.ini
   * Menu Option **Update Wallpaper** will do the same update immediately
 * **Hide Program When Closed**: Toggle what will "X" on the upper-right corner does
+* There is a **unsaved change protection** build into the program in order to prevent exceptions. Just be sure to fill in all 3 Wallpapers and save changes.
+* **Keyboard & Mouse Shortcuts**
+  * **CacheBrowser**
+    * **Mouse Left Button Double Click**
+      * If selected item is **Missing Wallpaper**, Select Wallpaper From computer
+      * If selected item is **Wallpaper**, Open selected Wallpaper in **ImageEditor**
+    * **Mouse Right Button Click** - Open operation menu on selected Wallpaper
+    * **Ctrl + D / Del** - Delete selected Wallpaper
+    * **Alt + 1** - Move selected Wallpaper to **Default Wallpaper Section**
+    * **Alt + 2** - Move selected Wallpaper to **Landscape Wallpaper Section**
+    * **Alt + 3** - Move selected Wallpaper to **Portrait Wallpaper Section**
+  * **ImageEditor**
+    * **Mouse Right Button Click** - Open operation menu
+    * **Arrow Keys** - Move Cropping Rectangle around the screen with speed of 1 pixel/frame, this feature is designed to help user on micro-adjusting.
 
 
 ## Resources Used
