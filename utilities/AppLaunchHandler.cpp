@@ -66,9 +66,9 @@ void setupAppStartupA(
         
         if (SUCCEEDED(hres)) {
             // set shortcut path, description, & pwd
-            hres = shlnk->SetPath((pwd+program_name).c_str());
+            hres = shlnk->SetPath(('\"'+pwd+program_name+'\"').c_str());
             hres = shlnk->SetDescription((program_name + " Shortcut").c_str());
-            hres = shlnk->SetWorkingDirectory(pwd.c_str());
+            hres = shlnk->SetWorkingDirectory(('\"'+pwd+'\"').c_str());
         }
         
         // initialize IPersistFile obj
@@ -150,9 +150,9 @@ void setupAppStartupW(
         
         if (SUCCEEDED(hres)) {
             // set shortcut path, description, & pwd
-            hres = shlnk->SetPath((pwd+program_name).c_str());
+            hres = shlnk->SetPath((L'\"'+pwd+program_name+L'\"').c_str());
             hres = shlnk->SetDescription((program_name + L" Shortcut").c_str());
-            hres = shlnk->SetWorkingDirectory(pwd.c_str());
+            hres = shlnk->SetWorkingDirectory((L'\"'+pwd+L'\"').c_str());
         }
         
         // initialize IPersistFile obj
