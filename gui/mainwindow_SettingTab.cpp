@@ -64,12 +64,20 @@ void MainWindow::onTab1_ChkBoxStatusChanged_LaunchAtStartup()
     // LaunchAtStartup is Enable
     if (tab1ChkBox_LaunchAtStartup->isChecked()) {
         m_Config.set(L"system", L"launch_at_startup", L"true");
-        setupAppStartupW(true, L"WallpaperChanger", m_Config.get(L"program", L"gui_program"));
+        setupAppStartupW(
+            true,
+            m_Config.get(L"program", L"gui_program"),
+            m_Config.get(L"system", L"windows_startup_dir")
+        );
     }
     // LaunchAtStartup is Disable
     else {
         m_Config.set(L"system", L"launch_at_startup", L"false");
-        setupAppStartupW(false, L"WallpaperChanger", m_Config.get(L"program", L"gui_program"));
+        setupAppStartupW(
+            false,
+            m_Config.get(L"program", L"gui_program"),
+            m_Config.get(L"system", L"windows_startup_dir")
+        );
     }
     m_ControlChanged = true;
 }
@@ -143,12 +151,24 @@ void MainWindow::SettingTab_resetCtrls()
         // LaunchAtStartup is Enable
         if (tab1ChkBox_LaunchAtStartup->isChecked()) {
             m_Config.set(L"system", L"launch_at_startup", L"true");
-            setupAppStartupW(true, L"WallpaperChanger", m_Config.get(L"program", L"gui_program"));
+            if (!GlobTools::is_filedir_existW(
+                (m_Config.get(L"system", L"windows_startup_dir")+L"WallpaperChanger.lnk").c_str()))
+            {
+                setupAppStartupW(
+                    true,
+                    m_Config.get(L"program", L"gui_program"),
+                    m_Config.get(L"system", L"windows_startup_dir")
+                );
+            }
         }
         // LaunchAtStartup is Disable
         else {
             m_Config.set(L"system", L"launch_at_startup", L"false");
-            setupAppStartupW(false, L"WallpaperChanger", m_Config.get(L"program", L"gui_program"));
+                setupAppStartupW(
+                    false,
+                    m_Config.get(L"program", L"gui_program"),
+                    m_Config.get(L"system", L"windows_startup_dir")
+                );
         }
     }
     

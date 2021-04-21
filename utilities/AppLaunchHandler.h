@@ -3,10 +3,17 @@
 #pragma once
 
 // Windows API
-#include <windows.h>
+#include <Windows.h>
+#include <shlobj.h>
+#include <winnls.h>
+#include <shobjidl.h>
+#include <objbase.h>
+#include <objidl.h>
+#include <shlguid.h>
 
 // C++ STL
 #include <string>
+#include <algorithm>
 #include <stdexcept>
 
 
@@ -17,13 +24,15 @@ DWORD WINAPI ApplicationRecoveryCallback(PVOID pvParameter);
 // Handling Application launch at windows startup
 void setupAppStartupA(
     const bool& whether_launch_at_startup,
-    const std::string& key_val_name,
-    const std::string& app_path);
+    const std::string& program_path, // full program path
+    const std::string& system_startup_dir // system startup folder
+);
 // Handling Application launch at windows startup
 void setupAppStartupW(
     const bool& whether_launch_at_startup,
-    const std::wstring& key_val_name,
-    const std::wstring& app_path);
+    const std::wstring& program_path, // full program path
+    const std::wstring& system_startup_dir // system startup folder
+);
 
 // Handling Application re-launch & Recovery after crash
 template <typename RECOVERY_FUNC>

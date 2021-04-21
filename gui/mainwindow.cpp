@@ -122,6 +122,7 @@ void MainWindow::write_default_config()
 {
     // system
     m_Config.add(L"system", L"windows_theme_dir", get_windows_sys_theme_dir());
+    m_Config.add(L"system", L"windows_startup_dir", get_windows_sys_startup_dir());
     m_Config.add(L"system", L"launch_at_startup", L"false");
     m_Config.add(L"system", L"restart_after_crash", L"false");
     auto res = get_physical_screen_res();
@@ -336,6 +337,17 @@ std::wstring MainWindow::get_windows_sys_theme_dir()
         temp = output.find(L'/');
     }
     output += L"\\AppData\\Roaming\\Microsoft\\Windows\\Themes\\";
+    return output;
+}
+std::wstring MainWindow::get_windows_sys_startup_dir()
+{
+    std::wstring output = QDir::homePath().toStdWString();
+    size_t temp = output.find(L'/');
+    while (temp != std::wstring::npos) {
+        output.replace(output.begin()+temp, output.begin()+temp+1, L"\\");
+        temp = output.find(L'/');
+    }
+    output += L"\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\";
     return output;
 }
 std::pair<int, int> MainWindow::get_physical_screen_res()

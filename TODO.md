@@ -68,3 +68,8 @@
     
     L. [gui] CacheBrowserDlg will crash when trying to remove a cached wallpaper
              while there is already many cached wallpaper in it.
+    
+    M. Program cannot launch at startup properly. Previously, we achieve launch at startup
+       through Registry, but it requires program be have admin privilege. Right now, we
+       achieve launch at startup through placing an app shortcut in Current User Startup Folder.
+       This method would not require admin privilege.

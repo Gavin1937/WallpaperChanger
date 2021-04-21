@@ -102,6 +102,7 @@ protected: // protected event handlers
 private: // helper functions
     
     std::wstring get_windows_sys_theme_dir();
+    std::wstring get_windows_sys_startup_dir();
     std::pair<int, int> get_physical_screen_res();
     void set_default_wallpaper();
     std::wstring get_default_wallpaper_src();

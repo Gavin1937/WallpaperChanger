@@ -419,7 +419,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Program will modify your Registry in order to launch at Windows startup.</string>
+       <string>Program will paste an application shortcut to Current User Startup Folder.</string>
       </property>
       <property name="text">
        <string>Launch Program At Startup</string>
