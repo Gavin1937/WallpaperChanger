@@ -116,7 +116,7 @@ CachedImage_${V}_${H}_POS${M}
       * If selected item is **Missing Wallpaper**, Select Wallpaper From computer
       * If selected item is **Wallpaper**, Open selected Wallpaper in **ImageEditor**
     * **Mouse Right Button Click** - Open operation menu on selected Wallpaper
-    * **Ctrl + D / Del** - Delete selected Wallpaper
+    * **Ctrl + D, Del** - Delete selected Wallpaper
     * **Alt + 1** - Move selected Wallpaper to **Default Wallpaper Section**
     * **Alt + 2** - Move selected Wallpaper to **Landscape Wallpaper Section**
     * **Alt + 3** - Move selected Wallpaper to **Portrait Wallpaper Section**
