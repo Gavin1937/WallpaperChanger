@@ -196,7 +196,7 @@ void MainWindow::update_wallpapers()
     myProcess2.close();
     
     // clean ./core_cache file
-    CleanCache(L"core_cache");
+    CleanCache(GlobTools::getCurrExePathW()+L"core_cache");
 }
 
 // ::show() w/ resetting controls

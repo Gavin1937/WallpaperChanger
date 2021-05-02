@@ -77,7 +77,7 @@ void WallpaperUpdater::update_wallpapers()
     myProcess2.start(program2, arguments2);
     
     // clean core_cache
-    CleanCache(L"core_cache");
+    CleanCache(GlobTools::getCurrExePathW()+L"core_cache");
 }
 
 

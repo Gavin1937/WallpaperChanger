@@ -15,6 +15,7 @@
 #include "mainwindow.h"
 #include "timer.h"
 #include "../utilities/CacheRW.h"
+#include "../utilities/GlobTools.h"
 
 
 int APIENTRY WinMain(
@@ -24,9 +25,9 @@ int APIENTRY WinMain(
     int       nShowCmd)
 {
     // clear potentially left over ./core_cache file
-    CleanCache(L"core_cache");
+    CleanCache(GlobTools::getCurrExePathW()+L"core_cache");
     // clear potentially left over ./cropped_img.BMP
-    CleanCache(L"cropped_img.BMP");
+    CleanCache(GlobTools::getCurrExePathW()+L"cropped_img.BMP");
     
     // init .qrc resources file
     Q_INIT_RESOURCE(resources);
@@ -53,9 +54,9 @@ int APIENTRY WinMain(
     int qapp_result = a.exec();
     
     // clear potentially left over ./core_cache file
-    CleanCache(L"core_cache");
+    CleanCache(GlobTools::getCurrExePathW()+L"core_cache");
     // clear potentially left over ./cropped_img.BMP
-    CleanCache(L"cropped_img.BMP");
+    CleanCache(GlobTools::getCurrExePathW()+L"cropped_img.BMP");
     
     return qapp_result;
 }

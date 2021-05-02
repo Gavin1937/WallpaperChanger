@@ -60,7 +60,7 @@ void MainWindow::onBrowseCacheBntPressed()
                     Sleep(500);
                 myProcess.close();
                 
-                CleanCache(L"core_cache");
+                CleanCache(GlobTools::getCurrExePathW()+L"core_cache");
             }
         }
         m_DeleteBuff.clear();
@@ -236,7 +236,7 @@ void MainWindow::removeCacheEvent(RemoveCacheEvent* event)
 void MainWindow::editCacheEvent(EditCacheEvent* event)
 {
     // clean possible output wallpaper before enter function
-    CleanCache(L"cropped_img.BMP");
+    CleanCache(GlobTools::getCurrExePathW()+L"cropped_img.BMP");
     
     // declare buffers
     QString exe_path = QString::fromWCharArray(GlobTools::getCurrExePathW().c_str());
@@ -253,7 +253,7 @@ void MainWindow::editCacheEvent(EditCacheEvent* event)
         // add output file to Others
         add_image_as_wallpaper(exe_path + "cropped_img.BMP");
         // rm output file
-        CleanCache(L"cropped_img.BMP");
+        CleanCache(GlobTools::getCurrExePathW()+L"cropped_img.BMP");
         // modify newly added img profile
         GlobTools::utf8_wifstream WallpaperList_in(
             (exe_path + "Wallpapers\\WallpaperList").toStdWString()
