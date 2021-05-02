@@ -5,11 +5,9 @@
 
 // C++ STL
 #include <string>
-#include <sstream>
 #include <vector>
 #include <codecvt>
 #include <locale>
-#include <filesystem>
 #include <fstream>
 #include <mutex>
 

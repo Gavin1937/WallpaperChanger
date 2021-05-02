@@ -1,8 +1,12 @@
 #include "GlobTools.h"
 
 // C++ STL
-#include <Windows.h>
 #include <algorithm>
+#include <filesystem>
+
+// Windows API
+#include <Windows.h>
+
 
 // Functions
 
@@ -54,12 +58,30 @@ std::wstring GlobTools::all2lowerW(const std::wstring& src)
 // get current .exe path, return string, end with '\\'
 std::string GlobTools::getCurrExePathA()
 {
-    return (std::filesystem::current_path().string()+"\\");
+    // get exe path
+    char dir[MAX_PATH];
+    DWORD res = GetModuleFileNameA(NULL, dir, MAX_PATH);
+    if (!res) // fail to get exe path
+        return std::string();
+    // got exe path, remove .exe filename, left with only root path of exe
+    std::string output(dir);
+    size_t deepest_dir_pos = output.find_last_of('\\');
+    output.assign(output.begin(), output.begin()+deepest_dir_pos+1);
+    return output;
 }
 // get current .exe path, return wstring, end with L'\\'
 std::wstring GlobTools::getCurrExePathW()
 {
-    return (std::filesystem::current_path().wstring()+L"\\");
+    // get exe path
+    wchar_t dir[MAX_PATH];
+    DWORD res = GetModuleFileNameW(NULL, dir, MAX_PATH);
+    if (!res) // fail to get exe path
+        return std::wstring();
+    // got exe path, remove .exe filename, left with only root path of exe
+    std::wstring output(dir);
+    size_t deepest_dir_pos = output.find_last_of(L'\\');
+    output.assign(output.begin(), output.begin()+deepest_dir_pos+1);
+    return output;
 }
 
 // get file list of input directory

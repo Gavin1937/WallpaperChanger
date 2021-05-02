@@ -420,7 +420,7 @@ std::wstring MainWindow::get_default_wallpaper_src()
         Sleep(500);
     myProcess.close();
     // read new added wallpaper from cache 
-    Cache_ReaderW cache(L"core_cache");
+    Cache_ReaderW cache(GlobTools::getCurrExePathW()+L"core_cache");
     if (cache.isCacheExist()) {
         std::wstring output(cache.getData()->at(0));
         output.assign(output.begin()+output.find(L':')+2, output.end());
@@ -449,7 +449,7 @@ void MainWindow::paste_default_wallpaper_to_themes()
     myProcess.close();
     
 	// read new added wallpaper from cache 
-	Cache_ReaderW cache(L"core_cache");
+	Cache_ReaderW cache(GlobTools::getCurrExePathW()+L"core_cache");
 	if (cache.isCacheExist() && cache.getData()->at(0) == L"1") {
 		if (cache.getData()->at(1) != default_wallpaper_id)
 			throw std::invalid_argument("Error occurs during replacing TranscodedWallpaper");

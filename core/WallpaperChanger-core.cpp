@@ -22,7 +22,7 @@ int WINAPI wWinMain(
     int nCmdShow)
 {
     // clear potentially left over ./core_cache file
-    CleanCache(L"core_cache");
+    CleanCache(GlobTools::getCurrExePathW()+L"core_cache");
     
     // init argc & argv
     int argc = 0;
@@ -50,7 +50,7 @@ int WINAPI wWinMain(
                     std::to_wstring(result), 
                     new_wallpaper.getNewFilename() 
                 };
-                Cache_Writer cache(output_buff, 2, L"core_cache");
+                Cache_Writer cache(output_buff, 2, GlobTools::getCurrExePathW()+L"core_cache");
             }
             if (arg.hasDel() && arg.isDelValid(wm.get_wallpaperInfo_data(), wm.get_wallpaperInfo_size())) {
                 WallpaperInfo wallpaper_to_del = wm.find_wallpaperInfo_via_new(arg.getFileName());
@@ -62,7 +62,7 @@ int WINAPI wWinMain(
                     std::to_wstring(result),
                     old_wallpaper_id
                 };
-                Cache_Writer cache(output_buff, 2, L"core_cache");
+                Cache_Writer cache(output_buff, 2, GlobTools::getCurrExePathW()+L"core_cache");
             }
             if (arg.hasFind() && arg.isFindValid()) {
                 // output
@@ -74,7 +74,7 @@ int WINAPI wWinMain(
                         (L"NewFilename (FileID): " + temp_obj.getNewFilename()),
                         (L"AddTime: " + std::to_wstring(temp_obj.getAddTime()))
                     };
-                    Cache_Writer cache(msg, 4, L"core_cache");
+                    Cache_Writer cache(msg, 4, GlobTools::getCurrExePathW()+L"core_cache");
                 }
             }
             if (arg.hasPaste() && arg.isPasteValid(wm.get_wallpaperInfo_data(), wm.get_wallpaperInfo_size())) {
@@ -106,7 +106,7 @@ int WINAPI wWinMain(
                     loc_file.getNewFilename(),
                     dest_file_dir + dest_file_name
                 };
-                Cache_Writer cache(msg, 3, L"core_cache");
+                Cache_Writer cache(msg, 3, GlobTools::getCurrExePathW()+L"core_cache");
             }
         }
 	}

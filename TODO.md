@@ -73,3 +73,7 @@
        through Registry, but it requires program be have admin privilege. Right now, we
        achieve launch at startup through placing an app shortcut in Current User Startup Folder.
        This method would not require admin privilege.
+    
+    N. Program will crash at startup. This is because GlobTools::getCurrExePathW() will return
+       C:\Windows\System32 at startup rather than the actual program dir. This bug is fixed with
+       GetModuleFileName() in WIN32 API.

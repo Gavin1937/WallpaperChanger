@@ -316,7 +316,7 @@ void MainWindow::cacheInfoEvent(CacheInfoEvent* event)
     myProcess.close();
     
     // read from core_cache
-    Cache_ReaderW cache(L"core_cache");
+    Cache_ReaderW cache(GlobTools::getCurrExePathW()+L"core_cache");
     
     if (cache.isCacheExist()) {
         // output file info to MsgBox
@@ -475,7 +475,7 @@ QString MainWindow::add_default_wallpaper()
     myProcess.close();
     
     // read new added wallpaper from cache 
-    Cache_ReaderW cache(L"core_cache");
+    Cache_ReaderW cache(GlobTools::getCurrExePathW()+L"core_cache");
     if (cache.isCacheExist() && cache.getData()->at(0) == L"1") {
         m_Config.set(L"wallpaper", L"default_wallpaper_id", cache.getData()->at(1));
     } else {
@@ -523,7 +523,7 @@ QString MainWindow::add_landscape_wallpaper()
     myProcess.close();
     
     // read new added wallpaper from cache 
-    Cache_ReaderW cache(L"core_cache");
+    Cache_ReaderW cache(GlobTools::getCurrExePathW()+L"core_cache");
     if (cache.isCacheExist() && cache.getData()->at(0) == L"1") {
         m_Config.set(L"wallpaper", L"landscape_wallpaper_id", cache.getData()->at(1));
     } else {
@@ -571,7 +571,7 @@ QString MainWindow::add_portrait_wallpaper()
     myProcess.close();
     
     // read new added wallpaper from cache 
-    Cache_ReaderW cache(L"core_cache");
+    Cache_ReaderW cache(GlobTools::getCurrExePathW()+L"core_cache");
     if (cache.isCacheExist() && cache.getData()->at(0) == L"1") {
         m_Config.set(L"wallpaper", L"portrait_wallpaper_id", cache.getData()->at(1));
     } else {
@@ -649,7 +649,7 @@ QString MainWindow::add_image_as_wallpaper(const QString& file_path)
         Sleep(500);
     myProcess.close();
     // clear core_cache & return
-    Cache_ReaderW cache(L"core_cache");
+    Cache_ReaderW cache(GlobTools::getCurrExePathW()+L"core_cache");
     if (cache.isCacheExist())
         return QString::fromWCharArray(cache.getData()->at(1).c_str());
     else return QString();
@@ -718,7 +718,7 @@ QString MainWindow::get_wallpaper_src(const QString& wallpaper_id)
         Sleep(500);
     myProcess.close();
     // read new added wallpaper from cache 
-    Cache_ReaderW cache(L"core_cache");
+    Cache_ReaderW cache(GlobTools::getCurrExePathW()+L"core_cache");
     if (cache.isCacheExist()) {
         std::wstring output(cache.getData()->at(0));
         output.assign(output.begin()+output.find(L':')+2, output.end());
