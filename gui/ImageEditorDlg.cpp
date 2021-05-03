@@ -95,21 +95,23 @@ void ImageEditorDlg::contextMenuEvent(QContextMenuEvent *e)
     // handling left mouse click event
     QAction *Action1 = new QAction("Rotate Left 90");
     QAction *Action2 = new QAction("Rotate Right 90");
-    QAction *Action3 = new QAction("Mirror Horizontal");
-    QAction *Action4 = new QAction("Mirror Vertical");
-    QAction *Action5 = new QAction("Undo");
-    QAction *Action6 = new QAction("Crop");
-    QAction *Action7 = new QAction("Reset Image");
-    QAction *Action8 = new QAction("Reset Cropping Rectangle");
+    QAction *Action3 = new QAction("Rotate Cropping Box");
+    QAction *Action4 = new QAction("Mirror Horizontal");
+    QAction *Action5 = new QAction("Mirror Vertical");
+    QAction *Action6 = new QAction("Undo");
+    QAction *Action7 = new QAction("Crop");
+    QAction *Action8 = new QAction("Reset Image");
+    QAction *Action9 = new QAction("Reset Cropping Rectangle");
     
     connect(Action1, &QAction::triggered, ie, &ImageEditor::rotateL90);
     connect(Action2, &QAction::triggered, ie, &ImageEditor::rotateR90);
-    connect(Action3, &QAction::triggered, ie, &ImageEditor::mirrorHori);
-    connect(Action4, &QAction::triggered, ie, &ImageEditor::mirrorVrti);
-    connect(Action5, &QAction::triggered, ie, &ImageEditor::undo);
-    connect(Action6, &QAction::triggered, ie, &ImageEditor::crop);
-    connect(Action7, &QAction::triggered, ie, &ImageEditor::reset);
-    connect(Action8, &QAction::triggered, ie, &ImageEditor::resetCroppingRect);
+    connect(Action3, &QAction::triggered, ie, &ImageEditor::rotateCroppingRect);
+    connect(Action4, &QAction::triggered, ie, &ImageEditor::mirrorHori);
+    connect(Action5, &QAction::triggered, ie, &ImageEditor::mirrorVrti);
+    connect(Action6, &QAction::triggered, ie, &ImageEditor::undo);
+    connect(Action7, &QAction::triggered, ie, &ImageEditor::crop);
+    connect(Action8, &QAction::triggered, ie, &ImageEditor::reset);
+    connect(Action9, &QAction::triggered, ie, &ImageEditor::resetCroppingRect);
     
     Menu->addAction(Action1);
     Menu->addAction(Action2);
@@ -119,6 +121,7 @@ void ImageEditorDlg::contextMenuEvent(QContextMenuEvent *e)
     Menu->addAction(Action6);
     Menu->addAction(Action7);
     Menu->addAction(Action8);
+    Menu->addAction(Action9);
     
     Menu->exec(QCursor::pos());
     Menu->clear();

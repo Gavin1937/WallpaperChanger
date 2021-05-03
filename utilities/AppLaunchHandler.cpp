@@ -15,7 +15,7 @@ DWORD WINAPI ApplicationRecoveryCallback(PVOID pvParameter)
 
 // Handling Application launch at windows startup
 void setupAppStartupA(
-    const bool& whether_launch_at_startup,
+    bool whether_launch_at_startup,
     const std::string& program_path, // full program path
     const std::string& system_startup_dir // system startup folder
 )
@@ -99,7 +99,7 @@ void setupAppStartupA(
 }
 // Handling Application launch at windows startup
 void setupAppStartupW(
-    const bool& whether_launch_at_startup,
+    bool whether_launch_at_startup,
     const std::wstring& program_path, // full program path
     const std::wstring& system_startup_dir // system startup folder
 )

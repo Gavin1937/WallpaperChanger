@@ -43,7 +43,7 @@ Option::Option(const STRING& whole_opt_line)
     : m_Key(STRING()), m_Val(STRING())
 {
     // clear spaces in begin & end, |--->X
-    int beg, end;
+    size_t beg, end;
     for (beg = 0; beg < whole_opt_line.size(); ++beg) {
         if (whole_opt_line[beg] != T(' '))
             break;
@@ -253,7 +253,7 @@ ConfigManager::ConfigManager(const STRING& config_path, const bool& auto_write_f
     else
         throw std::invalid_argument((
             "exception: file does not exist or is a directory. \n" + 
-            cvter.to_bytes(config_path)
+            getStr4Exception(config_path)
         ).c_str());
 }
 
@@ -277,7 +277,7 @@ void ConfigManager::read(const STRING& config_path)
         if (input.fail()) {
             throw std::invalid_argument((
                 "exception: fail to open config file: \n" +
-                cvter.to_bytes(config_path)
+                getStr4Exception(config_path)
             ).c_str());
         } else {
             m_ConfigPath = config_path;
@@ -293,7 +293,7 @@ void ConfigManager::read(const STRING& config_path)
                 } else {
                     throw std::invalid_argument((
                         "exception: bad line in config file, not a section or option. \n" +
-                        cvter.to_bytes(buff)
+                        getStr4Exception(buff)
                     ).c_str());
                 }
             }
@@ -329,9 +329,9 @@ int ConfigManager::getInt(const STRING& sec_name, const STRING& opt_name)
     } catch(...) {
         throw std::invalid_argument((
             "exception: cannot convert {" +
-            cvter.to_bytes(sec_name) + "},[" +
-            cvter.to_bytes(opt_name) + "],(" +
-            cvter.to_bytes(this->get(sec_name, opt_name)) +
+            getStr4Exception(sec_name) + "},[" +
+            getStr4Exception(opt_name) + "],(" +
+            getStr4Exception(this->get(sec_name, opt_name)) +
             ") to integer"
         ).c_str());
     }
@@ -345,9 +345,9 @@ double ConfigManager::getDouble(const STRING& sec_name, const STRING& opt_name)
     } catch(...) {
         throw std::invalid_argument((
             "exception: cannot convert {" +
-            cvter.to_bytes(sec_name) + "},[" +
-            cvter.to_bytes(opt_name) + "],(" +
-            cvter.to_bytes(this->get(sec_name, opt_name)) +
+            getStr4Exception(sec_name) + "},[" +
+            getStr4Exception(opt_name) + "],(" +
+            getStr4Exception(this->get(sec_name, opt_name)) +
             ") to double (floating number)"
         ).c_str());
     }
@@ -356,22 +356,35 @@ double ConfigManager::getDouble(const STRING& sec_name, const STRING& opt_name)
 bool ConfigManager::getBool(const STRING& sec_name, const STRING& opt_name)
 {
     STRING val = this->get(sec_name, opt_name);
-    // 0/1 to represent true/false
-    if (val.size() == 1 && (val[0] == 0 || val[0] == 1))
-        return static_cast<bool>(std::stoi(val));
     // string "true"/"false" represent true/false
-    else if (all2upper(val) == T("TRUE"))
+    if (all2upper(val) == T("TRUE"))
         return true;
     else if (all2upper(val) == T("FALSE"))
         return false;
+    // true/false is representing by number
     else {
-        throw std::invalid_argument((
-            "exception: cannot convert {" +
-            cvter.to_bytes(sec_name) + "},[" +
-            cvter.to_bytes(opt_name) + "],(" +
-            cvter.to_bytes(this->get(sec_name, opt_name)) +
-            ") to boolean"
-        ).c_str());
+        // declare buffers
+        int i_val = 0;
+        double d_val = 0.0;
+        try { // try to read current opt as integer
+            i_val = this->getInt(sec_name, opt_name);
+        } catch(...) { // fail
+            try { // try to read current opt as double
+                d_val = this->getDouble(sec_name, opt_name);
+            } catch (...) { // fail, throw exception
+                throw std::invalid_argument((
+                    "exception: cannot convert {" +
+                    getStr4Exception(sec_name) + "},[" +
+                    getStr4Exception(opt_name) + "],(" +
+                    getStr4Exception(this->get(sec_name, opt_name)) +
+                    ") to boolean"
+                ).c_str());
+            }
+            // able to read, convert buffer to bool
+            return static_cast<bool>(d_val);
+        }
+        // able to read, convert buffer to bool
+        return static_cast<bool>(i_val);
     }
     return false;
 }
@@ -388,7 +401,7 @@ std::unordered_map<STRING, Option> ConfigManager::getOptions(const STRING& sec_n
     } else {
         throw std::invalid_argument((
             "exception: input section name (" +
-            cvter.to_bytes(sec_name) +
+            getStr4Exception(sec_name) +
             ") does not exist"
         ).c_str());
     }
@@ -401,14 +414,14 @@ Option ConfigManager::getOptObj(const STRING& sec_name, const STRING& opt_name)
         } else {
             throw std::invalid_argument((
                 "exception: input option name (" +
-                cvter.to_bytes(opt_name) +
+                getStr4Exception(opt_name) +
                 ") does not exist"
             ).c_str());
         }
     } else {
         throw std::invalid_argument((
             "exception: input section name (" +
-            cvter.to_bytes(sec_name) +
+            getStr4Exception(sec_name) +
             ") does not exist"
         ).c_str());
     }
@@ -423,14 +436,14 @@ void ConfigManager::set(const STRING& sec_name, const STRING& opt_name, const ST
         else {
             throw std::invalid_argument((
                 "exception: input option name (" +
-                cvter.to_bytes(opt_name) +
+                getStr4Exception(opt_name) +
                 ") does not exist"
             ).c_str());
         }
     } else {
         throw std::invalid_argument((
             "exception: input section name (" +
-            cvter.to_bytes(sec_name) +
+            getStr4Exception(sec_name) +
             ") does not exist"
         ).c_str());
     }
@@ -443,7 +456,7 @@ void ConfigManager::setSection(const STRING& sec_name, const Section& new_sec)
     else {
         throw std::invalid_argument((
             "exception: input section name (" +
-            cvter.to_bytes(sec_name) +
+            getStr4Exception(sec_name) +
             ") does not exist"
         ).c_str());
     }
@@ -457,14 +470,14 @@ void ConfigManager::setOption(const STRING& sec_name, const STRING& opt_name, co
         else {
             throw std::invalid_argument((
                 "exception: input option name (" +
-                cvter.to_bytes(opt_name) +
+                getStr4Exception(opt_name) +
                 ") does not exist"
             ).c_str());
         }
     } else {
         throw std::invalid_argument((
             "exception: input section name (" +
-            cvter.to_bytes(sec_name) +
+            getStr4Exception(sec_name) +
             ") does not exist"
         ).c_str());
     }
@@ -479,7 +492,7 @@ void ConfigManager::addSection(const STRING& sec_name, const Section& new_sec)
     } else {
         throw std::invalid_argument((
             "exception: input section name (" +
-            cvter.to_bytes(sec_name) +
+            getStr4Exception(sec_name) +
             ") already exist"
         ).c_str());
     }
@@ -492,7 +505,7 @@ void ConfigManager::removeSection(const STRING& sec_name)
     } else {
         throw std::invalid_argument((
             "exception: input section name (" +
-            cvter.to_bytes(sec_name) +
+            getStr4Exception(sec_name) +
             ") does not exist"
         ).c_str());
     }
@@ -506,14 +519,14 @@ void ConfigManager::addOption(const STRING& sec_name, const Option& new_opt)
         } else {
             throw std::invalid_argument((
                 "exception: input option name (" +
-                cvter.to_bytes(new_opt.getKey()) +
+                getStr4Exception(new_opt.getKey()) +
                 ") already exist"
             ).c_str());
         }
     } else {
         throw std::invalid_argument((
             "exception: input section name (" +
-            cvter.to_bytes(sec_name) +
+            getStr4Exception(sec_name) +
             ") does not exist"
         ).c_str());
     }
@@ -527,14 +540,14 @@ void ConfigManager::removeOption(const STRING& sec_name, const STRING& opt_name)
         } else {
             throw std::invalid_argument((
                 "exception: input option name (" +
-                cvter.to_bytes(opt_name) +
+                getStr4Exception(opt_name) +
                 ") does not exist"
             ).c_str());
         }
     } else {
         throw std::invalid_argument((
             "exception: input section name (" +
-            cvter.to_bytes(sec_name) +
+            getStr4Exception(sec_name) +
             ") does not exist"
         ).c_str());
     }

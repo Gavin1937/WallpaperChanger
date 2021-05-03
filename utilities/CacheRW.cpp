@@ -39,7 +39,7 @@ Cache_Writer::Cache_Writer(const std::string& str, const std::string& output_fil
         this->write_to(output_filename);
     }
 }
-Cache_Writer::Cache_Writer(const std::string str_arr[], const int& arr_size, const std::string& output_filename)
+Cache_Writer::Cache_Writer(const std::string str_arr[], int arr_size, const std::string& output_filename)
 	: p_CacheBuffA(nullptr), p_CacheBuffW(nullptr), m_ArrSize(0)
 {
     if (str_arr != nullptr) {
@@ -66,7 +66,7 @@ Cache_Writer::Cache_Writer(const std::wstring& str, const std::wstring& output_f
         this->write_to(output_filename);
     }
 }
-Cache_Writer::Cache_Writer(const std::wstring str_arr[], const int& arr_size, const std::wstring& output_filename)
+Cache_Writer::Cache_Writer(const std::wstring str_arr[], int arr_size, const std::wstring& output_filename)
 	: p_CacheBuffA(nullptr), p_CacheBuffW(nullptr), m_ArrSize(0)
 {
     if (str_arr != nullptr) {
@@ -123,7 +123,7 @@ void Cache_Writer::write_to(const std::wstring& filename)
 // ====================== Cache_ReaderA ======================
 
 // constructor
-Cache_ReaderA::Cache_ReaderA(const std::string& cache_filename, const bool& enable_auto_delete)
+Cache_ReaderA::Cache_ReaderA(const std::string& cache_filename, bool enable_auto_delete)
     : p_CacheBuff(nullptr), m_CacheFileName(cache_filename), m_EnableAutoDelete(enable_auto_delete), m_FileExist(false)
 {
     if (std::filesystem::exists(m_CacheFileName)) {
@@ -174,7 +174,7 @@ bool Cache_ReaderA::isCacheExist()
 // ====================== Cache_ReaderW ======================
 
 // constructor
-Cache_ReaderW::Cache_ReaderW(const std::wstring& cache_filename, const bool& enable_auto_delete)
+Cache_ReaderW::Cache_ReaderW(const std::wstring& cache_filename, bool enable_auto_delete)
     : p_CacheBuff(nullptr), m_CacheFileName(cache_filename), m_EnableAutoDelete(enable_auto_delete), m_FileExist(false)
 {
     if (std::filesystem::exists(m_CacheFileName)) {

@@ -32,14 +32,33 @@ class Option;
 class Section;
 class ConfigManager;
 
-// function definitions
-STRING all2upper(const STRING& str);
-STRING all2lower(const STRING& str);
-
 // glob variables
 namespace {
     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> cvter;
 }
+
+// function definitions
+STRING all2upper(const STRING& str);
+STRING all2lower(const STRING& str);
+// convert input str to std::string for std::exceptions
+template <typename T>
+std::string getStr4Exception(const T& str)
+{
+    if constexpr(std::is_same_v<T, const std::string&>)
+        return str;
+    else if constexpr(std::is_convertible_v<T, const char *>)
+        return std::string(str);
+    else if constexpr(std::is_same_v<T, const std::wstring&>)
+        return cvter.to_bytes(str);
+    else if constexpr(std::is_convertible_v<T, const wchar_t *>)
+        return cvter.to_bytes(str);
+    
+    else { // handling exception
+        throw std::invalid_argument("Cannot use a non-string type as the parameter for getStr4Exception().\n");
+        return std::string();
+    }
+}
+
 
 // basic unit in config file
 class Option
