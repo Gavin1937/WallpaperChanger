@@ -6,7 +6,8 @@
 ArgumentHandler::ArgumentHandler(int argc, wchar_t** argv)
     : m_HasAdd(false), m_HasDel(false),
     m_HasFind(false), m_HasPaste(false),
-    m_HasHelp(false), m_WallpaperMode(WallpaperMode::UNKNOW)
+    m_HasClear(false), m_HasHelp(false), 
+    m_WallpaperMode(WallpaperMode::UNKNOW)
 {
     try {
         std::wstring buff;
@@ -35,6 +36,9 @@ ArgumentHandler::ArgumentHandler(int argc, wchar_t** argv)
                 else
                     m_WallpaperMode = WallpaperMode::UNKNOW;
                 m_HasPaste = true;
+            }
+            if (buff == L"--clear") {
+                m_HasClear = true;
             }
             if (buff == L"--help" || buff == L"-h") {
                 m_HasHelp = true;
@@ -107,6 +111,14 @@ bool ArgumentHandler::hasPaste()
 const bool ArgumentHandler::hasPaste() const
 {
     return m_HasPaste;
+}
+bool ArgumentHandler::hasClear()
+{
+    return m_HasClear;
+}
+const bool ArgumentHandler::hasClear() const
+{
+    return m_HasClear;
 }
 bool ArgumentHandler::hasHelp()
 {

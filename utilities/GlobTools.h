@@ -29,6 +29,15 @@ namespace GlobTools
     // check whether a file or directory exist
     bool is_filedir_existW(const std::wstring& dir);
     
+    // remove a single file
+    bool rm(const std::string& dir);
+    // remove a single file
+    bool rm(const std::wstring& dir);
+    
+    // remove all files & directories under given directory
+    bool rm_all(const std::string& dir);
+    bool rm_all(const std::wstring& dir);
+    
     // change all char in string to upper
     std::string all2upperA(const std::string& src);
     // change all wchar_t in wstring to upper

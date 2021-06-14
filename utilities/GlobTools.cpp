@@ -7,18 +7,42 @@
 // Windows API
 #include <Windows.h>
 
+// Set Namespace
+namespace fs = std::filesystem;
+
 
 // Functions
 
 // check whether a file or directory exist
 bool GlobTools::is_filedir_existA(const std::string& path)
 {
-    return std::filesystem::exists(path);
+    return fs::exists(path);
 }
 // check whether a file or directory exist
 bool GlobTools::is_filedir_existW(const std::wstring& path)
 {
-    return std::filesystem::exists(path);
+    return fs::exists(path);
+}
+
+// remove a single file
+bool GlobTools::rm(const std::string& dir)
+{
+    return fs::remove(fs::path(dir));
+}
+// remove a single file
+bool GlobTools::rm(const std::wstring& dir)
+{
+    return fs::remove(fs::path(dir));
+}
+
+// remove all files & directories under given directory
+bool GlobTools::rm_all(const std::string& dir)
+{
+    return fs::remove_all(fs::path(dir));
+}
+bool GlobTools::rm_all(const std::wstring& dir)
+{
+    return fs::remove_all(fs::path(dir));
 }
 
 // change all char in string to upper
@@ -88,7 +112,7 @@ std::wstring GlobTools::getCurrExePathW()
 bool GlobTools::getFilesUnderDirA(const std::string& dir, std::vector<std::string>& buff)
 {
     if (GlobTools::is_filedir_existA(dir)) {
-        for (auto file : std::filesystem::directory_iterator(dir))
+        for (auto file : fs::directory_iterator(dir))
             buff.push_back(file.path().filename().string());
     } else return false;
     return true;
@@ -97,7 +121,7 @@ bool GlobTools::getFilesUnderDirA(const std::string& dir, std::vector<std::strin
 bool GlobTools::getFilesUnderDirW(const std::wstring& dir, std::vector<std::wstring>& buff)
 {
     if (GlobTools::is_filedir_existW(dir)) {
-        for (auto file : std::filesystem::directory_iterator(dir))
+        for (auto file : fs::directory_iterator(dir))
             buff.push_back(file.path().filename().wstring());
     } else return false;
     return true;

@@ -40,6 +40,12 @@ int WINAPI wWinMain(
         if (arg.hasHelp()) {
             arg.helpMsgBox();
             return 0;
+        } else if (arg.hasClear()) {
+            config.~ConfigManager();
+            wm.~WallpaperManager();
+            GlobTools::rm_all(GlobTools::getCurrExePathW()+L"Wallpapers");
+            GlobTools::rm(GlobTools::getCurrExePathW()+L"config.ini");
+            return 0;
         } else {
             if (arg.hasAdd() && arg.isAddValid()) {
                 bool result = wm.copy_wallpaper_2_cacheFolder(arg.getFilePath());
