@@ -297,6 +297,10 @@ void MainWindow::AboutProgramDlg()
 void MainWindow::onClearCachedWallpapers()
 {
     clear_wallpaper_cache();
+    m_Config.set(L"wallpaper", L"default_wallpaper_id", L"");
+    m_Config.set(L"wallpaper", L"landscape_wallpaper_id", L"");
+    m_Config.set(L"wallpaper", L"portrait_wallpaper_id", L"");
+    WallpaperTab_resetCtrls();
 }
 
 
