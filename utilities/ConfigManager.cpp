@@ -319,7 +319,15 @@ void ConfigManager::write(const STRING& write_path)
 // getter
 STRING ConfigManager::get(const STRING& sec_name, const STRING& opt_name)
 {
-    return m_Secs[sec_name].getOptVal(opt_name);
+    try {
+        return m_Secs[sec_name].getOptVal(opt_name);
+    } catch(...) {
+        throw std::invalid_argument((
+            "exception: cannot read {" +
+            getStr4Exception(sec_name) + "},[" +
+            getStr4Exception(opt_name) + "]"
+        ).c_str());
+    }
 }
 int ConfigManager::getInt(const STRING& sec_name, const STRING& opt_name)
 {

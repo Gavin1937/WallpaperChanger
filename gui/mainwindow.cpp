@@ -90,14 +90,37 @@ MainWindow::MainWindow(QWidget *parent)
         write_default_config();
     }
     
+    // check whether config.ini has all basic element set
+    bool is_config_good = false;
+    try {
+        is_config_good = 
+            !m_Config.get(L"system", L"windows_theme_dir").empty() &&
+            !m_Config.get(L"system", L"windows_startup_dir").empty() &&
+            !m_Config.get(L"program", L"core_program").empty() &&
+            !m_Config.get(L"program", L"gui_program").empty()
+        ;
+    } catch(...) {
+        is_config_good = false;
+    }
+    // config.ini does not have all basic element set
+    // clear all cache & user setting
+    MessageBoxW(0, (L"is_config_good: "+std::to_wstring(is_config_good)).c_str(), L"Debug", 0);
+    if (!is_config_good) { 
+        handle_bad_config_wallpaperlists();
+    }
+    
     // check whether to update wallpapers
     bool has_all_three_wallpaper_set = 
         m_Config.get(L"wallpaper", L"landscape_wallpaper_id").empty() ||
         m_Config.get(L"wallpaper", L"portrait_wallpaper_id").empty() ||
         m_Config.get(L"wallpaper", L"default_wallpaper_id").empty();
     if (!has_all_three_wallpaper_set) { // no empty wallpaper, have all landscape, portrait, & default
-        // set default wappaper and update wallpaper
-        set_default_wallpaper();
+        try {
+            // set default wappaper and update wallpaper
+            set_default_wallpaper();
+        } catch(...) {
+            handle_bad_config_wallpaperlists();
+        }
     }
     
     // setup UI
@@ -147,11 +170,11 @@ void MainWindow::write_default_config()
 void MainWindow::update_wallpapers()
 {
     // replace ./TranscodedWallpaper w/ default wallpaper
-	try {
-		paste_default_wallpaper_to_themes();
-	} catch (std::exception& err) {
-		throw err;
-	}
+    try {
+        paste_default_wallpaper_to_themes();
+    } catch (std::exception& err) {
+        throw err;
+    }
     
     // rm -rf /CachedFiles/ first, and then re-create that dir 
     if (getScreenMode() == ScreenMode::Single) { // if is single screen
@@ -432,31 +455,107 @@ std::wstring MainWindow::get_default_wallpaper_src()
 void MainWindow::paste_default_wallpaper_to_themes()
 {
     std::wstring default_wallpaper_id = m_Config.get(L"wallpaper", L"default_wallpaper_id");
-	// replace ./TranscodedWallpaper w/ default wallpaper
-	QObject parent;
-	QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
-	QStringList arguments;
-	arguments
-		<< "--paste"
-		<< QString::fromStdWString(default_wallpaper_id)
-		<< "DEFAULT"
-		;
-	QProcess myProcess(&parent);
-	myProcess.start(program, arguments);
-	// wait for core to finish
-	while (!myProcess.waitForFinished())
-		Sleep(500);
+    // replace ./TranscodedWallpaper w/ default wallpaper
+    QObject parent;
+    QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
+    QStringList arguments;
+    arguments
+        << "--paste"
+        << QString::fromStdWString(default_wallpaper_id)
+        << "DEFAULT"
+        ;
+    QProcess myProcess(&parent);
+    myProcess.start(program, arguments);
+    // wait for core to finish
+    while (!myProcess.waitForFinished())
+        Sleep(500);
     myProcess.close();
     
-	// read new added wallpaper from cache 
-	Cache_ReaderW cache(GlobTools::getCurrExePathW()+L"core_cache");
-	if (cache.isCacheExist() && cache.getData()->at(0) == L"1") {
-		if (cache.getData()->at(1) != default_wallpaper_id)
-			throw std::invalid_argument("Error occurs during replacing TranscodedWallpaper");
-	}
-	else {
+    // read new added wallpaper from cache 
+    Cache_ReaderW cache(GlobTools::getCurrExePathW()+L"core_cache");
+    if (cache.isCacheExist() && cache.getData()->at(0) == L"1") {
+        if (cache.getData()->at(1) != default_wallpaper_id)
+            throw std::invalid_argument("Error occurs during replacing TranscodedWallpaper");
+    }
+    else {
         throw std::invalid_argument("Error occurs during reading/writing core_cache file");
-	}
+    }
+}
+
+void MainWindow::clear_wallpaper_cache()
+{
+    QObject parent;
+    QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
+    QStringList arguments;
+    arguments
+        << "--clear"
+        << "CACHED_WALLPAPER"
+        ;
+    QProcess myProcess(&parent);
+    myProcess.start(program, arguments);
+    // wait for core to finish
+    while (!myProcess.waitForFinished())
+        Sleep(500);
+    myProcess.close();
+}
+void MainWindow::clear_user_config()
+{
+    QObject parent;
+    QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
+    m_Config.~ConfigManager();
+    QStringList arguments;
+    arguments
+        << "--clear"
+        << "USER_CONFIG"
+        ;
+    QProcess myProcess(&parent);
+    myProcess.start(program, arguments);
+    // wait for core to finish
+    while (!myProcess.waitForFinished())
+        Sleep(500);
+    myProcess.close();
+}
+void MainWindow::clear_all()
+{
+    QObject parent;
+    QString program = QString::fromWCharArray(m_Config.get(L"program", L"core_program").c_str());
+    m_Config.~ConfigManager();
+    QStringList arguments;
+    arguments
+        << "--clear"
+        << "ALL"
+        ;
+    QProcess myProcess(&parent);
+    myProcess.start(program, arguments);
+    // wait for core to finish
+    while (!myProcess.waitForFinished())
+        Sleep(500);
+    myProcess.close();
+}
+void MainWindow::handle_bad_config_wallpaperlists()
+{
+    std::wstring msg = 
+        L"The \"config.ini\" or \"Wallpapers/WallpaperList\" under current directory is corrupted.\n"
+        L"In order to reset, program will remove \"config.ini\" and Exit.\n"
+        L"\n"
+        L"Do you also want to remove all cached Wallpapers under \"Wallpapers\"?\n"
+        L"Press \"Yes\" to remove \"config.ini\" and all cached Wallpapers.\n"
+        L"Press \"No\" to only remove \"config.ini\".\n"
+        L"Press \"Cancel\" to Cancel this process.\n"
+    ;
+    int msg_res = MessageBoxW(0, msg.c_str(), L"Error!", MB_YESNOCANCEL);
+    switch (msg_res)
+    {
+    case IDYES:
+        clear_all();
+        break;
+    case IDNO:
+        clear_user_config();
+        break;
+    case IDCANCEL:
+        break;
+    }
+    qApp->exit(EXIT_FAILURE);
 }
 
 

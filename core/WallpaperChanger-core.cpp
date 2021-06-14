@@ -43,8 +43,13 @@ int WINAPI wWinMain(
         } else if (arg.hasClear()) {
             config.~ConfigManager();
             wm.~WallpaperManager();
-            GlobTools::rm_all(GlobTools::getCurrExePathW()+L"Wallpapers");
-            GlobTools::rm(GlobTools::getCurrExePathW()+L"config.ini");
+            if (arg.getClearMode() == ClearMode::ALL) {
+                GlobTools::rm_all(GlobTools::getCurrExePathW()+L"Wallpapers");
+                GlobTools::rm(GlobTools::getCurrExePathW()+L"config.ini");
+            } else if (arg.getClearMode() == ClearMode::CACHED_WALLPAPER)
+                GlobTools::rm_all(GlobTools::getCurrExePathW()+L"Wallpapers");
+            else if (arg.getClearMode() == ClearMode::USER_CONFIG)
+                GlobTools::rm(GlobTools::getCurrExePathW()+L"config.ini");
             return 0;
         } else {
             if (arg.hasAdd() && arg.isAddValid()) {

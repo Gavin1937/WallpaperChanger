@@ -109,6 +109,11 @@ private: // helper functions
     
     void paste_default_wallpaper_to_themes();
     
+    void clear_wallpaper_cache();
+    void clear_user_config();
+    void clear_all();
+    void handle_bad_config_wallpaperlists();
+    
 private:
     WallpaperUpdater* p_Wallpaper_Updater;
     ConfigManager m_Config;

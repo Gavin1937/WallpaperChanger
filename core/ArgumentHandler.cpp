@@ -38,6 +38,12 @@ ArgumentHandler::ArgumentHandler(int argc, wchar_t** argv)
                 m_HasPaste = true;
             }
             if (buff == L"--clear") {
+                if (GlobTools::all2upperW(argv[i+1]) == L"ALL")
+                    m_ClearMode = ClearMode::ALL;
+                else if (GlobTools::all2upperW(argv[i+1]) == L"CACHED_WALLPAPER")
+                    m_ClearMode = ClearMode::CACHED_WALLPAPER;
+                else if (GlobTools::all2upperW(argv[i+1]) == L"USER_CONFIG")
+                    m_ClearMode = ClearMode::USER_CONFIG;
                 m_HasClear = true;
             }
             if (buff == L"--help" || buff == L"-h") {
@@ -76,6 +82,10 @@ std::wstring ArgumentHandler::getFilePath()
 WallpaperMode ArgumentHandler::getWallpaperMode()
 {
     return m_WallpaperMode;
+}
+ClearMode ArgumentHandler::getClearMode()
+{
+    return m_ClearMode;
 }
 
 
@@ -178,7 +188,7 @@ const bool ArgumentHandler::isFindValid() const
 }
 bool ArgumentHandler::isPasteValid(const WallpaperInfo* wallpaperInfo_arr, const int& arr_size)
 {
-    if (!m_FileName.empty() && wallpaperInfo_arr != nullptr) {
+    if (!m_FileName.empty() && wallpaperInfo_arr != nullptr && arr_size > 0) {
         bool is_filename_exist = false;
         for (int i = 0; i < arr_size; ++i) {
             if (wallpaperInfo_arr[i].getNewFilename() == m_FileName) {
@@ -193,7 +203,7 @@ bool ArgumentHandler::isPasteValid(const WallpaperInfo* wallpaperInfo_arr, const
 }
 const bool ArgumentHandler::isPasteValid(const WallpaperInfo* wallpaperInfo_arr, const int& arr_size) const
 {
-    if (!m_FileName.empty() && wallpaperInfo_arr != nullptr) {
+    if (!m_FileName.empty() && wallpaperInfo_arr != nullptr && arr_size > 0) {
         bool is_filename_exist = false;
         for (int i = 0; i < arr_size; ++i) {
             if (wallpaperInfo_arr[i].getNewFilename() == m_FileName) {

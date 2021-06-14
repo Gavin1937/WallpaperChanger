@@ -15,7 +15,7 @@
  *    --del {file_name} => deleting wallpaper by its name (hex # in ./Wallpapers/ folder)
  *    --find {file_name} => find a wallpaper's info base on its name (hex # in ./Wallpapers/ folder)
  *    --paste {file_name} + {PORTRAIT/LANDSCAPE} => paste inputted wallpaper to Windows System Theme folder with specific mode
- *    --clear => clear cached Wallpapers & config.ini
+ *    --clear {MODE} => clear cached Wallpapers or config.ini. {MODE: ALL, CACHED_WALLPAPER, USER_CONFIG}
  *    --help, -h => print help menu
  * 
  */
@@ -28,7 +28,7 @@ namespace {
         L"\t--del {file_name} => deleting wallpaper by its name (hex # in ./Wallpapers/ folder)\n",
         L"\t--find {file_name} => find a wallpaper's info base on its name (hex # in ./Wallpapers/ folder)\n",
         L"\t--paste {file_name} + {PORTRAIT/LANDSCAPE} => paste inputted wallpaper to Windows System Theme folder with specific mode\n",
-        L"\t--clear => clear cached Wallpapers & config.ini\n",
+        L"\t--clear {MODE} => clear cached Wallpapers or config.ini. {MODE: ALL, CACHED_WALLPAPER, USER_CONFIG}\n",
         L"\t--help, -h => print help menu\n"
     };
 };
@@ -38,6 +38,10 @@ namespace {
 enum class WallpaperMode {
     UNKNOW = 0,
     DEFAULT, PORTRAIT, LANDSCAPE
+};
+enum class ClearMode {
+    ALL = 0,
+    CACHED_WALLPAPER, USER_CONFIG
 };
 
 // handling arguments in wWinMain() function
@@ -55,6 +59,7 @@ public:
     std::wstring getFileName();
     std::wstring getFilePath();
     WallpaperMode getWallpaperMode();
+    ClearMode getClearMode();
     
     // argument flags
     bool hasAdd();
@@ -91,5 +96,6 @@ private:
     bool m_HasPaste;
     WallpaperMode m_WallpaperMode;
     bool m_HasClear;
+    ClearMode m_ClearMode;
     bool m_HasHelp;
 };
