@@ -9,6 +9,7 @@
         <file>res/CacheBrowserDlg/lightblue_edit.png</file>
         <file>res/CacheBrowserDlg/blue_question.png</file>
         <file>res/CacheBrowserDlg/missing_wallpaper.png</file>
+        <file>res/CacheBrowserDlg/black_clear.png</file>
         <!-- ImageEditor resources -->
         <file>res/ImageEditorDlg/rotate_l.png</file>
         <file>res/ImageEditorDlg/rotate_r.png</file>

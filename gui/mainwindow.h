@@ -88,6 +88,8 @@ public slots: // handle universal buttons (OK, Cancel, Apply)
     void onApplyPressed();
     // Launch About Program Dialog
     void AboutProgramDlg();
+    // clear cached wallpapers
+    void onClearCachedWallpapers();
     
 protected: // protected event handlers
     // on program close

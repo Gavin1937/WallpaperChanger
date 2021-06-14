@@ -480,6 +480,19 @@
        <string>About Program</string>
       </property>
      </widget>
+     <widget class="QPushButton" name="tab1Bnt_ClearCachedWallpapers">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>290</y>
+        <width>151</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Clear Cached Wallpapers</string>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>

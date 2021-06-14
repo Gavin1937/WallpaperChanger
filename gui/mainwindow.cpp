@@ -104,7 +104,6 @@ MainWindow::MainWindow(QWidget *parent)
     }
     // config.ini does not have all basic element set
     // clear all cache & user setting
-    MessageBoxW(0, (L"is_config_good: "+std::to_wstring(is_config_good)).c_str(), L"Debug", 0);
     if (!is_config_good) { 
         handle_bad_config_wallpaperlists();
     }
@@ -292,6 +291,12 @@ void MainWindow::AboutProgramDlg()
     ;
     QApplication::setQuitOnLastWindowClosed(false);
     QMessageBox::about(this, "About WallpaperChanger", msg);
+}
+
+// clear cached wallpapers
+void MainWindow::onClearCachedWallpapers()
+{
+    clear_wallpaper_cache();
 }
 
 
