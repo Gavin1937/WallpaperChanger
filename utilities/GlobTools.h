@@ -70,6 +70,7 @@ namespace GlobTools
         utf8_ifstream();
         utf8_ifstream(const std::string& path, std::ios_base::openmode mode = ios_base::in);
         utf8_ifstream(const std::wstring& path, std::ios_base::openmode mode = ios_base::in);
+        ~utf8_ifstream();
     };
     // wifstream w/ utf8 locale set
     class utf8_wifstream : public std::wifstream
@@ -78,6 +79,7 @@ namespace GlobTools
         utf8_wifstream();
         utf8_wifstream(const std::string& path, std::ios_base::openmode mode = ios_base::in);
         utf8_wifstream(const std::wstring& path, std::ios_base::openmode mode = ios_base::in);
+        ~utf8_wifstream();
     };
     // ofstream w/ utf8 locale set
     class utf8_ofstream : public std::ofstream
@@ -86,6 +88,7 @@ namespace GlobTools
         utf8_ofstream();
         utf8_ofstream(const std::string& path, std::ios_base::openmode mode = ios_base::out);
         utf8_ofstream(const std::wstring& path, std::ios_base::openmode mode = ios_base::out);
+        ~utf8_ofstream();
     };
     // wofstream w/ utf8 locale set
     class utf8_wofstream : public std::wofstream
@@ -94,5 +97,6 @@ namespace GlobTools
         utf8_wofstream();
         utf8_wofstream(const std::string& path, std::ios_base::openmode mode = ios_base::out);
         utf8_wofstream(const std::wstring& path, std::ios_base::openmode mode = ios_base::out);
+        ~utf8_wofstream();
     };
 };

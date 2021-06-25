@@ -30,7 +30,11 @@ namespace {
         GlobTools::utf8_ifstream input(file_path.c_str(), std::ios::binary);
         if (!input.fail())
             input.read(buff, 30);
-        else return false;
+        else {
+            input.close();
+            return false;
+        }
+        input.close();
         
         // compare file header with supported file headers
         for (int i = 0; i < 25; ++i) {
@@ -51,7 +55,11 @@ namespace {
 		GlobTools::utf8_ifstream input(file_path.c_str(), std::ios::binary);
 		if (!input.fail())
 			input.read(buff, 30);
-		else return false;
+		else {
+            input.close();
+            return false;
+        }
+        input.close();
         
 		// compare file header with supported file headers
 		for (int i = 0; i < 25; ++i) {
@@ -81,6 +89,7 @@ WallpaperManager::WallpaperManager()
         if (!GlobTools::is_filedir_existW(loc_WallpaperList_filepath)) { // does not exist
             // create WallpaperList file app
             GlobTools::utf8_wofstream WallpaperList(loc_WallpaperList_filepath);
+            WallpaperList << L"\"src_path\",\"hex_id\",\"add_time\"\n"; // initialize 1st line
             WallpaperList.close();
         } else { // exist
             // load data from WallpaperList to m_CachedWallpaperInfo
@@ -112,6 +121,7 @@ WallpaperManager::WallpaperManager()
                         m_CachedWallpaperInfo.push_back(WallpaperInfo(loc_src_path, loc_new_filename, std::stoi(loc_add_time)));
                 } else counter++;
             }
+            input.close();
         }
     } else MessageBoxW(0, L"CreateDirectory Error, Path Not Found.", L"Info", 0);
 }
@@ -151,6 +161,7 @@ WallpaperManager::WallpaperManager(const std::wstring& WallpaperList_path)
                 m_CachedWallpaperInfo.push_back(WallpaperInfo(loc_src_path, loc_new_filename, std::stoi(loc_add_time)));
         } else counter++;
     }
+    input.close();
 }
 
 // destructor, also write & save all data in m_CachedWallpaperInfo to WallpaperList

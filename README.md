@@ -19,7 +19,7 @@ This Program will Change Wallpaper base on Screen Rotation on tablet/laptop. Thi
 ## [**Go To Changelog.md**](Changelog.md)
 
 
-## How It Work:
+## How It Works:
 
 Windows will automatically store its wallpaper to this directory
 ```
@@ -42,12 +42,12 @@ Here is an example directory
         |
         ----- slideshow.ini
 ```
-There 4 files in this directory tree, and:
+There are 4 files under this directory tree, and:
 * **TranscodedWallpaper** is a **Compressed Version** of original user-defined wallpaper (or default wallpaper)
-  * Windows will generate all the wallpapers from this file
+  * Windows will generate all its wallpapers from this file
   * The quality of this file will affect all the auto-generated wallpapers 
 * slideshow.ini records user's wallpaper slideshow information
-* Directory **CachedFiles/ will Only Be Created When System Is In Modes Beside Extend (This PC Only, Duplicate, Second Screen Only)**
+* Directory **CachedFiles/ will Only Be Created When System Is In Any Modes Beside Extend (This PC Only, Duplicate, Second Screen Only)**
   * Windows Will Automatically remove this directory when it is in Extended Mode
   * Files Under this directory will named as following:
 
@@ -72,7 +72,7 @@ CachedImage_${V}_${H}_POS${M}
 * This program currently **Only designed for Fill Mode**
 * Program will automatically replace **./TranscodedWallpaper** with a **Default Wallpaper** that chose by user
 * If Windows is in **Extended Mode**: Program will let Windows to generate wallpapers for all the displays from **Default Wallpaper** chose by user
-* If Windows is in **Other Modes**: Program will replace files under **CachedImage/** with **Landscape Wallpaper** and **Portrait Wallpaper** that chose by user
+* If Windows is in **Other Modes**: Program will replace files under **CachedImage/** with **Landscape Wallpaper** and **Portrait Wallpaper** chose by user
   * Windows will use replaced wallpapers in CachedImage/ as your wallpapers without any problems
 
 
@@ -96,15 +96,15 @@ CachedImage_${V}_${H}_POS${M}
     
     ~/build $ cmake .. 
 ```
-* After Installation, run **WallpaperChanger-gui**
+* After Building, run **WallpaperChanger-gui.exe**
 * If you are **missing DLLs**, you can try to download them from: [https://www.dll-files.com/](https://www.dll-files.com/) 
 
 
 ## Tips About GUI
 
 * **Default Wallpaper**: Wallpaper that choose by user and use to set as Windows system wallpaper
-* **Landscape Wallpaper**: Wallpaper that choose by user and will display on landscape orientation in **Single Screen Modes**
-* **Portrait Wallpaper**: Wallpaper that choose by user and will display on portrait orientation in **Single Screen Modes**
+* **Landscape Wallpaper**: Wallpaper that choose by user and will display in landscape orientation in **Single Screen Modes**
+* **Portrait Wallpaper**: Wallpaper that choose by user and will display in portrait orientation in **Single Screen Modes**
 * **Wallpaper Update Interval**: How long to update (replace) **./TranscodedWallpaper** and files under **./CachedImage/**
   * This value will store as seconds in config.ini
   * Menu Option **Update Wallpaper** will do the same update immediately
@@ -122,7 +122,7 @@ CachedImage_${V}_${H}_POS${M}
     * **Alt + 3** - Move selected Wallpaper to **Portrait Wallpaper Section**
   * **ImageEditor**
     * **Mouse Right Button Click** - Open operation menu
-    * **Arrow Keys** - Move Cropping Rectangle around the screen with speed of 1 pixel/frame, this feature is designed to help user on micro-adjusting.
+    * **Arrow Keys** - Move Cropping Rectangle around the screen with speed of 1 pixel/frame, this feature is designed to help user perform  micro-adjusting.
 
 
 ## Resources Used

@@ -145,6 +145,10 @@ GlobTools::utf8_ifstream::utf8_ifstream(
 	imbue(std::locale("", LC_CTYPE));
     open(path, mode);
 }
+GlobTools::utf8_ifstream::~utf8_ifstream()
+{
+    close();
+}
 
 // wifstream w/ utf8 locale set
 GlobTools::utf8_wifstream::utf8_wifstream()
@@ -162,6 +166,10 @@ GlobTools::utf8_wifstream::utf8_wifstream(
 {
 	imbue(std::locale("", LC_CTYPE));
     open(path, mode);
+}
+GlobTools::utf8_wifstream::~utf8_wifstream()
+{
+    close();
 }
 
 // ofstream w/ utf8 locale set
@@ -181,6 +189,10 @@ GlobTools::utf8_ofstream::utf8_ofstream(
 	imbue(std::locale("", LC_CTYPE));
     open(path, mode);
 }
+GlobTools::utf8_ofstream::~utf8_ofstream()
+{
+    close();
+}
 
 // wofstream w/ utf8 locale set
 GlobTools::utf8_wofstream::utf8_wofstream()
@@ -198,4 +210,8 @@ GlobTools::utf8_wofstream::utf8_wofstream(
 {
     imbue(std::locale("", LC_CTYPE));
     open(path, mode);
+}
+GlobTools::utf8_wofstream::~utf8_wofstream()
+{
+    close();
 }
