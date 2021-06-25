@@ -98,7 +98,7 @@ CachedImage_${V}_${H}_POS${M}
 ```
 * After Building, copy **WallpaperChanger-core.exe And WallpaperChanger-gui.exe** to a binary folder (/bin/)
 * Also copy all the necessary DLLs for Qt6 to that folder
-  * **Qt6Cored.dll, Qt6Guid.dll, Qt6Widgetsd.dll, /imageformats/, and /platforms/**
+  * **bin/Qt6Core.dll, bin/Qt6Gui.dll, bin/Qt6Widgets.dll, plugins/imageformats/, and plugins/platforms/**
 * If you are **missing DLLs**, you can try to download them from: [https://www.dll-files.com/](https://www.dll-files.com/) 
 * Run **WallpaperChanger-gui.exe** to start program
 
