@@ -23,7 +23,7 @@ DWORD WINAPI RecoveryFunc(PVOID param)
     rawtime = time(0);
     msg = asctime(localtime(&rawtime));
     msg = "Crash At: " + msg;
-    out.open("CRASHLOG.log", std::ios::app);
+    out.open(GlobTools::getCurrExePathA() + "CRASHLOG.log", std::ios::app);
     if (out.fail())
         goto cleanup;
     out << msg;
